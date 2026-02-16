@@ -5,23 +5,38 @@ import yt_dlp
 import asyncio
 import os
 import shutil
+from flask import Flask
+from threading import Thread
 
-# --- SECURITY / الأمان ---
-# سيقوم البوت بطلب التوكن من إعدادات Render (Environment Variables)
+# --- 1. نظام البقاء حياً (للاستضافات المجانية) ---
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Elite FS Bot is Running!"
+
+def run_web():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run_web)
+    t.start()
+
+# --- 2. الإعدادات الأساسية ---
+# يتم جلب التوكن من إعدادات الموقع (Environment Variables) للأمان
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-# --- CONFIGURATION / الإعدادات ---
 VERIFY_ROLE_ID = 1435976172633849908 
 LOG_CHANNEL_ID = 1472969983582540012 
 CLAN_TAG = "FS"
 
-# نظام ذكي للبحث عن FFmpeg (يعمل على الاستضافة تلقائياً)
+# كاشف تلقائي لمسار الصوت (FFmpeg)
 FFMPEG_EXE = shutil.which("ffmpeg") or r'C:\ffmpeg\bin\ffmpeg.exe'
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
-# --- MUSIC ENGINE / محرك الموسيقى ---
+# --- 3. محرك الموسيقى الفخم ---
 yt_dlp.utils.bug_reports_message = lambda *args, **kwargs: ''
 ytdl_format_options = {
     'format': 'bestaudio/best', 'restrictfilenames': True, 'noplaylist': True,
@@ -48,15 +63,15 @@ class YTDLSource(discord.PCMVolumeTransformer):
         filename = data['url'] if stream else ytdl.prepare_filename(data)
         return cls(discord.FFmpegPCMAudio(filename, executable=FFMPEG_EXE, **ffmpeg_options), data=data)
 
-# --- TICKET SYSTEM / نظام التذاكر ---
+# --- 4. نظام التذاكر (Ticket System) ---
 class TicketControl(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Close / إغلاق", style=discord.ButtonStyle.danger, emoji="🔒", custom_id="close_tkt")
     async def close(self, interaction: discord.Interaction, button: discord.ui.Button):
-        embed = discord.Embed(description="🔒 **The ticket will be closed. Thank you.**\n🔒 **سيتم إغلاق التذكرة. شكراً لك.**", color=discord.Color.red())
-        await interaction.response.send_message(embed=embed)
+        emb = discord.Embed(description="🔒 **Ticket deletion in progress...**\n🔒 **جاري أرشفة وإغلاق التذكرة نهائياً.**", color=discord.Color.red())
+        await interaction.response.send_message(embed=emb)
         await asyncio.sleep(5)
         await interaction.channel.delete()
 
@@ -74,14 +89,14 @@ class TicketLauncher(discord.ui.View):
         }
         channel = await guild.create_text_channel(f'🎫-{interaction.user.name}', overwrites=overwrites)
         
-        embed = discord.Embed(title="🔱 SUPPORT | الدعم الفني", color=discord.Color.gold())
-        embed.description = f"Welcome {interaction.user.mention}\nOur administration will assist you shortly.\n\nمرحباً بك، سيقوم الطاقم الإداري بمساعدتك قريباً."
-        embed.set_footer(text=f"{CLAN_TAG} Management")
+        embed = discord.Embed(title="🔱 FS SUPPORT | الدعم الإداري", color=discord.Color.gold())
+        embed.description = f"Welcome {interaction.user.mention}\nPlease state your request, and the administration will reply soon.\n\nمرحباً بك، يرجى كتابة طلبك وسيتم الرد عليك من قبل الإدارة."
+        embed.set_footer(text=f"FS Clan Elite System")
         
         await channel.send(embed=embed, view=TicketControl())
         await interaction.response.send_message(f"✅ **Ticket Created:** {channel.mention}", ephemeral=True)
 
-# --- VERIFICATION SYSTEM / نظام التفعيل ---
+# --- 5. نظام التفعيل (Verification System) ---
 class RegistrationModal(discord.ui.Modal, title='Clan Membership | طلب انضمام'):
     name = discord.ui.TextInput(label='Full Name | الاسم الكامل', placeholder='Type your name...', required=True, min_length=3)
     age = discord.ui.TextInput(label='Age | العمر', placeholder='Type your age...', required=True, max_length=2)
@@ -106,7 +121,7 @@ class RegistrationModal(discord.ui.Modal, title='Clan Membership | طلب انض
             embed.set_image(url="https://media.discordapp.net/attachments/1086036284693160047/1105944569837699122/line.gif")
             await log_ch.send(embed=embed)
         
-        success_emb = discord.Embed(description="✅ **Verification successful. Welcome to FS!**\n✅ **تم التفعيل بنجاح. مرحباً بك في FS!**", color=discord.Color.green())
+        success_emb = discord.Embed(description="✅ **Welcome to the Elite ranks of FS Clan!**\n✅ **تم تفعيل عضويتك بنجاح. مرحباً بك في الصفوف!**", color=discord.Color.green())
         await interaction.followup.send(embed=success_emb, ephemeral=True)
 
 class VerifyLauncher(discord.ui.View):
@@ -116,14 +131,14 @@ class VerifyLauncher(discord.ui.View):
     async def verify(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(RegistrationModal())
 
-# --- BOT EVENTS ---
+# --- 6. الأوامر والأحداث ---
 @bot.event
 async def on_ready():
     bot.add_view(VerifyLauncher())
     bot.add_view(TicketLauncher())
     bot.add_view(TicketControl())
     await bot.tree.sync()
-    print(f'Elite Bot {bot.user} is now Online!')
+    print(f'>>> Elite FS Bot is Online: {bot.user}')
 
 @bot.command()
 @commands.has_permissions(administrator=True)
@@ -132,42 +147,43 @@ async def setup(ctx):
     
     # لوحة التفعيل
     v_emb = discord.Embed(title="🛡️ CLAN VERIFICATION | تفعيل العضوية", color=discord.Color.dark_red())
-    v_emb.description = "Greetings! Please initiate your membership by clicking below.\n\nتحية طيبة! يرجى البدء في إجراءات التسجيل عبر الزر أدناه."
+    v_emb.description = "Greetings! Click below to start your registration process.\n\nتحية طيبة! يرجى الضغط على الزر أدناه للبدء في إجراءات التفعيل."
     v_emb.set_image(url="https://media.discordapp.net/attachments/1086036284693160047/1105944569837699122/line.gif")
     await ctx.send(embed=v_emb, view=VerifyLauncher())
     
     # لوحة التذاكر
     t_emb = discord.Embed(title="📩 SUPPORT CENTER | مركز الدعم", color=discord.Color.blue())
-    t_emb.description = "Open a formal inquiry for any administrative assistance.\n\nافتح تذكرة رسمية لأي مساعدة إدارية تحتاجها."
+    t_emb.description = "Need help? Open a support ticket to reach the administration.\n\nتحتاج للمساعدة؟ افتح تذكرة دعم فني للتواصل مع الإدارة."
     await ctx.send(embed=t_emb, view=TicketLauncher())
 
-# --- MUSIC COMMANDS ---
-@bot.tree.command(name="play", description="Stream audio from YouTube")
+@bot.tree.command(name="play", description="Stream audio from YouTube | بث صوتي")
 async def play(interaction: discord.Interaction, search: str):
     await interaction.response.defer()
     if not interaction.user.voice:
-        return await interaction.followup.send("⚠️ **Please join a voice channel.** / **يرجى الانضمام لروم صوتي.**")
+        return await interaction.followup.send("⚠️ **Please join a voice channel.**\n⚠️ **يرجى الانضمام لروم صوتي أولاً.**")
     
     vc = interaction.guild.voice_client or await interaction.user.voice.channel.connect()
     try:
         player = await YTDLSource.from_url(search, loop=bot.loop, stream=True)
         if vc.is_playing(): vc.stop()
         vc.play(player)
-        embed = discord.Embed(title="🎶 Streaming | جاري البث", description=f"**{player.title}**", color=discord.Color.purple())
+        embed = discord.Embed(title="🎶 Now Playing | جاري البث", description=f"**{player.title}**", color=discord.Color.purple())
         await interaction.followup.send(embed=embed)
     except Exception:
-        await interaction.followup.send("❌ **Streaming error. Check support.**")
+        await interaction.followup.send("❌ **Error: Streaming service unavailable.**")
 
-@bot.tree.command(name="stop", description="Stop music and leave")
+@bot.tree.command(name="stop", description="Stop music and leave | إيقاف ومغادرة")
 async def stop(interaction: discord.Interaction):
     if interaction.guild.voice_client:
         await interaction.guild.voice_client.disconnect()
         await interaction.response.send_message("⏹️ **Disconnected.**")
     else:
-        await interaction.response.send_message("❌ **Not connected.**", ephemeral=True)
+        await interaction.response.send_message("❌ **Not connected to any voice channel.**", ephemeral=True)
 
-# --- START BOT ---
-if TOKEN:
-    bot.run(TOKEN)
-else:
-    print("CRITICAL ERROR: 'DISCORD_TOKEN' not found in environment variables!")
+# --- 7. تشغيل البوت ---
+if __name__ == "__main__":
+    if TOKEN:
+        keep_alive()  # تشغيل خادم الويب للبقاء حياً
+        bot.run(TOKEN)
+    else:
+        print("CRITICAL ERROR: 'DISCORD_TOKEN' NOT FOUND!")
