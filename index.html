@@ -97,7 +97,7 @@
         }
         .xo-cell:hover { background: rgba(255, 215, 0, 0.2); }
         
-        .hand-card {
+        .hand-card, .domino-card {
             background: rgba(0, 0, 0, 0.5);
             border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px;
@@ -106,8 +106,8 @@
             transition: 0.3s;
             text-align: center;
         }
-        .hand-card:hover { border-color: var(--gold); background: rgba(255, 215, 0, 0.1); }
-        .hand-card.selected { border-color: #10b981; }
+        .hand-card:hover, .domino-card:hover { border-color: var(--gold); background: rgba(255, 215, 0, 0.1); }
+        .hand-card.disabled { opacity: 0.5; pointer-events: none; }
 
         .hidden { display: none !important; }
         
@@ -117,7 +117,8 @@
     </style>
 </head>
 <body>
-    <audio id="soundBat" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio> <audio id="soundWin" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
+    <audio id="soundBat" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio> 
+    <audio id="soundWin" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"></audio>
     <audio id="soundLose" src="https://assets.mixkit.co/active_storage/sfx/2004/2004-preview.mp3"></audio>
 
     <div id="starField"></div>
@@ -131,9 +132,9 @@
     <div id="authPage" class="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div class="bg-black/60 backdrop-blur-lg border border-yellow-500/30 p-8 rounded-[2rem] w-full max-w-md shadow-[0_0_50px_rgba(212,175,55,0.1)] animate__animated animate__fadeIn">
             <div class="text-center mb-6">
-                <i class="fas fa-gamepad text-6xl text-yellow-400 mb-4 drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] animate__animated animate__pulse animate__infinite"></i>
-                <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-600">ألعاب رمضان</h2>
-                <p class="text-gray-400 text-xs mt-2">محيبس، اكس او، والمزيد..</p>
+                <i class="fas fa-moon text-6xl text-yellow-400 mb-4 drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] animate__animated animate__pulse animate__infinite"></i>
+                <h2 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-600 mb-2">ليالي العرب</h2>
+                <span class="bg-red-600/80 text-white px-3 py-1 rounded-full text-xs font-bold border border-red-400">🔥 حدث رمضان الخاص</span>
             </div>
 
             <div id="loginForm" class="space-y-4">
@@ -188,69 +189,66 @@
                     </div>
                 </div>
                 <button onclick="openCreateRoom()" class="btn-primary px-8 py-4 rounded-2xl flex items-center gap-2">
-                    <i class="fas fa-plus"></i> إنشاء غرفة لعب
+                    <i class="fas fa-plus"></i> إنشاء غرفة لعب سرية
                 </button>
             </div>
 
-            <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-yellow-500"><i class="fas fa-dice"></i> غرف الألعاب النشطة</h3>
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-yellow-500"><i class="fas fa-door-closed"></i> الغرف المتاحة</h3>
             <div id="roomsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div onclick="enterRoom('بطولة المحيبس', 'الإدارة', false)" class="bg-white/5 p-6 rounded-[2rem] border border-white/5 hover:border-yellow-500/50 transition cursor-pointer group hover:bg-white/10">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 bg-green-900/30 rounded-2xl flex items-center justify-center text-green-400">
-                            <i class="fas fa-ring text-2xl"></i>
-                        </div>
-                        <span class="text-[10px] bg-yellow-500/20 text-yellow-500 px-2 py-1 rounded-lg">عامة</span>
-                    </div>
-                    <h4 class="font-bold text-xl group-hover:text-yellow-400 transition">بطولة المحيبس</h4>
-                    <p class="text-xs text-gray-400 mt-1">بات والعب ويا الشباب</p>
                 </div>
-            </div>
         </div>
     </div>
 
-    <div id="roomPage" class="hidden h-screen flex flex-col overflow-hidden bg-black/90">
-        <header class="p-4 bg-black/50 border-b border-yellow-500/20 flex justify-between items-center px-8 z-20 backdrop-blur-sm">
+    <div id="roomPage" class="hidden h-screen flex flex-col overflow-hidden bg-black/90 relative z-20">
+        <header class="p-4 bg-black/80 border-b border-yellow-500/20 flex justify-between items-center px-8 backdrop-blur-sm">
             <div class="flex items-center gap-4">
-                <i class="fas fa-gamepad text-yellow-500 text-2xl"></i>
+                <i class="fas fa-tent text-yellow-500 text-3xl"></i>
                 <div>
-                    <h1 class="text-lg font-black text-white" id="activeRoomName">---</h1>
-                    <span class="text-[10px] text-gray-400">المضيف: <span id="roomOwnerName" class="text-yellow-500">---</span></span>
+                    <h1 class="text-xl font-black text-white" id="activeRoomName">---</h1>
+                    <span class="text-[10px] text-gray-400 bg-gray-800 px-2 py-1 rounded">مغلقة برمز سري 🔒</span>
                 </div>
             </div>
-            <button onclick="exitRoom()" class="bg-red-500/20 text-red-500 px-4 py-2 rounded-lg text-xs font-bold hover:bg-red-500 hover:text-white transition">مغادرة الغرفة</button>
+            <button onclick="exitRoom()" class="bg-red-500/20 text-red-500 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-500 hover:text-white transition">مغادرة الخيمة</button>
         </header>
 
         <main class="flex-1 flex flex-col lg:flex-row overflow-hidden">
             <div class="flex-1 p-4 flex flex-col overflow-y-auto">
                 
-                <div class="flex gap-4 justify-center mb-4">
-                    <button onclick="loadGame('muheibes')" class="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-xl text-white font-bold transition shadow-lg border border-indigo-400">
-                        <i class="fas fa-ring mr-2"></i> لعبة المحيبس
+                <div class="flex flex-wrap gap-4 justify-center mb-6 bg-black/40 p-4 rounded-2xl border border-white/5">
+                    <button onclick="loadGame('muheibes')" class="bg-green-700 hover:bg-green-600 px-6 py-3 rounded-xl text-white font-bold transition shadow-lg border border-green-500 flex-1 min-w-[150px]">
+                        <i class="fas fa-ring mr-2 text-yellow-300"></i> محيبس 
                     </button>
-                    <button onclick="loadGame('xo')" class="bg-purple-600 hover:bg-purple-500 px-6 py-2 rounded-xl text-white font-bold transition shadow-lg border border-purple-400">
-                        <i class="fas fa-times mr-2"></i> لعبة X O
+                    <button onclick="loadGame('xo')" class="bg-purple-700 hover:bg-purple-600 px-6 py-3 rounded-xl text-white font-bold transition shadow-lg border border-purple-500 flex-1 min-w-[150px]">
+                        <i class="fas fa-times mr-2"></i> X O (تصفيات)
+                    </button>
+                    <button onclick="loadGame('domino')" class="bg-blue-700 hover:bg-blue-600 px-6 py-3 rounded-xl text-white font-bold transition shadow-lg border border-blue-500 flex-1 min-w-[150px]">
+                        <i class="fas fa-dice-d20 mr-2"></i> دومنة (ذكاء اصطناعي)
                     </button>
                 </div>
 
-                <div class="relative w-full flex-1 bg-black/50 rounded-3xl overflow-hidden border border-yellow-500/20 shadow-2xl p-6 flex flex-col items-center justify-center min-h-[400px]" id="gameArea">
+                <div class="relative w-full flex-1 bg-black/60 rounded-3xl overflow-hidden border border-yellow-500/30 shadow-[0_0_30px_rgba(0,0,0,0.8)] p-6 flex flex-col items-center justify-center min-h-[400px]" id="gameArea">
                     <div class="text-center text-gray-500">
-                        <i class="fas fa-dice text-6xl mb-4 opacity-50"></i>
-                        <h2 class="text-2xl font-bold">اختر لعبة لتبدأ التحدي</h2>
+                        <i class="fas fa-campground text-6xl mb-4 opacity-50 text-yellow-500"></i>
+                        <h2 class="text-3xl font-bold text-white">خيمة الألعاب</h2>
+                        <p class="mt-2 text-sm">اختر لعبة من الأعلى لتبدأ التحدي مع المتواجدين</p>
                     </div>
                 </div>
 
             </div>
 
-            <div class="w-full lg:w-96 bg-[#0f172a]/95 border-r border-yellow-500/10 flex flex-col">
-                <div class="p-3 border-b border-white/5">
-                    <p class="text-[10px] text-gray-500 font-bold mb-2">اللاعبون المتواجدون (<span id="realMemberCount">0</span>)</p>
-                    <div id="membersList" class="flex flex-wrap gap-2"></div>
+            <div class="w-full lg:w-80 bg-[#0f172a]/95 border-r border-yellow-500/20 flex flex-col shadow-2xl">
+                <div class="p-4 border-b border-white/10 bg-black/40">
+                    <div class="flex justify-between items-center mb-3">
+                        <p class="text-xs text-yellow-500 font-bold">المتواجدون (<span id="realMemberCount">0</span>/10)</p>
+                        <button onclick="addBotToRoom()" class="text-[10px] bg-blue-600/30 text-blue-300 px-2 py-1 rounded hover:bg-blue-600 transition">إضافة بوت +</button>
+                    </div>
+                    <div id="membersList" class="flex flex-col gap-2 max-h-40 overflow-y-auto"></div>
                 </div>
                 <div id="chatArea" class="flex-1 p-4 overflow-y-auto space-y-3 bg-black/20"></div>
-                <div class="p-4 bg-black/40 border-t border-white/5">
+                <div class="p-4 bg-black/60 border-t border-white/10">
                     <div class="flex items-center gap-2">
-                        <input type="text" id="chatInput" onkeypress="if(event.key==='Enter') sendMessage()" placeholder="تحدث مع الفريق..." class="flex-1 bg-white/5 border border-white/10 p-3 rounded-xl text-xs text-white outline-none focus:border-yellow-500">
-                        <button onclick="sendMessage()" class="w-10 h-10 bg-yellow-600/20 text-yellow-500 rounded-xl hover:bg-yellow-600 hover:text-white transition"><i class="fas fa-paper-plane"></i></button>
+                        <input type="text" id="chatInput" onkeypress="if(event.key==='Enter') sendMessage()" placeholder="تحدث مع الروم..." class="flex-1 bg-white/5 border border-white/20 p-3 rounded-xl text-sm text-white outline-none focus:border-yellow-500">
+                        <button onclick="sendMessage()" class="w-12 h-12 bg-yellow-600/20 text-yellow-500 rounded-xl hover:bg-yellow-600 hover:text-white transition"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
@@ -258,10 +256,16 @@
     </div>
 
     <script>
-        // --- تهيئة قاعدة البيانات المحلية ---
+        // --- تهيئة قاعدة البيانات المحلية للمحاكاة ---
         const DB_KEY = 'ramadan_games_db';
         const SESSION_KEY = 'ramadan_games_session';
         let currentUser = null;
+        
+        // غرف وهمية كبداية
+        let globalRooms = {
+            'خيمة بغداد': { owner: 'الإدارة', password: '123', players: ['الإدارة', 'بوت1'] }
+        };
+        let currentRoomPlayers = [];
 
         function getUsersDB() { return JSON.parse(localStorage.getItem(DB_KEY)) || {}; }
         function saveUsersDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
@@ -321,6 +325,7 @@
             document.getElementById('mainDashboard').classList.remove('hidden');
             document.getElementById('displayName').innerText = currentUser.username;
             document.getElementById('userGold').innerText = currentUser.gold;
+            renderRooms();
         }
 
         function saveUserData() {
@@ -331,39 +336,108 @@
         }
 
         // --- نظام الغرف ---
-        async function openCreateRoom() {
-            const { value: name } = await Swal.fire({
-                title: '🎲 إنشاء غرفة جديدة',
-                input: 'text',
-                inputPlaceholder: 'اسم الغرفة (مثال: تحدي السحور)',
-                confirmButtonText: 'إنشاء',
-                confirmButtonColor: '#d4af37'
-            });
-            if (name) {
-                const container = document.getElementById('roomsContainer');
+        function renderRooms() {
+            const container = document.getElementById('roomsContainer');
+            container.innerHTML = '';
+            for(let roomName in globalRooms) {
                 container.innerHTML += `
-                    <div onclick="enterRoom('${name}', '${currentUser.username}', true)" class="bg-white/5 p-6 rounded-[2rem] border border-white/5 hover:border-yellow-500/50 transition cursor-pointer group hover:bg-white/10">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 bg-yellow-900/30 rounded-2xl flex items-center justify-center text-yellow-400">
-                                <i class="fas fa-crown text-xl"></i>
-                            </div>
+                    <div onclick="attemptEnterRoom('${roomName}')" class="bg-black/50 p-6 rounded-[2rem] border border-yellow-500/20 hover:border-yellow-500 transition cursor-pointer group hover:bg-white/5 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-red-600 text-white text-[10px] px-3 py-1 rounded-bl-xl"><i class="fas fa-lock"></i> مقفلة</div>
+                        <div class="w-14 h-14 bg-yellow-900/30 rounded-2xl flex items-center justify-center text-yellow-400 mb-4 border border-yellow-500/30">
+                            <i class="fas fa-tent text-2xl"></i>
                         </div>
-                        <h4 class="font-bold text-xl group-hover:text-yellow-400">${name}</h4>
-                        <p class="text-xs text-gray-400 mt-1">المضيف: ${currentUser.username}</p>
+                        <h4 class="font-bold text-xl group-hover:text-yellow-400">${roomName}</h4>
+                        <p class="text-xs text-gray-400 mt-2"><i class="fas fa-user-crown"></i> المضيف: ${globalRooms[roomName].owner}</p>
                     </div>`;
             }
         }
 
-        function enterRoom(name, owner, isOwner) {
-            document.getElementById('mainDashboard').classList.add('hidden');
-            document.getElementById('roomPage').classList.remove('hidden');
-            document.getElementById('activeRoomName').innerText = name;
-            document.getElementById('roomOwnerName').innerText = owner;
-            addMemberToUI(currentUser.username);
-            addSystemMsg(`انضم ${currentUser.username} إلى الغرفة`);
+        async function openCreateRoom() {
+            const { value: formValues } = await Swal.fire({
+                title: 'إنشاء غرفة سرية',
+                html:
+                    '<input id="swal-input1" class="swal2-input" placeholder="اسم الغرفة">' +
+                    '<input id="swal-input2" class="swal2-input" type="password" placeholder="الرمز السري للغرفة">',
+                focusConfirm: false,
+                confirmButtonText: 'إنشاء',
+                confirmButtonColor: '#d4af37',
+                preConfirm: () => {
+                    return [
+                        document.getElementById('swal-input1').value,
+                        document.getElementById('swal-input2').value
+                    ]
+                }
+            });
+
+            if (formValues && formValues[0] && formValues[1]) {
+                const name = formValues[0];
+                const pass = formValues[1];
+                globalRooms[name] = { owner: currentUser.username, password: pass, players: [currentUser.username] };
+                renderRooms();
+                Swal.fire('تم', 'تم إنشاء الغرفة، يمكنك الدخول الآن', 'success');
+            }
         }
 
-        function exitRoom() { location.reload(); }
+        async function attemptEnterRoom(roomName) {
+            const room = globalRooms[roomName];
+            const { value: password } = await Swal.fire({
+                title: 'أدخل الرمز السري',
+                input: 'password',
+                inputPlaceholder: 'الرمز السري للغرفة',
+                confirmButtonText: 'دخول',
+                confirmButtonColor: '#0f172a'
+            });
+
+            if (password === room.password) {
+                enterRoomUI(roomName);
+            } else if (password) {
+                Swal.fire('خطأ', 'الرمز السري غير صحيح', 'error');
+            }
+        }
+
+        function enterRoomUI(roomName) {
+            document.getElementById('mainDashboard').classList.add('hidden');
+            document.getElementById('roomPage').classList.remove('hidden');
+            document.getElementById('activeRoomName').innerText = roomName;
+            
+            // تهيئة اللاعبين (للمحاكاة)
+            currentRoomPlayers = [...globalRooms[roomName].players];
+            if(!currentRoomPlayers.includes(currentUser.username)) {
+                currentRoomPlayers.push(currentUser.username);
+            }
+            updateMembersUI();
+            addSystemMsg(`دخل ${currentUser.username} إلى الخيمة`);
+        }
+
+        function exitRoom() { 
+            document.getElementById('roomPage').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            document.getElementById('gameArea').innerHTML = `
+                <div class="text-center text-gray-500">
+                    <i class="fas fa-campground text-6xl mb-4 opacity-50 text-yellow-500"></i>
+                    <h2 class="text-3xl font-bold text-white">خيمة الألعاب</h2>
+                    <p class="mt-2 text-sm">اختر لعبة من الأعلى لتبدأ التحدي مع المتواجدين</p>
+                </div>`;
+            document.getElementById('chatArea').innerHTML = '';
+        }
+
+        function addBotToRoom() {
+            if(currentRoomPlayers.length >= 10) return;
+            const botName = 'بوت_رمضان_' + Math.floor(Math.random() * 100);
+            currentRoomPlayers.push(botName);
+            updateMembersUI();
+            addSystemMsg(`انضم ${botName} للعب`);
+        }
+
+        function updateMembersUI() {
+            const list = document.getElementById('membersList');
+            list.innerHTML = '';
+            currentRoomPlayers.forEach(name => {
+                let color = name === currentUser.username ? 'text-green-400' : 'text-gray-300';
+                list.innerHTML += `<div class="bg-white/5 px-3 py-2 rounded-lg text-sm border border-white/10 flex items-center gap-2"><i class="fas fa-user-astronaut ${color}"></i> <span class="text-white">${name}</span></div>`;
+            });
+            document.getElementById('realMemberCount').innerText = currentRoomPlayers.length;
+        }
 
         // --- نظام الدردشة ---
         function sendMessage() {
@@ -372,20 +446,15 @@
             document.getElementById('chatArea').innerHTML += `
                 <div class="mb-2 animate__animated animate__fadeInUp">
                     <span class="text-[10px] text-yellow-500 font-bold block">${currentUser.username}</span>
-                    <div class="bg-white/10 p-2 rounded-xl rounded-tr-none text-sm inline-block text-white">${inp.value}</div>
+                    <div class="bg-yellow-600/20 border border-yellow-500/30 p-2 rounded-xl rounded-tr-none text-sm inline-block text-white">${inp.value}</div>
                 </div>`;
             inp.value = '';
             document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight;
         }
 
-        function addMemberToUI(name) {
-            const list = document.getElementById('membersList');
-            list.innerHTML += `<div class="bg-white/10 px-3 py-1 rounded-full text-xs text-white border border-white/20"><i class="fas fa-user text-yellow-500 mr-1"></i> ${name}</div>`;
-            document.getElementById('realMemberCount').innerText = list.children.length;
-        }
-
         function addSystemMsg(msg) {
-            document.getElementById('chatArea').innerHTML += `<div class="text-[10px] text-center text-gray-400 my-2 bg-black/30 py-1 rounded-lg border border-white/5">${msg}</div>`;
+            document.getElementById('chatArea').innerHTML += `<div class="text-[10px] text-center text-gray-400 my-2 bg-black/40 py-1 rounded-lg border border-white/5">${msg}</div>`;
+            document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight;
         }
 
         // ==========================================
@@ -397,107 +466,139 @@
             if(gameType === 'muheibes') {
                 initMuheibes(area);
             } else if (gameType === 'xo') {
-                initXO(area);
+                chooseXOMode(area);
+            } else if (gameType === 'domino') {
+                initDomino(area);
             }
         }
 
-        // --- لعبة المحيبس الذكية ---
+        // --- 1. لعبة المحيبس الذكية ---
         let ringPosition = -1;
+        let hasGuessedThisRound = false;
         
         function initMuheibes(area) {
-            addSystemMsg('بدأت لعبة المحيبس! استعد..');
+            if(currentRoomPlayers.length < 4) {
+                Swal.fire('العدد غير مكتمل', 'لعبة المحيبس تحتاج على الأقل 4 أشخاص في الروم. اضغط على (إضافة بوت) لزيادة العدد.', 'info');
+                return;
+            }
+
+            addSystemMsg('بدأت جولة محيبس جديدة!');
+            hasGuessedThisRound = false;
+            
             area.innerHTML = `
                 <div class="text-center w-full">
-                    <h2 class="text-3xl font-bold text-yellow-400 mb-2 drop-shadow-md">بات! (محيبس)</h2>
-                    <p class="text-gray-300 mb-6 text-sm">الفريق الثاني خفى المحبس.. اختار الإيد الصح!</p>
+                    <h2 class="text-4xl font-black text-green-500 mb-2 drop-shadow-md">بات! (محيبس)</h2>
+                    <p class="text-gray-300 mb-4 text-sm bg-black/50 inline-block px-4 py-2 rounded-full">الذكاء الاصطناعي (حكم اللعبة) خفى المحبس.. إلك محاولة وحدة بس!</p>
                     
-                    <button onclick="hideRing()" class="btn-primary px-8 py-3 rounded-full mb-8 text-lg font-black animate-pulse">
-                        <i class="fas fa-hand-sparkles"></i> بات (خبئ المحبس)
-                    </button>
+                    <div id="muheibesStatus" class="mb-6 text-yellow-400 font-bold animate-pulse">جاري إخفاء المحبس...</div>
                     
-                    <div id="handsContainer" class="flex flex-wrap justify-center gap-4 hidden">
-                        </div>
-                    <div id="muheibesResult" class="mt-6 text-xl font-bold h-8"></div>
+                    <div id="handsContainer" class="flex flex-wrap justify-center gap-4 hidden"></div>
+                    <div id="muheibesResult" class="mt-6 text-2xl font-bold h-10"></div>
                 </div>
             `;
-        }
 
-        function hideRing() {
-            document.getElementById('soundBat').play(); // تشغيل صوت بات
-            const handsContainer = document.getElementById('handsContainer');
-            handsContainer.classList.remove('hidden');
-            handsContainer.innerHTML = '';
-            document.getElementById('muheibesResult').innerHTML = '';
-            
-            // إنشاء 6 أيادي
-            const numHands = 6;
-            ringPosition = Math.floor(Math.random() * numHands); // وضع المحبس عشوائياً
+            // محاكاة تأخير قبل إظهار الأيادي
+            setTimeout(() => {
+                document.getElementById('soundBat').play();
+                document.getElementById('muheibesStatus').innerText = "المحيبس مضموم! اختار إيد بسرعة.";
+                const handsContainer = document.getElementById('handsContainer');
+                handsContainer.classList.remove('hidden');
+                
+                const numHands = 6;
+                ringPosition = Math.floor(Math.random() * numHands); 
 
-            for(let i=0; i<numHands; i++) {
-                handsContainer.innerHTML += `
-                    <div onclick="guessRing(${i}, this)" class="hand-card w-24 h-32 flex flex-col items-center justify-center bg-gray-800 hover:bg-gray-700">
-                        <i class="fas fa-hand-fist text-4xl text-yellow-600 mb-2"></i>
-                        <span class="text-xs text-gray-400">إيد ${i+1}</span>
-                    </div>
-                `;
-            }
-            addSystemMsg('المحيبس اختفى! العب واختار إيد..');
+                for(let i=0; i<numHands; i++) {
+                    handsContainer.innerHTML += `
+                        <div onclick="guessRing(${i}, this)" class="hand-card w-24 h-32 flex flex-col items-center justify-center bg-gray-800 hover:bg-gray-700">
+                            <i class="fas fa-hand-fist text-5xl text-yellow-600 mb-2"></i>
+                            <span class="text-xs text-gray-400">إيد ${i+1}</span>
+                        </div>
+                    `;
+                }
+            }, 2000);
         }
 
         function guessRing(guessedIndex, element) {
-            if (ringPosition === -1) return; // اللعبة انتهت
+            if (ringPosition === -1 || hasGuessedThisRound) return; 
 
+            hasGuessedThisRound = true; // محاولة واحدة فقط
             const allHands = document.getElementById('handsContainer').children;
             const res = document.getElementById('muheibesResult');
+
+            // تعطيل باقي الأيادي
+            for(let hand of allHands) hand.classList.add('disabled');
 
             if (guessedIndex === ringPosition) {
                 // فوز
                 document.getElementById('soundWin').play();
-                element.innerHTML = `<i class="fas fa-ring text-5xl text-yellow-400 animate__animated animate__tada"></i>`;
-                element.classList.add('border-green-500', 'bg-green-900/50');
-                res.innerHTML = '<span class="text-green-400">كفووو! طلعت المحبس 💍 (+50 نقطة)</span>';
+                element.innerHTML = `<i class="fas fa-ring text-6xl text-yellow-400 animate__animated animate__tada"></i>`;
+                element.classList.add('border-green-500', 'bg-green-900/50', 'opacity-100');
+                element.classList.remove('disabled');
+                res.innerHTML = '<span class="text-green-400">كفووو! جبتها صح 💍 (+50 نقطة)</span>';
                 currentUser.gold += 50;
                 saveUserData();
-                addSystemMsg(`🎉 ${currentUser.username} لقى المحبس وربح 50 نقطة!`);
+                addSystemMsg(`🎉 ${currentUser.username} لقى المحبس من أول محاولة!`);
             } else {
                 // خسارة
                 document.getElementById('soundLose').play();
-                element.innerHTML = `<i class="fas fa-times text-4xl text-red-500"></i>`;
-                element.classList.add('border-red-500', 'bg-red-900/50');
-                res.innerHTML = '<span class="text-red-400">طاااح! الإيد فارغة ❌ (-10 نقاط)</span>';
-                currentUser.gold -= 10;
-                saveUserData();
+                element.innerHTML = `<i class="fas fa-times text-5xl text-red-500"></i>`;
+                element.classList.add('border-red-500', 'bg-red-900/50', 'opacity-100');
+                element.classList.remove('disabled');
+                res.innerHTML = '<span class="text-red-400">طاااح! راحت عليك المحاولة ❌</span>';
                 
                 // كشف مكان المحبس الحقيقي
-                allHands[ringPosition].innerHTML = `<i class="fas fa-ring text-5xl text-yellow-400 opacity-50"></i>`;
-                allHands[ringPosition].classList.add('border-yellow-500');
+                allHands[ringPosition].innerHTML = `<i class="fas fa-ring text-5xl text-yellow-400"></i>`;
+                allHands[ringPosition].classList.add('border-yellow-500', 'opacity-100');
+                allHands[ringPosition].classList.remove('disabled');
                 addSystemMsg(`❌ ${currentUser.username} ضيع المحبس!`);
             }
-            ringPosition = -1; // إنهاء الجولة
+            
+            // زر إعادة اللعب
+            document.getElementById('muheibesStatus').innerHTML = `<button onclick="loadGame('muheibes')" class="bg-gray-700 text-white px-4 py-1 rounded text-sm mt-4 hover:bg-gray-600">جولة جديدة</button>`;
         }
 
 
-        // --- لعبة اكس او (Tic Tac Toe) ---
+        // --- 2. لعبة اكس او (Tic Tac Toe - تصفيات) ---
         let board = ["", "", "", "", "", "", "", "", ""];
         let currentPlayer = "X";
         let gameActive = true;
+        let xoPlayMode = 'AI'; // 'AI' أو '1v1'
+
+        async function chooseXOMode(area) {
+            const { value: mode } = await Swal.fire({
+                title: 'اختر وضع اللعب',
+                input: 'radio',
+                inputOptions: {
+                    'AI': 'ضد الذكاء الاصطناعي',
+                    '1v1': '1 ضد 1 (تلعبون على نفس الشاشة حالياً)'
+                },
+                inputValidator: (value) => { if (!value) return 'لازم تختار وضع!' },
+                confirmButtonColor: '#d4af37'
+            });
+            if (mode) {
+                xoPlayMode = mode;
+                initXO(area);
+            }
+        }
 
         function initXO(area) {
             board = ["", "", "", "", "", "", "", "", ""];
             currentPlayer = "X";
             gameActive = true;
-            addSystemMsg('تم فتح طاولة X O');
+            let modeText = xoPlayMode === 'AI' ? 'ضد الكمبيوتر' : 'تصفيات 1 ضد 1';
+            addSystemMsg(`تم فتح طاولة X O (${modeText})`);
 
             area.innerHTML = `
                 <div class="text-center w-full max-w-sm mx-auto">
-                    <h2 class="text-2xl font-bold text-white mb-2">لعبة إكس أو</h2>
-                    <div class="text-yellow-400 mb-4" id="xoTurn">دور اللاعب: ${currentPlayer}</div>
+                    <h2 class="text-3xl font-bold text-white mb-1">لعبة إكس أو</h2>
+                    <p class="text-xs text-gray-400 mb-4">${modeText}</p>
+                    <div class="text-yellow-400 mb-4 text-xl font-bold bg-black/50 py-2 rounded-lg" id="xoTurn">دور: ${currentPlayer}</div>
                     
-                    <div class="game-board grid grid-cols-3 w-max mx-auto bg-black/30 p-4 rounded-2xl" id="xoBoard">
+                    <div class="game-board grid grid-cols-3 w-max mx-auto bg-white/5 p-4 rounded-3xl border border-white/10" id="xoBoard">
                         ${board.map((_, i) => `<div class="xo-cell" onclick="xoPlay(${i})"></div>`).join('')}
                     </div>
                     
-                    <button onclick="initXO(document.getElementById('gameArea'))" class="mt-6 text-sm text-gray-400 hover:text-white underline">إعادة اللعب</button>
+                    <button onclick="loadGame('xo')" class="mt-6 text-sm bg-gray-800 px-4 py-2 rounded-lg text-white hover:bg-gray-700 transition">إعادة اللعب</button>
                 </div>
             `;
         }
@@ -508,21 +609,27 @@
             board[index] = currentPlayer;
             const cells = document.querySelectorAll('.xo-cell');
             
-            // تصميم X و O
             if(currentPlayer === 'X') {
-                cells[index].innerHTML = '<i class="fas fa-times text-red-500 animate__animated animate__zoomIn"></i>';
+                cells[index].innerHTML = '<i class="fas fa-times text-red-500 animate__animated animate__bounceIn"></i>';
             } else {
-                cells[index].innerHTML = '<i class="far fa-circle text-blue-500 animate__animated animate__zoomIn"></i>';
+                cells[index].innerHTML = '<i class="far fa-circle text-blue-500 animate__animated animate__bounceIn"></i>';
             }
 
-            checkXOWin();
+            if(checkXOWin()) return; // إذا فاز لا تكمل
+
+            // تبديل الأدوار
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+            document.getElementById('xoTurn').innerText = `دور: ${currentPlayer}`;
+            
+            // لعب الكمبيوتر إذا كان الوضع AI
+            if(xoPlayMode === 'AI' && currentPlayer === "O" && gameActive) {
+                setTimeout(computerXOPlay, 600);
+            }
         }
 
         function checkXOWin() {
             const winConditions = [
-                [0, 1, 2], [3, 4, 5], [6, 7, 8], // صفوف
-                [0, 3, 6], [1, 4, 7], [2, 5, 8], // أعمدة
-                [0, 4, 8], [2, 4, 6]             // أقطار
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
             ];
 
             let roundWon = false;
@@ -535,30 +642,22 @@
             }
 
             if (roundWon) {
-                document.getElementById('xoTurn').innerHTML = `<span class="text-green-400 font-bold text-xl">فاز اللاعب ${currentPlayer}! 🎉</span>`;
+                document.getElementById('xoTurn').innerHTML = `<span class="text-green-400">فاز ${currentPlayer}! 🎉</span>`;
                 gameActive = false;
-                addSystemMsg(`🎉 فاز ${currentPlayer} في لعبة X O`);
-                if(currentPlayer === 'X') {
-                    currentUser.gold += 20; // مكافأة
+                addSystemMsg(`🎉 فاز ${currentPlayer} في جولة X O`);
+                if(currentPlayer === 'X' && xoPlayMode === 'AI') {
+                    currentUser.gold += 10;
                     saveUserData();
                 }
-                return;
+                return true;
             }
 
             if (!board.includes("")) {
-                document.getElementById('xoTurn').innerHTML = `<span class="text-gray-400 font-bold">تعادل! 🤝</span>`;
+                document.getElementById('xoTurn').innerHTML = `<span class="text-gray-400">تعادل! 🤝</span>`;
                 gameActive = false;
-                return;
+                return true;
             }
-
-            // تبديل الأدوار
-            currentPlayer = currentPlayer === "X" ? "O" : "X";
-            document.getElementById('xoTurn').innerText = `دور اللاعب: ${currentPlayer}`;
-            
-            // محاكاة لعب الكمبيوتر إذا كان الدور لـ O
-            if(currentPlayer === "O" && gameActive) {
-                setTimeout(computerXOPlay, 500);
-            }
+            return false;
         }
 
         function computerXOPlay() {
@@ -569,20 +668,71 @@
             }
         }
 
-        // --- النجوم الخلفية ---
-        function createStars() {
-            const field = document.getElementById('starField');
-            field.innerHTML = '';
-            for (let i = 0; i < 150; i++) {
-                const s = document.createElement('div');
-                s.className = 'star';
-                s.style.width = Math.random() * 2 + 'px';
-                s.style.height = s.style.width;
-                s.style.top = Math.random() * 100 + '%';
-                s.style.left = Math.random() * 100 + '%';
-                s.style.animationDelay = Math.random() * 2 + 's';
-                field.appendChild(s);
-            }
+        // --- 3. لعبة الدومنة (نسخة مصغرة ضد الذكاء الاصطناعي) ---
+        function initDomino(area) {
+            addSystemMsg('بدأ تحدي الدومنة المصغر!');
+            area.innerHTML = `
+                <div class="text-center w-full">
+                    <h2 class="text-3xl font-bold text-blue-400 mb-2">سحب الدومنة</h2>
+                    <p class="text-gray-300 mb-8 text-sm">اسحب قطعة.. اللي رقمه أعلى يربح الجولة!</p>
+                    
+                    <div class="flex justify-center gap-10 items-center">
+                        <div class="text-center">
+                            <p class="mb-2 text-yellow-500 font-bold">${currentUser.username}</p>
+                            <div id="playerDomino" onclick="drawDomino()" class="domino-card w-20 h-32 flex flex-col justify-center items-center bg-white text-black text-3xl font-black">
+                                <i class="fas fa-question text-gray-300"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="text-4xl text-gray-600 font-black">VS</div>
+                        
+                        <div class="text-center">
+                            <p class="mb-2 text-red-400 font-bold">الكمبيوتر</p>
+                            <div id="aiDomino" class="domino-card w-20 h-32 flex flex-col justify-center items-center bg-gray-800 text-white text-3xl font-black">
+                                <i class="fas fa-robot text-gray-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="dominoResult" class="mt-8 text-xl font-bold h-8">اضغط على بطاقتك لتسحب</div>
+                </div>
+            `;
+        }
+
+        function drawDomino() {
+            const playerCard = document.getElementById('playerDomino');
+            if(playerCard.classList.contains('disabled')) return;
+            playerCard.classList.add('disabled');
+
+            // أرقام الدومنة العشوائية (من 0 إلى 6)
+            let pTop = Math.floor(Math.random() * 7);
+            let pBottom = Math.floor(Math.random() * 7);
+            let aiTop = Math.floor(Math.random() * 7);
+            let aiBottom = Math.floor(Math.random() * 7);
+
+            let pTotal = pTop + pBottom;
+            let aiTotal = aiTop + aiBottom;
+
+            playerCard.innerHTML = `<div>${pTop}</div><hr class="w-full border-black my-2"><div>${pBottom}</div>`;
+            
+            setTimeout(() => {
+                const aiCard = document.getElementById('aiDomino');
+                aiCard.classList.remove('bg-gray-800', 'text-white');
+                aiCard.classList.add('bg-white', 'text-black');
+                aiCard.innerHTML = `<div>${aiTop}</div><hr class="w-full border-black my-2"><div>${aiBottom}</div>`;
+                
+                const res = document.getElementById('dominoResult');
+                if(pTotal > aiTotal) {
+                    res.innerHTML = '<span class="text-green-400">ربحت! مجموعك أعلى 🎉 (+15 نقطة)</span>';
+                    currentUser.gold += 15; saveUserData();
+                } else if (aiTotal > pTotal) {
+                    res.innerHTML = '<span class="text-red-400">خسرت! الكمبيوتر غلبك 🤖</span>';
+                } else {
+                    res.innerHTML = '<span class="text-yellow-400">تعادل! نفس الرقم 🤝</span>';
+                }
+                
+                res.innerHTML += `<br><button onclick="loadGame('domino')" class="bg-gray-700 text-white px-4 py-1 rounded text-sm mt-4 hover:bg-gray-600">العب مرة ثانية</button>`;
+            }, 1000);
         }
 
         window.onload = checkSession;
