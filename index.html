@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HASSAN AL-SHAMMARI | 30nr</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@800&family=Caveat:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.05);
-            --glow-power: rgba(255, 255, 255, 0.4);
+            --glass: rgba(255, 255, 255, 0.03);
+            --portal-glow: rgba(255, 255, 255, 0.6);
         }
 
         body, html {
@@ -20,121 +20,117 @@
             overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
 
-        #video-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; opacity: 0; transition: opacity 3s;
-        }
-        iframe { width: 100%; height: 100%; border: none; pointer-events: none; transform: scale(1.5); }
-
-        #canvas-bg { position: fixed; top: 0; left: 0; z-index: 2; pointer-events: none; }
-
-        /* واجهة الترحيب التلقائية */
-        #welcome-screen {
+        /* بوابه الدخول الذكية */
+        #portal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 10000; display: flex;
             flex-direction: column; align-items: center; justify-content: center;
-            transition: 1.5s ease-in-out;
-        }
-        .welcome-msg {
-            color: #fff; font-size: 32px; font-weight: bold; text-align: center;
-            opacity: 0; transform: translateY(20px); animation: fadeInUp 1s forwards 0.5s;
-        }
-        .signature {
-            font-family: 'Caveat', cursive; color: var(--white);
-            font-size: 40px; margin-top: 15px; opacity: 0;
-            animation: fadeInUp 1s forwards 1.2s; text-shadow: 0 0 10px #fff;
+            transition: 1.5s cubic-bezier(0.7, 0, 0.3, 1);
         }
 
-        /* البطاقة المركزية الثابتة */
+        .portal-ring {
+            width: 220px; height: 220px;
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%;
+            box-shadow: 0 0 60px rgba(255, 255, 255, 0.2), inset 0 0 60px rgba(255, 255, 255, 0.1);
+            animation: portalRotate 4s infinite linear;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .portal-core {
+            width: 100px; height: 100px; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 80px #fff; animation: portalPulse 1.5s infinite alternate;
+        }
+
+        .portal-text {
+            color: #fff; margin-top: 40px; font-size: 20px;
+            letter-spacing: 8px; font-weight: bold; text-transform: uppercase;
+            animation: textFade 2s infinite alternate;
+        }
+
+        /* البطاقة المركزية */
         .fixed-card {
-            position: relative; z-index: 10; width: 450px;
-            background: var(--glass); backdrop-filter: blur(35px);
-            -webkit-backdrop-filter: blur(35px); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 50px; padding: 60px 40px; text-align: center;
-            opacity: 0; visibility: hidden; transition: 2s;
+            position: relative; z-index: 10; width: 420px;
+            background: var(--glass); backdrop-filter: blur(45px);
+            -webkit-backdrop-filter: blur(45px); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 45px; padding: 50px 30px; text-align: center;
+            opacity: 0; transform: scale(0.9) translateY(20px);
+            transition: 1.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        .fixed-card.active { opacity: 1; visibility: visible; }
+        .fixed-card.active { opacity: 1; transform: scale(1) translateY(0); }
 
-        /* توهج الإيقاع المحيط بالبطاقة */
-        .audio-glow-ring {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); width: 102%; height: 102%;
-            border-radius: 50px; z-index: 9; opacity: 0;
-            box-shadow: 0 0 50px var(--glow-power);
-            transition: 0.5s;
-        }
-
-        /* صورة الملف الشخصي */
-        .profile-wrap {
-            width: 160px; height: 160px; margin: -120px auto 25px auto;
-        }
-        .profile-img {
-            width: 100%; height: 100%; border-radius: 50%;
-            border: 4px solid #fff; box-shadow: 0 0 30px rgba(255,255,255,0.3);
-            object-fit: cover; background: #111;
+        /* توهج الإيقاع (Bass Glow) */
+        #visual-glow {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 45px; z-index: -1; opacity: 0;
+            box-shadow: 0 0 0px var(--portal-glow);
+            transition: 0.3s linear;
         }
 
-        h1 { font-family: 'Anek Malayalam', sans-serif; font-size: 42px; color: #fff; margin: 0; }
-        .sub-tag { color: #888; font-size: 20px; font-weight: bold; display: block; margin-bottom: 25px; }
+        .avatar-frame {
+            width: 160px; height: 160px; margin: 0 auto 25px auto;
+            border: 2px solid rgba(255,255,255,0.8); border-radius: 50%; padding: 5px;
+            box-shadow: 0 0 40px rgba(255,255,255,0.1);
+        }
+        .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-        /* أزرار السوشيال ميديا */
-        .social-nav {
-            display: flex; justify-content: center; gap: 40px; margin-bottom: 35px;
-        }
-        .social-nav a {
-            color: #fff; font-size: 32px; opacity: 0.7; transition: 0.4s;
-        }
-        .social-nav a:hover { opacity: 1; transform: scale(1.3); text-shadow: 0 0 20px #fff; }
+        h1 { font-family: 'Anek Malayalam', sans-serif; font-size: 40px; color: #fff; margin: 0; }
+        .signature-tag { font-family: 'Caveat', cursive; color: #888; font-size: 28px; margin-bottom: 25px; display: block; }
 
-        .btn-discord {
-            display: inline-block; padding: 18px 60px; background: #fff;
-            color: #000; text-decoration: none; font-weight: 800;
-            border-radius: 100px; transition: 0.4s; font-size: 19px;
+        /* أزرار السوشيال ميديا في الأسفل */
+        .social-footer {
+            display: flex; justify-content: center; gap: 40px; margin-top: 35px;
+            padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.05);
         }
+        .social-footer a { color: #fff; opacity: 0.6; transition: 0.4s; }
+        .social-footer a:hover { opacity: 1; transform: translateY(-5px); filter: drop-shadow(0 0 10px #fff); }
 
         /* الأنيميشن */
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes portalRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes portalPulse { from { transform: scale(0.8); opacity: 0.5; } to { transform: scale(1.1); opacity: 1; } }
+        @keyframes textFade { from { opacity: 0.3; } to { opacity: 1; } }
         
-        .beat-active { animation: pulseGlow 0.45s infinite alternate; }
-        @keyframes pulseGlow {
-            to { box-shadow: 0 0 120px var(--glow-power); transform: translate(-50%, -50%) scale(1.05); }
+        .beat-hit { animation: bassPulse 0.48s infinite alternate; }
+        @keyframes bassPulse {
+            to { box-shadow: 0 0 120px var(--portal-glow); transform: scale(1.02); }
         }
     </style>
 </head>
 <body>
 
-    <div id="welcome-screen">
-        <div class="welcome-msg">حياك الله بملف الشخصي الخاص بـ</div>
-        <div class="welcome-msg" style="font-size: 45px; margin-top: 10px;">حسن علي الشمري</div>
-        <div class="signature"># ابن ساير</div>
+    <div id="portal-overlay">
+        <div class="portal-ring">
+            <div class="portal-core"></div>
+        </div>
+        <div class="portal-text">HASSAN ALI</div>
+        <div style="font-family: 'Caveat'; color: #444; margin-top: 15px; font-size: 22px;"># ابن ساير</div>
     </div>
 
-    <div id="video-bg"><div id="player"></div></div>
-    <canvas id="canvas-bg"></canvas>
-
-    <div class="audio-glow-ring" id="glow-ring"></div>
+    <div id="video-bg" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; opacity:0; transition:3s;">
+        <div id="player"></div>
+    </div>
+    <canvas id="canvas-bg" style="position:fixed; top:0; left:0; z-index:2; pointer-events:none;"></canvas>
 
     <div class="fixed-card" id="main-card">
-        <div class="social-nav">
-            <a href="https://www.instagram.com/76h16/?hl=ar" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@6r09" target="_blank"><i class="fab fa-tiktok"></i></a>
-        </div>
-
-        <div class="profile-wrap">
-            <img src="https://i.ibb.co/LzfNqf9/hassan-avatar.png" class="profile-img" alt="Hassan">
+        <div id="visual-glow"></div>
+        
+        <div class="avatar-frame">
+            <img src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" class="avatar-img" alt="Hassan">
         </div>
         
         <h1>حسن علي الشمري</h1>
-        <span class="sub-tag"># ابن ساير</span>
+        <span class="signature-tag"># ابن ساير</span>
 
-        <p style="color: #fff; font-size: 18px; margin-bottom: 35px; opacity: 0.8;">
-            الساحة محجوزة، انضم لسيرفري وشوف الفرق.
-        </p>
+        <a href="https://discord.gg/CTwKRt7u" style="display:inline-block; padding:16px 55px; background:#fff; color:#000; text-decoration:none; font-weight:bold; border-radius:50px; transition:0.4s; font-size: 18px;">انضم للمملكة</a>
 
-        <a href="https://discord.gg/CTwKRt7u" class="btn-discord" target="_blank">انضم لسيرفري</a>
+        <div class="social-footer">
+            <a href="https://www.instagram.com/76h16/?hl=ar" target="_blank"><i data-lucide="instagram"></i></a>
+            <a href="https://www.tiktok.com/@6r09" target="_blank"><i data-lucide="tiktok"></i></a>
+        </div>
     </div>
 
     <script>
+        lucide.createIcons();
+
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -148,42 +144,45 @@
             });
         }
 
-        // الدخول التلقائي بعد 5 ثواني
-        window.onload = function() {
+        // الدخول التلقائي بعد 3 ثواني
+        window.addEventListener('load', () => {
             setTimeout(() => {
-                document.getElementById('welcome-screen').style.opacity = '0';
+                const overlay = document.getElementById('portal-overlay');
+                overlay.style.opacity = '0';
+                overlay.style.transform = 'scale(2)';
+                
                 setTimeout(() => {
-                    document.getElementById('welcome-screen').style.display = 'none';
+                    overlay.style.display = 'none';
                     document.getElementById('main-card').classList.add('active');
-                    document.getElementById('video-bg').style.opacity = '0.25';
+                    document.getElementById('video-bg').style.opacity = '0.3';
                     
                     if (player) {
                         player.unMute();
-                        player.playVideo();
                         player.setVolume(100);
                     }
                     
                     // تفعيل توهج الإيقاع
                     setTimeout(() => {
-                        document.getElementById('glow-ring').style.opacity = '1';
-                        document.getElementById('glow-ring').classList.add('beat-active');
+                        const glow = document.getElementById('visual-glow');
+                        glow.style.opacity = '1';
+                        glow.classList.add('beat-hit');
                     }, 1000);
-                }, 1500);
-            }, 5000); // 5 ثواني ترحيب
-        };
+                }, 1000);
+            }, 3000);
+        });
 
-        // Three.js Particles
+        // Background Particles
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         const geo = new THREE.BufferGeometry();
         const pos = [];
-        for(let i=0; i<3000; i++) pos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        for(let i=0; i<3500; i++) pos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
         geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
         const points = new THREE.Points(geo, new THREE.PointsMaterial({color: 0xffffff, size: 2}));
         scene.add(points); camera.position.z = 500;
-        function animate() { requestAnimationFrame(animate); points.rotation.y += 0.001; renderer.render(scene, camera); }
+        function animate() { requestAnimationFrame(animate); points.rotation.y += 0.0008; renderer.render(scene, camera); }
         animate();
     </script>
 </body>
