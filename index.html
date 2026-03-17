@@ -3,202 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN AL-SHAMMARI | 30nr</title>
+    <title>HASSAN ALI | THE EMPEROR</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
             --main-white: #ffffff;
-            --accent-glow: rgba(255, 255, 255, 0.8);
-            --bg-dark: #0a0a0a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.2);
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: #000; font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
 
-        /* تأثير النبض في الخلفية */
-        .pulse-bg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1;
+        /* حاوية الفيديو الخلفي */
+        #video-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; opacity: 0; transition: opacity 5s ease-in; /* ظهور تدريجي خلال 5 ثواني */
         }
+        iframe { width: 100%; height: 100%; border: none; pointer-events: none; transform: scale(1.5); }
 
-        .pulse-circle {
-            position: absolute;
-            border: 2px solid var(--main-white);
-            border-radius: 50%;
-            opacity: 0;
-            animation: ripple 1.5s infinite;
+        /* تأثير الجزيئات المتحركة (Three.js) */
+        #canvas-bg { position: fixed; top: 0; left: 0; z-index: 2; pointer-events: none; }
+
+        /* شاشة الدخول */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: flex;
+            align-items: center; justify-content: center; cursor: pointer;
         }
-
-        /* فيديو يوتيوب مخفي للتحكم بالصوت */
-        #yt-player {
-            position: absolute;
-            width: 0; height: 0; opacity: 0;
+        .enter-btn {
+            color: #fff; font-size: 30px; font-weight: 100; letter-spacing: 15px;
+            text-transform: uppercase; border: 1px solid #fff; padding: 20px 40px;
+            transition: 0.5s;
         }
+        .enter-btn:hover { background: #fff; color: #000; letter-spacing: 20px; }
 
-        /* شاشة الدخول الفخمة */
-        #entry-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 1.5s;
-        }
-
-        .enter-text {
-            color: #fff;
-            font-size: 40px;
-            font-weight: 900;
-            letter-spacing: 10px;
-            text-transform: uppercase;
-            animation: flash 1s infinite alternate;
-        }
-
-        /* البطاقة العصرية (Modern Card) */
-        .modern-container {
-            position: relative;
-            z-index: 10;
-            width: 90%;
-            max-width: 600px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 60px;
-            text-align: center;
+        /* البطاقة العصرية المركزية */
+        .glass-card {
+            position: relative; z-index: 10; width: 500px;
+            background: var(--glass); backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px); border: 1px solid var(--border);
+            border-radius: 40px; padding: 60px; text-align: center;
             box-shadow: 0 0 100px rgba(255, 255, 255, 0.05);
-            opacity: 0;
-            transform: translateY(50px);
-            transition: 1.5s all cubic-bezier(0.19, 1, 0.22, 1);
+            opacity: 0; transform: translateY(30px);
+            transition: 2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card.show { opacity: 1; transform: translateY(0); }
+
+        /* الأفاتار */
+        .avatar {
+            width: 180px; height: 180px; border-radius: 50%;
+            border: 2px solid #fff; box-shadow: 0 0 50px rgba(255,255,255,0.2);
+            margin-bottom: 30px; object-fit: cover;
         }
 
-        .modern-container.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        h1 { font-size: 45px; color: #fff; margin: 10px 0; font-weight: 900; }
+        .sub-text { color: #888; font-size: 18px; letter-spacing: 5px; margin-bottom: 30px; display: block; }
+        .slang { color: #fff; font-size: 22px; font-weight: 300; line-height: 1.6; margin-bottom: 40px; }
 
-        /* الأفاتار بشكل عصري */
-        .profile-img {
-            width: 180px;
-            height: 180px;
-            border-radius: 40px; /* زوايا مدورة عصرية */
-            border: 2px solid var(--main-white);
-            box-shadow: 0 0 40px var(--accent-glow);
-            margin-bottom: 30px;
-            object-fit: cover;
-            background: #222;
+        /* زر الديسكورد النظيف */
+        .btn {
+            display: inline-block; padding: 18px 50px; background: #fff;
+            color: #000; text-decoration: none; font-weight: bold;
+            border-radius: 100px; transition: 0.4s; font-size: 18px;
         }
+        .btn:hover { transform: scale(1.1); box-shadow: 0 0 30px #fff; }
 
-        h1 {
-            font-size: 50px;
-            color: var(--main-white);
-            margin: 0;
-            font-weight: 800;
-            text-shadow: 0 0 20px var(--accent-glow);
-        }
-
-        .handle {
-            color: #888;
-            font-size: 20px;
-            letter-spacing: 5px;
-            margin-bottom: 30px;
-            display: block;
-        }
-
-        .status-msg {
-            color: #fff;
-            font-size: 24px;
-            margin-bottom: 40px;
-            font-weight: 300;
-        }
-
-        /* زر الانضمام المضيء */
-        .join-btn {
-            display: inline-block;
-            background: var(--main-white);
-            color: #000;
-            padding: 20px 60px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 20px;
-            transition: 0.3s;
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
-        }
-
-        .join-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 15px 50px var(--accent-glow);
-        }
-
-        /* الحركات */
-        @keyframes ripple {
-            0% { width: 100px; height: 100px; opacity: 1; }
-            100% { width: 800px; height: 800px; opacity: 0; border-width: 1px; }
-        }
-
-        @keyframes flash {
-            from { opacity: 0.3; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1.05); }
-        }
-
-        /* اهتزاز الشاشة مع الإيقاع */
-        .shake-effect {
-            animation: shake 0.2s infinite;
-        }
-
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            50% { transform: translate(-1px, -2px) rotate(-1deg); }
-            100% { transform: translate(1px, -1px) rotate(1deg); }
+        /* حركة النبض مع الإيقاع */
+        .beat { animation: beatAnim 0.5s infinite alternate; }
+        @keyframes beatAnim {
+            to { transform: scale(1.02); box-shadow: 0 0 150px rgba(255, 255, 255, 0.1); }
         }
     </style>
 </head>
 <body>
 
-    <div id="entry-overlay" onclick="startExperience()">
-        <div class="enter-text">ENTER REALM</div>
+    <div id="overlay" onclick="init()">
+        <div class="enter-btn">Hassan Ali</div>
     </div>
 
-    <div class="pulse-bg" id="pulse-box">
-        <div class="pulse-circle"></div>
+    <div id="video-container">
+        <div id="player"></div>
     </div>
 
-    <div id="yt-player"></div>
+    <canvas id="canvas-bg"></canvas>
 
-    <div class="modern-container" id="card">
-        <img src="https://cdn.discordapp.com/avatars/452800723646677002/097a9f7e44a47895f329240801833878.png?size=512" 
-             class="profile-img" alt="Hassan">
+    <div class="glass-card" id="card">
+        <img src="https://cdn.discordapp.com/avatars/452800723646677002/097a9f7e44a47895f329240801833878.png?size=512" class="avatar" alt="Hassan">
         
         <h1>حسن علي الشمري</h1>
-        <span class="handle">30nr</span>
+        <span class="sub-text">30nr | DEVELOPER</span>
 
-        <p class="status-msg">
+        <p class="slang">
             عمك حسن هنا.. <br>
-            <b>الساحة محجوزة، انضم لسيرفري وشوف الفرق.</b>
+            <b>الساحة محجوزة، انضم وشوف الفرق.</b>
         </p>
 
-        <a href="https://discord.gg/CTwKRt7u" class="join-btn">انضم لسيرفري</a>
+        <a href="https://discord.gg/CTwKRt7u" class="btn">انضم لسيرفري</a>
     </div>
 
     <script>
+        // إعداد مشغل يوتيوب
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -206,41 +114,67 @@
 
         var player;
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('yt-player', {
+            player = new YT.Player('player', {
                 videoId: 'RW7DcfTGdHk',
-                playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': 'RW7DcfTGdHk' }
+                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': 'RW7DcfTGdHk', 'mute': 0 },
+                events: { 'onReady': onPlayerReady }
             });
         }
 
-        function startExperience() {
-            document.getElementById('entry-overlay').style.opacity = '0';
+        function onPlayerReady(event) {
+            player.setVolume(0); // نبدأ بصوت صامت
+        }
+
+        function init() {
+            document.getElementById('overlay').style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('entry-overlay').style.display = 'none';
-                document.getElementById('card').classList.add('active');
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('card').classList.add('show');
+                document.getElementById('video-container').style.opacity = '0.3'; // الفيديو يظهر ببطء
             }, 1000);
 
-            if (player && player.playVideo) {
+            if (player) {
                 player.playVideo();
                 
-                // تفعيل تأثير النبض المتزامن مع الإيقاع
-                setInterval(() => {
-                    createPulse();
-                    // اهتزاز خفيف للبطاقة مع كل نبضة
-                    document.getElementById('card').classList.toggle('shake-effect');
-                }, 450); // توقيت تقريبي ليتوافق مع ايقاع الأغنية السريع
+                // تدرج الصوت (زيادة الصوت تدريجياً خلال 8 ثواني)
+                let vol = 0;
+                let interval = setInterval(() => {
+                    if (vol >= 100) clearInterval(interval);
+                    vol += 2;
+                    player.setVolume(vol);
+                }, 150);
+
+                // بدء النبض مع الإيقاع بعد 5 ثواني
+                setTimeout(() => {
+                    document.getElementById('card').classList.add('beat');
+                }, 5000);
             }
         }
 
-        function createPulse() {
-            const box = document.getElementById('pulse-box');
-            const circle = document.createElement('div');
-            circle.className = 'pulse-circle';
-            box.appendChild(circle);
-            
-            setTimeout(() => {
-                circle.remove();
-            }, 1500);
+        // --- كود Three.js لخلفية الجزيئات الطائرة ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        for (let i = 0; i < 5000; i++) {
+            vertices.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
         }
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        const material = new THREE.PointsMaterial({ color: 0xffffff, size: 2 });
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+        camera.position.z = 500;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            points.rotation.y += 0.001;
+            points.rotation.x += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
     </script>
 </body>
 </html>
