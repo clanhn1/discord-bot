@@ -3,230 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FERAS IS HERE | ACCESS DENIED</title>
+    <title>حسن علي الشمري | الإمبراطورية</title>
     <style>
-        /* --- الألوان والخطوط الفخمة --- */
         :root {
-            --bg-color: #050505;
-            --main-accent: #ff0000; /* أحمر التحذير */
-            --secondary-accent: #8e44ad; /* بنفسجي غامض */
-            --text-color: #f1f1f1;
-            --font-main: 'Courier New', Courier, monospace; /* خط الهاكر الكلاسيكي */
+            --neon-color: #00f3ff;
+            --neon-secondary: #bc13fe;
+            --glass-bg: rgba(10, 10, 10, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-main);
-            overflow: hidden;
+            height: 100vh;
+            background: #000;
+            background-image: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #000000 100%);
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
-        }
-
-        /* --- خلفية متحركة فاخرة (تأثير الشبكة) --- */
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: radial-gradient(circle, #1a1a1a 1px, rgba(0,0,0,0) 1px);
-            background-size: 30px 30px;
-            z-index: -1;
-            opacity: 0.3;
-        }
-
-        /* --- تأثير الأفاتار المركزي --- */
-        .avatar-container {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            margin-bottom: 30px;
-            border-radius: 50%;
             overflow: hidden;
-            border: 3px solid var(--secondary-accent);
-            box-shadow: 0 0 30px var(--secondary-accent), inset 0 0 20px rgba(142, 68, 173, 0.5);
-            transition: transform 0.3s ease-out;
+            color: #fff;
         }
 
-        .avatar-container:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .avatar-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* --- العناوين والتأثيرات الصوتية --- */
-        h1 {
-            font-size: 2.5em;
-            color: var(--main-accent);
-            text-shadow: 0 0 10px var(--main-accent), 0 0 20px var(--main-accent);
-            margin: 0;
-            letter-spacing: 2px;
-            animation: pulse 2s infinite;
-        }
-
-        .status-text {
-            color: var(--text-color);
-            margin: 15px 0 40px 0;
-            font-size: 1.2em;
-            opacity: 0.8;
-            height: 1.5em; /* للحفاظ على الارتفاع أثناء التأثير */
-        }
-
-        /* --- زر الديسكورد الفاخر (رابط السيرفر) --- */
-        .discord-btn {
-            background: linear-gradient(45deg, #1e1e1e, #0a0a0a);
-            color: var(--text-color);
-            border: 2px solid var(--main-accent);
-            padding: 18px 40px;
-            font-size: 1.4em;
-            font-weight: bold;
+        /* --- شاشة الدخول (لتفعيل الموسيقى) --- */
+        #enter-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
             cursor: pointer;
+            transition: opacity 1s ease-out;
+        }
+
+        .enter-btn {
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--neon-color);
+            background: var(--glass-bg);
+            border: 1px solid var(--neon-color);
+            box-shadow: 0 0 15px var(--neon-color), inset 0 0 10px var(--neon-color);
+            border-radius: 10px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-color);
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        /* --- البطاقة الزجاجية في المنتصف --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 40px rgba(188, 19, 254, 0.2);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 1s ease-out;
+            position: relative;
+        }
+
+        .glass-panel.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* --- الأفاتار النيون --- */
+        .avatar {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 3px solid var(--neon-color);
+            box-shadow: 0 0 30px var(--neon-color), inset 0 0 20px var(--neon-color);
+            margin: 0 auto 25px auto;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.08) rotate(5deg);
+            box-shadow: 0 0 50px var(--neon-secondary);
+            border-color: var(--neon-secondary);
+        }
+
+        /* --- العبارات الفخمة --- */
+        h1 {
+            font-size: 32px;
+            margin: 0 0 10px 0;
+            color: #fff;
+            text-shadow: 0 0 15px var(--neon-color);
+            letter-spacing: 1px;
+        }
+
+        .luxury-phrase {
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 35px;
+            line-height: 1.6;
+            text-shadow: 0 0 5px rgba(255,255,255,0.3);
+        }
+
+        .highlight {
+            color: var(--neon-secondary);
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--neon-secondary);
+        }
+
+        /* --- زر السيرفر --- */
+        .discord-btn {
+            display: inline-block;
+            padding: 15px 35px;
+            font-size: 18px;
+            color: #fff;
+            background: transparent;
+            border: 2px solid var(--neon-secondary);
+            border-radius: 8px;
             text-decoration: none;
+            font-weight: bold;
+            letter-spacing: 1px;
             transition: 0.4s;
             position: relative;
             overflow: hidden;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
         }
 
         .discord-btn:hover {
+            background: var(--neon-secondary);
             color: #fff;
-            background: var(--main-accent);
-            box-shadow: 0 0 40px var(--main-accent);
+            box-shadow: 0 0 40px var(--neon-secondary), 0 0 20px var(--neon-secondary);
             transform: translateY(-3px);
         }
 
-        .discord-btn::before {
-            content: '>';
-            position: absolute;
-            left: 15px;
-            opacity: 0;
-            transition: 0.3s;
-        }
-
-        .discord-btn:hover::before {
-            opacity: 1;
-            left: 20px;
-        }
-
-        /* --- رسالة النهاية العربي --- */
-        .ara-text {
-            margin-top: 50px;
-            color: var(--secondary-accent);
-            font-size: 1.1em;
-            font-weight: bold;
-            text-shadow: 0 0 5px var(--secondary-accent);
-        }
-
-        /* --- الحركات (Animations) --- */
         @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.02); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* ستارة التحميل للتفاعل وتشغيل الصوت */
-        #overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            cursor: pointer;
-            font-size: 2em;
+            0% { box-shadow: 0 0 10px var(--neon-color); }
+            100% { box-shadow: 0 0 30px var(--neon-color), inset 0 0 15px var(--neon-color); }
         }
     </style>
 </head>
 <body>
 
-    <div id="overlay" onclick="startExperience()">
-        اضغط في أي مكان لبدء البروتوكول...
+    <div id="enter-screen" onclick="enterRealm()">
+        <div class="enter-btn">اضغط للدخول إلى عالم الأساطير</div>
     </div>
 
-    <div id="particles-js"></div>
-
-    <div class="main-content" style="opacity: 0; transition: opacity 2s;">
+    <div class="glass-panel" id="mainCard">
         
-        <div class="avatar-container">
-            <img src="https://images.discordapp.net/avatars/452800723646677002/097a9f7e44a47895f329240801833878.png?size=256" alt="Feras" id="userAvatar">
-        </div>
-
-        <h1>SYSTEM BY FERAS</h1>
-
-        <div class="status-text" id="status">جاري الاتصال بقاعدة البيانات...</div>
+        <img src="ضع_رابط_صورتك_هنا.jpg" alt="Hassan Avatar" class="avatar">
+        
+        <h1>حسن علي الشمري</h1>
+        
+        <p class="luxury-phrase">
+            القمة لا تتسع إلا لمن صنعها...<br>
+            <span class="highlight">السيطرة التامة تبدأ من هنا</span>
+        </p>
 
         <a href="https://discord.gg/CTwKRt7u" class="discord-btn" target="_blank">
-            انضم إلى المملكة
+            اقتحم الإمبراطورية
         </a>
-
-        <div class="ara-text">
-            جاكم فراس ي وقع انت وياه
-        </div>
     </div>
 
     <audio id="bgMusic" loop>
         <source src="music.mp3" type="audio/mpeg">
-        متصفحك لا يدعم الصوت.
     </audio>
 
     <script>
-        // دالة تشغيل التجربة (الصوت + الأنيميشن)
-        function startExperience() {
-            document.getElementById('overlay').style.display = 'none';
-            document.querySelector('.main-content').style.opacity = '1';
-            
-            // تشغيل الصوت (نحتاج لتفاعل المستخدم أولاً)
-            var audio = document.getElementById("bgMusic");
-            audio.play().catch(error => {
-                console.log("الاصوات معطلة في المتصفح. نحتاج لتفاعل حقيقي.");
-            });
+        function enterRealm() {
+            // إخفاء شاشة الدخول
+            const enterScreen = document.getElementById('enter-screen');
+            enterScreen.style.opacity = '0';
+            setTimeout(() => {
+                enterScreen.style.display = 'none';
+            }, 1000);
 
-            // بدء تأثير الكتابة
-            startTyping();
-        }
+            // إظهار البطاقة الفخمة
+            const mainCard = document.getElementById('mainCard');
+            setTimeout(() => {
+                mainCard.classList.add('active');
+            }, 500);
 
-        // تأثير الكتابة
-        function startTyping() {
-            const textArray = ["بروتوكول الوصول: نشط", "سيرفر الديسكورد: جاهز", "الهدف: الاتصال بـ فراس"];
-            const statusElement = document.getElementById('status');
-            let arrayIndex = 0;
-            let charIndex = 0;
-
-            function type() {
-                if (charIndex < textArray[arrayIndex].length) {
-                    statusElement.innerHTML += textArray[arrayIndex].charAt(charIndex);
-                    charIndex++;
-                    setTimeout(type, 100); // سرعة الكتابة
-                } else {
-                    setTimeout(erase, 2000); // وقت التوقف قبل المسح
-                }
-            }
-
-            function erase() {
-                if (charIndex > 0) {
-                    statusElement.innerHTML = textArray[arrayIndex].substring(0, charIndex-1);
-                    charIndex--;
-                    setTimeout(erase, 50); // سرعة المسح
-                } else {
-                    arrayIndex = (arrayIndex + 1) % textArray.length;
-                    setTimeout(type, 1000); // وقت التوقف قبل الجملة التالية
-                }
-            }
-
-            type(); // البدء
+            // تشغيل الأغنية
+            const audio = document.getElementById("bgMusic");
+            audio.volume = 0.5; // يمكنك تعديل مستوى الصوت من 0.0 إلى 1.0
+            audio.play().catch(e => console.log("الصوت يحتاج لتفاعل إضافي من المتصفح"));
         }
     </script>
 </body>
