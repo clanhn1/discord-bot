@@ -3,102 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN ALI | 30nr</title>
+    <title>HASSAN AL-SHAMMARI | 30nr</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@800&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.07);
-            --border: rgba(255, 255, 255, 0.15);
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --glow: rgba(255, 255, 255, 0.4);
         }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background: #000; font-family: 'Segoe UI', sans-serif;
+            background: #000; font-family: 'Poppins', 'Segoe UI', sans-serif;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
 
-        #video-bg {
+        /* حاوية فيديو يوتيوب الخلفي */
+        #yt-player-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; opacity: 0; transition: opacity 5s ease-in;
+            z-index: 1; opacity: 0; transition: opacity 3s ease-in;
         }
-        iframe { width: 100%; height: 100%; pointer-events: none; transform: scale(1.4); }
+        iframe { width: 100%; height: 100%; border: none; pointer-events: none; transform: scale(1.5); }
 
+        /* حاوية تأثير الجزيئات المتحركة (Three.js) */
         #canvas-bg { position: fixed; top: 0; left: 0; z-index: 2; pointer-events: none; }
 
-        #overlay {
+        /* شاشة الدخول الفخمة */
+        #entry-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex;
             align-items: center; justify-content: center; cursor: pointer;
         }
         .enter-btn {
-            color: #fff; font-size: 24px; letter-spacing: 10px;
-            border: 1px solid #fff; padding: 15px 40px; transition: 0.5s;
+            color: #fff; font-size: 30px; font-weight: 100; letter-spacing: 15px;
+            text-transform: uppercase; border: 1px solid #fff; padding: 20px 40px;
+            transition: 0.5s;
         }
+        .enter-btn:hover { background: #fff; color: #000; letter-spacing: 20px; }
 
-        .glass-card {
+        /* البطاقة الزجاجية "النابضة" */
+        .neon-card {
             position: relative; z-index: 10; width: 450px;
-            background: var(--glass); backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px); border: 1px solid var(--border);
-            border-radius: 40px; padding: 50px 30px; text-align: center;
+            background: var(--glass); backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px); border: 1px solid var(--border);
+            border-radius: 40px; padding: 50px; text-align: center;
             opacity: 0; transform: translateY(30px);
-            transition: 2s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: 2s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        .glass-card.show { opacity: 1; transform: translateY(0); }
+        .neon-card.show { opacity: 1; transform: translateY(0); }
 
-        /* الأفاتار - تم تعديل الرابط لضمان الظهور */
+        /* حاوية الأفاتار */
+        .avatar-box {
+            position: relative; width: 180px; height: 180px;
+            margin: -90px auto 30px auto; /* لرفع الصورة للأعلى قليلاً */
+        }
         .avatar {
-            width: 150px; height: 150px; border-radius: 50%;
+            width: 100%; height: 100%; border-radius: 50%;
             border: 3px solid #fff; box-shadow: 0 0 30px rgba(255,255,255,0.3);
-            margin-bottom: 20px; object-fit: cover;
+            object-fit: cover;
         }
 
-        h1 { font-size: 38px; color: #fff; margin: 10px 0; font-weight: 900; }
-        .username { color: #aaa; font-size: 16px; letter-spacing: 4px; margin-bottom: 20px; display: block; }
+        /* النصوص العريضة */
+        h1 {
+            font-family: 'Anek Malayalam', sans-serif;
+            font-size: 48px; color: #fff; margin: 10px 0 5px 0;
+            font-weight: 800; text-shadow: 0 0 15px #fff;
+        }
+        .handle { color: #aaa; font-size: 18px; letter-spacing: 5px; margin-bottom: 30px; display: block; }
+        .quote { color: #fff; font-size: 22px; font-weight: 300; line-height: 1.6; margin-bottom: 40px; }
 
-        .btn-main {
-            display: block; padding: 15px; background: #fff;
+        /* زر الديسكورد النظيف */
+        .btn-join {
+            display: inline-block; padding: 18px 50px; background: #fff;
             color: #000; text-decoration: none; font-weight: bold;
-            border-radius: 50px; transition: 0.4s; margin: 20px auto;
-            width: 80%; font-size: 18px;
+            border-radius: 100px; transition: 0.4s; font-size: 18px;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
         }
-        .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 30px #fff; }
+        .btn-join:hover { transform: scale(1.1); box-shadow: 0 15px 50px #fff; }
 
-        /* حاوية السوشيال ميديا */
-        .social-links {
-            display: flex; justify-content: center; gap: 25px; margin-top: 25px;
+        /* روابط السوشيال ميديا (التأثير الجديد) */
+        .social-box {
+            display: flex; justify-content: center; gap: 30px; margin-top: 30px;
         }
-        .social-links a {
-            color: #fff; font-size: 28px; transition: 0.3s; opacity: 0.7;
+        .social-box a {
+            color: #fff; font-size: 30px; transition: 0.3s; opacity: 0.5;
         }
-        .social-links a:hover {
-            opacity: 1; transform: translateY(-5px); text-shadow: 0 0 15px #fff;
+        .social-box a:hover {
+            opacity: 1; transform: translateY(-5px) scale(1.2);
+            text-shadow: 0 0 15px #fff;
         }
 
-        .beat { animation: beat 0.48s infinite alternate; }
-        @keyframes beat { to { transform: scale(1.03); } }
+        /* أنيميشن النبض مع الإيقاع */
+        .beat-sync {
+            animation: beatPulse 0.45s infinite alternate; /* توقيت النبض ليتناسب مع البيس */
+        }
+        @keyframes beatPulse {
+            to {
+                transform: scale(1.03);
+                box-shadow: 0 0 150px var(--glow); /* توهج نبضي رهيب */
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div id="overlay" onclick="start()">
-        <div class="enter-btn">HASSAN ALI</div>
+    <div id="entry-overlay" onclick="startExperience()">
+        <div class="enter-btn">Hassan Ali</div>
     </div>
 
-    <div id="video-bg"><div id="player"></div></div>
+    <div id="yt-player-container"><div id="player"></div></div>
     <canvas id="canvas-bg"></canvas>
 
-    <div class="glass-card" id="card">
-        <img src="https://cdn.discordapp.com/avatars/452800723646677002/097a9f7e44a47895f329240801833878.png?size=512" 
-             class="avatar" alt="Hassan" onerror="this.src='https://ui-avatars.com/api/?name=Hassan&background=000&color=fff&size=512'">
+    <div class="neon-card" id="card">
         
-        <h1>حسن علي الشمري</h1>
-        <span class="username">@30nr</span>
-
-        <a href="https://discord.gg/CTwKRt7u" class="btn-main" target="_blank">انضم لسيرفري</a>
-
-        <div class="social-links">
+        <div class="social-box">
             <a href="https://www.instagram.com/76h16/?hl=ar" target="_blank" title="Instagram">
                 <i class="fab fa-instagram"></i>
             </a>
@@ -106,9 +129,24 @@
                 <i class="fab fa-tiktok"></i>
             </a>
         </div>
+
+        <div class="avatar-box">
+            <img src="https://i.imgur.com/f9O2f4j.png" class="avatar" alt="Hassan">
+        </div>
+        
+        <h1>حسن علي الشمري</h1>
+        <span class="handle">[ 30nr ]</span>
+
+        <p class="quote">
+            عمك حسن هنا.. <br>
+            <b>الساحة محجوزة، انضم لسيرفري وشوف الفرق.</b>
+        </p>
+
+        <a href="https://discord.gg/CTwKRt7u" class="btn-join" target="_blank">انضم لسيرفري</a>
     </div>
 
     <script>
+        // إعداد مشغل يوتيوب
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -122,27 +160,32 @@
             });
         }
 
-        function start() {
-            document.getElementById('overlay').style.opacity = '0';
+        function startExperience() {
+            document.getElementById('entry-overlay').style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('entry-overlay').style.display = 'none';
                 document.getElementById('card').classList.add('show');
-                document.getElementById('video-bg').style.opacity = '0.25';
+                document.getElementById('yt-player-container').style.opacity = '0.3'; // فيديو الخلفية يظهر ببطء
             }, 1000);
 
             if (player) {
                 player.playVideo();
+                
+                // تدرج الصوت (Fade-in)
                 let vol = 0;
                 let fade = setInterval(() => {
                     if (vol >= 100) clearInterval(fade);
                     vol += 2; player.setVolume(vol);
                 }, 150);
 
-                setTimeout(() => { document.getElementById('card').classList.add('beat'); }, 5000);
+                // بدء تأثير النبض المتزامن مع الإيقاع بعد 5 ثواني
+                setTimeout(() => {
+                    document.getElementById('card').classList.add('beat-sync');
+                }, 5000);
             }
         }
 
-        // Particles Animation (Three.js)
+        // --- كود Three.js لخلفية الجزيئات الطائرة ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), alpha: true });
