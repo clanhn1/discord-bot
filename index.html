@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حسن علي الشمري | الإمبراطورية</title>
+    <title>حسن علي الشمري | 30nr</title>
     <style>
         :root {
             --neon-color: #00f3ff;
@@ -21,13 +21,13 @@
             background-image: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #000000 100%);
             font-family: 'Courier New', Courier, monospace;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: center; /* توسيط عمودي */
+            justify-content: center; /* توسيط أفقي */
             overflow: hidden;
             color: #fff;
         }
 
-        /* --- شاشة الدخول (لتفعيل الموسيقى) --- */
+        /* --- شاشة الدخول --- */
         #enter-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -54,7 +54,7 @@
             animation: pulse 1.5s infinite alternate;
         }
 
-        /* --- البطاقة الزجاجية في المنتصف --- */
+        /* --- البطاقة الزجاجية --- */
         .glass-panel {
             background: var(--glass-bg);
             backdrop-filter: blur(15px);
@@ -63,7 +63,7 @@
             border-radius: 20px;
             padding: 50px 40px;
             text-align: center;
-            width: 400px;
+            width: 450px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 40px rgba(188, 19, 254, 0.2);
             opacity: 0;
             transform: scale(0.9);
@@ -76,14 +76,14 @@
             transform: scale(1);
         }
 
-        /* --- الأفاتار النيون --- */
+        /* --- الأفاتار --- */
         .avatar {
             width: 160px;
             height: 160px;
             border-radius: 50%;
             border: 3px solid var(--neon-color);
             box-shadow: 0 0 30px var(--neon-color), inset 0 0 20px var(--neon-color);
-            margin: 0 auto 25px auto;
+            margin: 0 auto 20px auto;
             object-fit: cover;
             display: block;
             transition: transform 0.4s ease;
@@ -95,52 +95,89 @@
             border-color: var(--neon-secondary);
         }
 
-        /* --- العبارات الفخمة --- */
+        /* --- النصوص والعبارات --- */
         h1 {
             font-size: 32px;
-            margin: 0 0 10px 0;
+            margin: 0 0 5px 0;
             color: #fff;
             text-shadow: 0 0 15px var(--neon-color);
-            letter-spacing: 1px;
         }
 
-        .luxury-phrase {
-            font-size: 16px;
-            color: #aaa;
+        .username {
+            font-size: 18px;
+            color: var(--neon-secondary);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px var(--neon-secondary);
+            letter-spacing: 2px;
+        }
+
+        .slang-text {
+            font-size: 20px;
+            color: #fff;
             margin-bottom: 35px;
-            line-height: 1.6;
-            text-shadow: 0 0 5px rgba(255,255,255,0.3);
+            line-height: 1.8;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(255,255,255,0.5);
         }
 
         .highlight {
-            color: var(--neon-secondary);
-            font-weight: bold;
-            text-shadow: 0 0 10px var(--neon-secondary);
+            color: var(--neon-color);
         }
 
         /* --- زر السيرفر --- */
         .discord-btn {
             display: inline-block;
-            padding: 15px 35px;
-            font-size: 18px;
+            padding: 15px 40px;
+            font-size: 20px;
             color: #fff;
             background: transparent;
             border: 2px solid var(--neon-secondary);
             border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
-            letter-spacing: 1px;
             transition: 0.4s;
-            position: relative;
-            overflow: hidden;
             box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
         }
 
         .discord-btn:hover {
             background: var(--neon-secondary);
-            color: #fff;
             box-shadow: 0 0 40px var(--neon-secondary), 0 0 20px var(--neon-secondary);
             transform: translateY(-3px);
+        }
+
+        /* --- الموجات الصوتية (Visualizer) --- */
+        .visualizer {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 40px;
+            margin-bottom: 25px;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .visualizer.active {
+            opacity: 1;
+        }
+
+        .bar {
+            width: 8px;
+            background: var(--neon-color);
+            border-radius: 5px;
+            box-shadow: 0 0 10px var(--neon-color);
+            animation: bounce 0.5s ease-in-out infinite alternate;
+        }
+
+        .bar:nth-child(1) { animation-delay: 0.1s; height: 10px; }
+        .bar:nth-child(2) { animation-delay: 0.3s; height: 20px; }
+        .bar:nth-child(3) { animation-delay: 0.0s; height: 35px; background: var(--neon-secondary); box-shadow: 0 0 10px var(--neon-secondary);}
+        .bar:nth-child(4) { animation-delay: 0.2s; height: 25px; }
+        .bar:nth-child(5) { animation-delay: 0.4s; height: 15px; }
+
+        @keyframes bounce {
+            0% { transform: scaleY(0.5); }
+            100% { transform: scaleY(1.5); }
         }
 
         @keyframes pulse {
@@ -151,31 +188,60 @@
 </head>
 <body>
 
+    <div id="player" style="display:none;"></div>
+
     <div id="enter-screen" onclick="enterRealm()">
-        <div class="enter-btn">اضغط للدخول إلى عالم الأساطير</div>
+        <div class="enter-btn">اضغط للدخول يابه</div>
     </div>
 
     <div class="glass-panel" id="mainCard">
         
-        <img src="ضع_رابط_صورتك_هنا.jpg" alt="Hassan Avatar" class="avatar">
+        <img src="https://i.imgur.com/ضع_رابط_صورتك_هنا.jpg" alt="30nr Avatar" class="avatar">
         
         <h1>حسن علي الشمري</h1>
+        <div class="username">[ 30nr ]</div>
         
-        <p class="luxury-phrase">
-            القمة لا تتسع إلا لمن صنعها...<br>
-            <span class="highlight">السيطرة التامة تبدأ من هنا</span>
+        <div class="visualizer" id="audio-visualizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        
+        <p class="slang-text">
+            عمك حسن هنا... <br>
+            <span class="highlight">طب وتونس ويانا، نورت السيرفر!</span>
         </p>
 
         <a href="https://discord.gg/CTwKRt7u" class="discord-btn" target="_blank">
-            اقتحم الإمبراطورية
+            انضم لسيرفري
         </a>
     </div>
 
-    <audio id="bgMusic" loop>
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
-
     <script>
+        // تحميل مكتبة يوتيوب
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: 'RW7DcfTGdHk', // الآيدي مال الأغنية اللي طلبتها
+                playerVars: { 
+                    'autoplay': 0, 
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': 'RW7DcfTGdHk' // عشان تعيد نفسها
+                },
+            });
+        }
+
+        // دالة تشغيل الواجهة والموسيقى عند الضغط
         function enterRealm() {
             // إخفاء شاشة الدخول
             const enterScreen = document.getElementById('enter-screen');
@@ -184,16 +250,19 @@
                 enterScreen.style.display = 'none';
             }, 1000);
 
-            // إظهار البطاقة الفخمة
+            // إظهار البطاقة والموجات
             const mainCard = document.getElementById('mainCard');
+            const visualizer = document.getElementById('audio-visualizer');
+            
             setTimeout(() => {
                 mainCard.classList.add('active');
+                visualizer.classList.add('active');
             }, 500);
 
-            // تشغيل الأغنية
-            const audio = document.getElementById("bgMusic");
-            audio.volume = 0.5; // يمكنك تعديل مستوى الصوت من 0.0 إلى 1.0
-            audio.play().catch(e => console.log("الصوت يحتاج لتفاعل إضافي من المتصفح"));
+            // تشغيل أغنية اليوتيوب
+            if (player && typeof player.playVideo === 'function') {
+                player.playVideo();
+            }
         }
     </script>
 </body>
