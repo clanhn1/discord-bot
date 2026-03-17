@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN ALI | THE EMPEROR</title>
+    <title>HASSAN ALI | 30nr</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --main-white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.2);
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.07);
+            --border: rgba(255, 255, 255, 0.15);
         }
 
         body, html {
@@ -18,95 +19,96 @@
             overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
 
-        /* حاوية الفيديو الخلفي */
-        #video-container {
+        #video-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; opacity: 0; transition: opacity 5s ease-in; /* ظهور تدريجي خلال 5 ثواني */
+            z-index: 1; opacity: 0; transition: opacity 5s ease-in;
         }
-        iframe { width: 100%; height: 100%; border: none; pointer-events: none; transform: scale(1.5); }
+        iframe { width: 100%; height: 100%; pointer-events: none; transform: scale(1.4); }
 
-        /* تأثير الجزيئات المتحركة (Three.js) */
         #canvas-bg { position: fixed; top: 0; left: 0; z-index: 2; pointer-events: none; }
 
-        /* شاشة الدخول */
         #overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex;
             align-items: center; justify-content: center; cursor: pointer;
         }
         .enter-btn {
-            color: #fff; font-size: 30px; font-weight: 100; letter-spacing: 15px;
-            text-transform: uppercase; border: 1px solid #fff; padding: 20px 40px;
-            transition: 0.5s;
+            color: #fff; font-size: 24px; letter-spacing: 10px;
+            border: 1px solid #fff; padding: 15px 40px; transition: 0.5s;
         }
-        .enter-btn:hover { background: #fff; color: #000; letter-spacing: 20px; }
 
-        /* البطاقة العصرية المركزية */
         .glass-card {
-            position: relative; z-index: 10; width: 500px;
-            background: var(--glass); backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px); border: 1px solid var(--border);
-            border-radius: 40px; padding: 60px; text-align: center;
-            box-shadow: 0 0 100px rgba(255, 255, 255, 0.05);
+            position: relative; z-index: 10; width: 450px;
+            background: var(--glass); backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px); border: 1px solid var(--border);
+            border-radius: 40px; padding: 50px 30px; text-align: center;
             opacity: 0; transform: translateY(30px);
             transition: 2s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .glass-card.show { opacity: 1; transform: translateY(0); }
 
-        /* الأفاتار */
+        /* الأفاتار - تم تعديل الرابط لضمان الظهور */
         .avatar {
-            width: 180px; height: 180px; border-radius: 50%;
-            border: 2px solid #fff; box-shadow: 0 0 50px rgba(255,255,255,0.2);
-            margin-bottom: 30px; object-fit: cover;
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 3px solid #fff; box-shadow: 0 0 30px rgba(255,255,255,0.3);
+            margin-bottom: 20px; object-fit: cover;
         }
 
-        h1 { font-size: 45px; color: #fff; margin: 10px 0; font-weight: 900; }
-        .sub-text { color: #888; font-size: 18px; letter-spacing: 5px; margin-bottom: 30px; display: block; }
-        .slang { color: #fff; font-size: 22px; font-weight: 300; line-height: 1.6; margin-bottom: 40px; }
+        h1 { font-size: 38px; color: #fff; margin: 10px 0; font-weight: 900; }
+        .username { color: #aaa; font-size: 16px; letter-spacing: 4px; margin-bottom: 20px; display: block; }
 
-        /* زر الديسكورد النظيف */
-        .btn {
-            display: inline-block; padding: 18px 50px; background: #fff;
+        .btn-main {
+            display: block; padding: 15px; background: #fff;
             color: #000; text-decoration: none; font-weight: bold;
-            border-radius: 100px; transition: 0.4s; font-size: 18px;
+            border-radius: 50px; transition: 0.4s; margin: 20px auto;
+            width: 80%; font-size: 18px;
         }
-        .btn:hover { transform: scale(1.1); box-shadow: 0 0 30px #fff; }
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 30px #fff; }
 
-        /* حركة النبض مع الإيقاع */
-        .beat { animation: beatAnim 0.5s infinite alternate; }
-        @keyframes beatAnim {
-            to { transform: scale(1.02); box-shadow: 0 0 150px rgba(255, 255, 255, 0.1); }
+        /* حاوية السوشيال ميديا */
+        .social-links {
+            display: flex; justify-content: center; gap: 25px; margin-top: 25px;
         }
+        .social-links a {
+            color: #fff; font-size: 28px; transition: 0.3s; opacity: 0.7;
+        }
+        .social-links a:hover {
+            opacity: 1; transform: translateY(-5px); text-shadow: 0 0 15px #fff;
+        }
+
+        .beat { animation: beat 0.48s infinite alternate; }
+        @keyframes beat { to { transform: scale(1.03); } }
     </style>
 </head>
 <body>
 
-    <div id="overlay" onclick="init()">
-        <div class="enter-btn">Hassan Ali</div>
+    <div id="overlay" onclick="start()">
+        <div class="enter-btn">HASSAN ALI</div>
     </div>
 
-    <div id="video-container">
-        <div id="player"></div>
-    </div>
-
+    <div id="video-bg"><div id="player"></div></div>
     <canvas id="canvas-bg"></canvas>
 
     <div class="glass-card" id="card">
-        <img src="https://cdn.discordapp.com/avatars/452800723646677002/097a9f7e44a47895f329240801833878.png?size=512" class="avatar" alt="Hassan">
+        <img src="https://cdn.discordapp.com/avatars/452800723646677002/097a9f7e44a47895f329240801833878.png?size=512" 
+             class="avatar" alt="Hassan" onerror="this.src='https://ui-avatars.com/api/?name=Hassan&background=000&color=fff&size=512'">
         
         <h1>حسن علي الشمري</h1>
-        <span class="sub-text">30nr | DEVELOPER</span>
+        <span class="username">@30nr</span>
 
-        <p class="slang">
-            عمك حسن هنا.. <br>
-            <b>الساحة محجوزة، انضم وشوف الفرق.</b>
-        </p>
+        <a href="https://discord.gg/CTwKRt7u" class="btn-main" target="_blank">انضم لسيرفري</a>
 
-        <a href="https://discord.gg/CTwKRt7u" class="btn">انضم لسيرفري</a>
+        <div class="social-links">
+            <a href="https://www.instagram.com/76h16/?hl=ar" target="_blank" title="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@6r09" target="_blank" title="TikTok">
+                <i class="fab fa-tiktok"></i>
+            </a>
+        </div>
     </div>
 
     <script>
-        // إعداد مشغل يوتيوب
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -116,62 +118,50 @@
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 videoId: 'RW7DcfTGdHk',
-                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': 'RW7DcfTGdHk', 'mute': 0 },
-                events: { 'onReady': onPlayerReady }
+                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': 'RW7DcfTGdHk', 'mute': 0 }
             });
         }
 
-        function onPlayerReady(event) {
-            player.setVolume(0); // نبدأ بصوت صامت
-        }
-
-        function init() {
+        function start() {
             document.getElementById('overlay').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('overlay').style.display = 'none';
                 document.getElementById('card').classList.add('show');
-                document.getElementById('video-container').style.opacity = '0.3'; // الفيديو يظهر ببطء
+                document.getElementById('video-bg').style.opacity = '0.25';
             }, 1000);
 
             if (player) {
                 player.playVideo();
-                
-                // تدرج الصوت (زيادة الصوت تدريجياً خلال 8 ثواني)
                 let vol = 0;
-                let interval = setInterval(() => {
-                    if (vol >= 100) clearInterval(interval);
-                    vol += 2;
-                    player.setVolume(vol);
+                let fade = setInterval(() => {
+                    if (vol >= 100) clearInterval(fade);
+                    vol += 2; player.setVolume(vol);
                 }, 150);
 
-                // بدء النبض مع الإيقاع بعد 5 ثواني
-                setTimeout(() => {
-                    document.getElementById('card').classList.add('beat');
-                }, 5000);
+                setTimeout(() => { document.getElementById('card').classList.add('beat'); }, 5000);
             }
         }
 
-        // --- كود Three.js لخلفية الجزيئات الطائرة ---
+        // Particles Animation (Three.js)
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-        const geometry = new THREE.BufferGeometry();
-        const vertices = [];
-        for (let i = 0; i < 5000; i++) {
-            vertices.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        const geo = new THREE.BufferGeometry();
+        const pos = [];
+        for (let i = 0; i < 3000; i++) {
+            pos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
         }
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-        const material = new THREE.PointsMaterial({ color: 0xffffff, size: 2 });
-        const points = new THREE.Points(geometry, material);
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+        const mat = new THREE.PointsMaterial({ color: 0xffffff, size: 2.5 });
+        const points = new THREE.Points(geo, mat);
         scene.add(points);
         camera.position.z = 500;
 
         function animate() {
             requestAnimationFrame(animate);
-            points.rotation.y += 0.001;
-            points.rotation.x += 0.0005;
+            points.rotation.y += 0.0008;
             renderer.render(scene, camera);
         }
         animate();
