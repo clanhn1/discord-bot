@@ -3,245 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN HUB | ELITE SCRIPTS</title>
+    <title>HASSAN ELITE | ADVANCED CONTROL SYSTEM</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@800&family=Changa:wght@300;600&family=Poppins:wght@300;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;700&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --neon-blue: #00d2ff;
-            --neon-purple: #9d50bb;
-            --glass: rgba(255, 255, 255, 0.03);
+            --p-color: #ffffff;
+            --accent: #00f2ff;
+            --glass: rgba(255, 255, 255, 0.02);
             --border: rgba(255, 255, 255, 0.1);
         }
 
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background: #020202; overflow: hidden; font-family: 'Changa', sans-serif;
-            color: #fff;
+            background: #000; overflow: hidden; font-family: 'Changa', sans-serif;
+            color: #fff; user-select: none;
         }
 
-        /* شاشة الدخول التلقائي */
-        #welcome-gate {
+        /* شاشة الدخول الذكية */
+        #ai-loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 10000; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; transition: 2s ease-in-out;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            z-index: 10000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; transition: 1.5s cubic-bezier(0.95, 0.05, 0.795, 0.035);
         }
-        .intro-text { font-size: 35px; opacity: 0; transform: translateY(30px); text-shadow: 0 0 20px #fff; }
+        .ai-brain-icon { font-size: 60px; color: var(--accent); animation: pulse 2s infinite; margin-bottom: 20px; }
+        @keyframes pulse { 0% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.3; transform: scale(0.8); } }
 
-        /* حاوية الموقع الرئيسية */
-        #main-app {
-            position: relative; z-index: 10; width: 90%; max-width: 1100px;
-            height: 85vh; background: var(--glass); backdrop-filter: blur(40px);
-            border: 1px solid var(--border); border-radius: 30px;
-            display: flex; flex-direction: column; opacity: 0; transform: scale(0.9);
-            box-shadow: 0 50px 100px rgba(0,0,0,0.5); overflow: hidden;
-        }
-
-        /* الهيدر */
-        header {
-            padding: 25px 40px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .user-info { display: flex; align-items: center; gap: 15px; }
-        .user-info img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #fff; }
-
-        /* القائمة الجانبية للتنقل */
-        .content-body { display: flex; flex: 1; overflow: hidden; }
-        nav {
-            width: 220px; border-left: 1px solid var(--border);
-            padding: 20px; display: flex; flex-direction: column; gap: 10px;
-        }
-        .nav-btn {
-            padding: 15px; border-radius: 12px; cursor: pointer;
-            transition: 0.3s; display: flex; align-items: center; gap: 12px;
-            background: transparent; color: rgba(255,255,255,0.6);
-        }
-        .nav-btn.active, .nav-btn:hover {
-            background: rgba(255,255,255,0.1); color: #fff;
-            box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+        /* الواجهة الرئيسية الهولوغرامية */
+        #app-container {
+            position: relative; z-index: 100; width: 95%; max-width: 1300px;
+            height: 90vh; background: var(--glass); backdrop-filter: blur(50px);
+            border: 1px solid var(--border); border-radius: 40px;
+            display: flex; opacity: 0; transform: translateY(50px);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8); overflow: hidden;
         }
 
-        /* ساحة العرض */
-        main { flex: 1; padding: 30px; overflow-y: auto; scroll-behavior: smooth; }
-        .page { display: none; animation: fadeIn 0.5s ease forwards; }
-        .page.active { display: block; }
-
-        /* كروت السكربتات */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .item-card {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-            border-radius: 20px; padding: 20px; transition: 0.4s;
+        /* الجانب الأيمن (Navigation) */
+        .sidebar {
+            width: 280px; border-left: 1px solid var(--border);
+            background: rgba(0,0,0,0.3); padding: 30px 15px;
+            display: flex; flex-direction: column; gap: 15px;
         }
-        .item-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.08); border-color: #fff; }
-        .item-card h3 { margin: 0 0 10px 0; color: #00d2ff; }
-        .item-card p { font-size: 14px; color: #ccc; line-height: 1.6; }
-        .copy-btn {
-            width: 100%; padding: 10px; margin-top: 15px; background: #fff;
-            color: #000; border: none; border-radius: 8px; cursor: pointer;
-            font-weight: bold; transition: 0.3s;
+        .nav-link {
+            padding: 18px; border-radius: 20px; cursor: pointer;
+            transition: 0.4s; display: flex; align-items: center; gap: 15px;
+            font-weight: bold; color: rgba(255,255,255,0.5); border: 1px solid transparent;
         }
-        .copy-btn:hover { background: #00d2ff; color: #fff; }
-
-        /* قوانين المتجر */
-        .rules-box {
-            background: rgba(255,0,0,0.05); border: 1px dashed rgba(255,255,255,0.2);
-            padding: 25px; border-radius: 20px; line-height: 2;
+        .nav-link.active, .nav-link:hover {
+            background: linear-gradient(90deg, rgba(255,255,255,0.1), transparent);
+            color: #fff; border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        /* الخلفية والنجوم */
-        #canvas-bg { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        /* المحتوى الأساسي */
+        .main-view { flex: 1; padding: 40px; overflow-y: auto; position: relative; }
+        .view-section { display: none; animation: slideUp 0.6s ease-out forwards; }
+        .view-section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* التحكم في الصوت (الخط المنصي) */
+        .audio-control {
+            position: absolute; bottom: 30px; left: 30px;
+            display: flex; align-items: center; gap: 15px;
+            background: rgba(255,255,255,0.05); padding: 10px 20px;
+            border-radius: 100px; border: 1px solid var(--border);
+        }
+        input[type=range] { width: 120px; cursor: pointer; accent-color: #fff; }
+
+        /* لوحة التحكم (للمطور فقط) */
+        .admin-panel {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--accent);
+            padding: 25px; border-radius: 25px; margin-top: 20px;
+        }
+        .admin-input {
+            width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px;
+            background: #000; border: 1px solid #444; color: #fff; outline: none;
+        }
+        .save-btn {
+            background: var(--accent); color: #000; padding: 10px 30px;
+            border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+        }
+
+        /* كروت المتجر الفخمة */
+        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .script-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 25px; padding: 25px; transition: 0.5s;
+            transform-style: preserve-3d;
+        }
+        .script-card:hover { border-color: var(--accent); background: rgba(0, 242, 255, 0.05); }
+
+        /* الخلفيات */
+        #canvas-bg { position: fixed; top: 0; left: 0; z-index: 1; }
         #video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.2; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* شريط التمرير */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        .ip-badge {
+            background: rgba(0, 255, 157, 0.1); color: #00ff9d;
+            padding: 5px 15px; border-radius: 5px; font-family: 'Orbitron'; font-size: 12px;
+        }
     </style>
 </head>
-<body style="display:flex; align-items:center; justify-content:center;">
+<body>
 
-    <div id="welcome-gate">
-        <div class="intro-text" id="t1">نظام حسن علي الشمري</div>
-        <div class="intro-text" id="t2" style="font-size: 25px; color: #aaa;">جاري تحميل الأدوات والسكربتات...</div>
+    <div id="ai-loader">
+        <i class="fas fa-microchip ai-brain-icon"></i>
+        <div id="ai-status" style="font-family: 'Orbitron'; letter-spacing: 5px;">SYSTEM INITIALIZING...</div>
+        <div id="visitor-ip" style="margin-top: 20px; color: #555;">IP: FETCHING...</div>
     </div>
 
     <div id="video-bg"><div id="player"></div></div>
     <canvas id="canvas-bg"></canvas>
 
-    <div id="main-app">
-        <header>
-            <div class="user-info">
-                <img src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" alt="Admin">
-                <div>
-                    <div style="font-weight: 900; font-size: 18px;">HASSAN ALI AL-SHAMMARI</div>
-                    <div style="font-size: 12px; color: #0f0;">● متصل الآن (المطور الرسمي)</div>
-                </div>
+    <div id="app-container">
+        <div class="sidebar">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <img id="profile-img" src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 20px var(--accent);">
+                <h3 id="dev-name" style="margin-top: 15px; font-family: 'Orbitron';">HASSAN ALI</h3>
+                <span class="ip-badge" id="my-ip-display">IP: 0.0.0.0</span>
             </div>
-            <div style="font-size: 20px; font-weight: 900; letter-spacing: 2px;">ELITE HUB</div>
-        </header>
-
-        <div class="content-body">
-            <nav>
-                <div class="nav-btn active" onclick="openPage('home', this)"><i class="fas fa-home"></i> الرئيسية</div>
-                <div class="nav-btn" onclick="openPage('scripts', this)"><i class="fas fa-code"></i> السكربتات</div>
-                <div class="nav-btn" onclick="openPage('apps', this)"><i class="fas fa-mobile-alt"></i> التطبيقات</div>
-                <div class="nav-btn" onclick="openPage('rules', this)"><i class="fas fa-gavel"></i> القوانين</div>
-                <div style="margin-top: auto;">
-                    <a href="https://discord.gg/CTwKRt7u" target="_blank" style="text-decoration:none; color:#fff; font-size:14px;">
-                        <i class="fab fa-discord"></i> الدعم الفني
-                    </a>
-                </div>
-            </nav>
-
-            <main>
-                <div id="home" class="page active">
-                    <h2 style="color: #fff;">أهلاً بك يا بطل في متجري المتواضع 💎</h2>
-                    <p>هذا المكان مخصص للمبرمجين واللاعبين المحترفين. ستجد هنا أقوى الأدوات التي أطورها بنفسي. تذكر دائماً أننا هنا لنستمتع ونطور من مهاراتنا، لا لتخريب تجربة الآخرين بشكل عدواني.</p>
-                    <div class="rules-box" style="background: rgba(0,210,255,0.05); border-color: #00d2ff;">
-                        📢 <b>رسالة المطور:</b> "لا تنسَ مشاركة الموقع مع أصدقائك لدعمي في الاستمرار بتحديث السكربتات!"
-                    </div>
-                </div>
-
-                <div id="scripts" class="page">
-                    <div class="grid">
-                        <div class="item-card">
-                            <h3>Roblox Admin Script</h3>
-                            <p>سكربت التحكم الكامل، طيران، سرعة، وكشف أماكن اللاعبين (ESP) متوافق مع كافة التحديثات.</p>
-                            <button class="copy-btn">نسخ السكربت</button>
-                        </div>
-                        <div class="item-card">
-                            <h3>Auto Farm Pro</h3>
-                            <p>أفضل سكربت تجميع تلقائي للألعاب القتالية، حماية عالية من الباند (Anti-Ban).</p>
-                            <button class="copy-btn">نسخ السكربت</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="apps" class="page">
-                    <div class="grid">
-                        <div class="item-card">
-                            <h3>Elite Injector V2</h3>
-                            <p>تطبيق حاقن السكربتات الأسرع والأخف على المعالج، يدعم كافة أنواع الـ DLLs.</p>
-                            <button class="copy-btn">تحميل التطبيق</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="rules" class="page">
-                    <h2>⚖️ قوانين المملكة</h2>
-                    <div class="rules-box">
-                        1. 🚫 <b>يمنع منعاً باتاً:</b> استخدام السكربتات لتخريب السيرفرات العربية أو الهجوم عليها.<br>
-                        2. 🎮 <b>الهدف:</b> السكربتات برمجت للمتعة الشخصية وتجربة الثغرات البرمجية فقط.<br>
-                        3. 🤝 <b>المشاركة:</b> يحق لك مشاركة الموقع مع أصدقائك، لكن لا تنسب العمل لنفسك.<br>
-                        4. ⚠️ <b>إخلاء مسؤولية:</b> المطور حسن غير مسؤول عن أي سوء استخدام لهذه الأدوات.<br>
-                    </div>
-                </div>
-            </main>
+            
+            <div class="nav-link active" onclick="showView('home', this)"><i class="fas fa-th-large"></i> البوابة الرئيسية</div>
+            <div class="nav-link" onclick="showView('scripts', this)"><i class="fas fa-code"></i> متجر السكربتات</div>
+            <div class="nav-link" onclick="showView('apps', this)"><i class="fas fa-box-open"></i> مركز التطبيقات</div>
+            <div class="nav-link" onclick="showView('admin', this)" style="margin-top: auto; border-top: 1px solid var(--border);"><i class="fas fa-user-shield"></i> إعدادات المطور</div>
         </div>
+
+        <main class="main-view">
+            <section id="home" class="view-section active">
+                <h1 style="font-size: 50px; margin: 0;">أهلاً بك يا <span id="user-country" style="color:var(--accent);">بطل</span></h1>
+                <p style="font-size: 20px; color: #aaa; max-width: 600px;">أنت الآن في المركز المعتمد لتطوير السكربتات. يرجى استخدام الأدوات بحكمة واستمتاع.</p>
+                <div style="margin-top: 40px; display: flex; gap: 20px;">
+                    <div class="script-card" style="flex: 1;">
+                        <h4>حالة السيرفر</h4>
+                        <p style="color: #0f0;">● متصل ومستقر</p>
+                    </div>
+                    <div class="script-card" style="flex: 1;">
+                        <h4>عدد السكربتات</h4>
+                        <p>+150 أداة جاهزة</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="scripts" class="view-section">
+                <h2 style="font-family: 'Orbitron';">PREMIUM SCRIPTS</h2>
+                <div class="store-grid">
+                    <div class="script-card" data-tilt>
+                        <h3 style="color: var(--accent);">Blox Fruits - Auto Farm</h3>
+                        <p>سكربت تجميع تلقائي متقدم مع حماية من الباند وتخطي الكابتشا.</p>
+                        <button class="save-btn" style="width: 100%;">نسخ الرابط</button>
+                    </div>
+                    <div class="script-card" data-tilt>
+                        <h3 style="color: var(--accent);">Universal Admin V3</h3>
+                        <p>لوحة تحكم كاملة لجميع ألعاب روبلوكس (Fly, Speed, Inf Jump).</p>
+                        <button class="save-btn" style="width: 100%;">نسخ الرابط</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="admin" class="view-section">
+                <h2>⚙️ لوحة تحكم المطور (حسن)</h2>
+                <div class="admin-panel">
+                    <label>تغيير رابط الصورة الشخصية:</label>
+                    <input type="text" id="img-url-input" class="admin-input" placeholder="ضع رابط الصورة هنا...">
+                    
+                    <label>تغيير رابط فيديو الموسيقى (ID اليوتيوب):</label>
+                    <input type="text" id="vid-id-input" class="admin-input" placeholder="مثال: RW7DcfTGdHk">
+                    
+                    <label>تغيير اسم المطور:</label>
+                    <input type="text" id="name-input" class="admin-input" placeholder="اكتب اسمك الجديد...">
+                    
+                    <button class="save-btn" onclick="saveSettings()">حفظ التحديثات الآن</button>
+                </div>
+                
+                <h3 style="margin-top: 30px;">سجل الزوار (IP Logs)</h3>
+                <div id="ip-logs" style="background: #000; padding: 15px; border-radius: 15px; height: 150px; overflow-y: auto; font-family: monospace; font-size: 12px; color: #0f0;">
+                    [System] تم تفعيل سجل الرصد الذكي...
+                </div>
+            </section>
+
+            <div class="audio-control">
+                <i class="fas fa-volume-down"></i>
+                <input type="range" id="volume-slider" min="0" max="100" value="30">
+                <i class="fas fa-volume-up"></i>
+            </div>
+        </main>
     </div>
 
     <script>
-        // نظام التنقل بين الصفحات
-        function openPage(id, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        // --- 1. نظام إدارة البيانات (Local Storage) ---
+        function saveSettings() {
+            const img = document.getElementById('img-url-input').value;
+            const vid = document.getElementById('vid-id-input').value;
+            const name = document.getElementById('name-input').value;
+
+            if(img) localStorage.setItem('hassan_img', img);
+            if(vid) localStorage.setItem('hassan_vid', vid);
+            if(name) localStorage.setItem('hassan_name', name);
+
+            alert("تم حفظ التعديلات! سيتم تحديث الموقع الآن.");
+            location.reload();
+        }
+
+        function loadSettings() {
+            if(localStorage.getItem('hassan_img')) document.getElementById('profile-img').src = localStorage.getItem('hassan_img');
+            if(localStorage.getItem('hassan_name')) document.getElementById('dev-name').innerText = localStorage.getItem('hassan_name');
+            // سيتم تحميل الفيديو في كود اليوتيوب أدناه
+        }
+
+        // --- 2. نظام اليوتيوب والموسيقى الناصية ---
+        var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        var player;
+        const videoID = localStorage.getItem('hassan_vid') || 'RW7DcfTGdHk';
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                videoId: videoID,
+                playerVars: { 'autoplay': 1, 'controls': 0, 'loop': 1, 'playlist': videoID, 'mute': 1 }
+            });
+        }
+
+        document.getElementById('volume-slider').addEventListener('input', (e) => {
+            if(player) {
+                player.unMute();
+                player.setVolume(e.target.value);
+            }
+        });
+
+        // --- 3. نظام الرصد الذكي (IP Fetching) ---
+        async function fetchAIContext() {
+            try {
+                const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
+                const data = await res.json();
+                document.getElementById('visitor-ip').innerText = `IP: ${data.ip}`;
+                document.getElementById('my-ip-display').innerText = `IP: ${data.ip}`;
+                document.getElementById('user-country').innerText = `بطل من ${data.country}`;
+                
+                // إضافة السجل
+                const log = document.getElementById('ip-logs');
+                log.innerHTML += `<br>[${new Date().toLocaleTimeString()}] دخول جديد من ${data.country} (IP: ${data.ip})`;
+            } catch (e) { console.log("AI Offline"); }
+        }
+
+        // --- 4. نظام الدخول التلقائي ---
+        window.addEventListener('load', () => {
+            loadSettings();
+            fetchAIContext();
+
+            // تسلسل الترحيب الصوتي
+            setTimeout(() => {
+                let speech = new SpeechSynthesisUtterance("نظام حسن علي المطور، قيد التشغيل. تم رصد هويتك، أهلاً بك.");
+                speech.lang = 'ar-SA';
+                window.speechSynthesis.speak(speech);
+            }, 1000);
+
+            // فتح الموقع بعد 5 ثواني
+            setTimeout(() => {
+                const loader = document.getElementById('ai-loader');
+                loader.style.opacity = '0';
+                loader.style.transform = 'translateY(-100%)';
+                
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    gsap.to("#app-container", { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" });
+                    if(player) { 
+                        player.unMute(); 
+                        player.setVolume(30); // الموسيقى ناصية تلقائياً
+                    }
+                }, 1000);
+            }, 5000);
+        });
+
+        // --- 5. نظام التنقل ---
+        function showView(id, btn) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             btn.classList.add('active');
         }
 
-        // يوتيوب خلفية
-        var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                videoId: 'RW7DcfTGdHk',
-                playerVars: { 'autoplay': 1, 'controls': 0, 'loop': 1, 'playlist': 'RW7DcfTGdHk', 'mute': 1 }
-            });
-        }
-
-        // الدخول التلقائي الذكي
-        window.addEventListener('load', () => {
-            gsap.to("#t1", { opacity: 1, y: 0, duration: 1, delay: 0.5 });
-            gsap.to("#t2", { opacity: 1, y: 0, duration: 1, delay: 1.5 });
-
-            setTimeout(() => {
-                let msg = new SpeechSynthesisUtterance("أهلاً بك في متجر حسن للسكربتات. يرجى الالتزام بالقوانين وعدم التخريب. استمتع بالأدوات.");
-                msg.lang = 'ar-SA';
-                window.speechSynthesis.speak(msg);
-            }, 1000);
-
-            setTimeout(() => {
-                const gate = document.getElementById('welcome-gate');
-                gate.style.opacity = '0';
-                setTimeout(() => {
-                    gate.style.display = 'none';
-                    gsap.to("#main-app", { opacity: 1, scale: 1, duration: 1.5, ease: "back.out(1.7)" });
-                    if(player) { player.unMute(); player.setVolume(100); }
-                }, 1000);
-            }, 6000);
-        });
-
-        // النجوم الخلفية
+        // --- 6. تأثيرات الخلفية الفخمة ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        const geo = new THREE.BufferGeometry(); const pos = [];
-        for(let i=0; i<3000; i++) pos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
-        geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-        const pts = new THREE.Points(geo, new THREE.PointsMaterial({color: 0xffffff, size: 2.5}));
-        scene.add(pts); camera.position.z = 500;
-        function anim() { requestAnimationFrame(anim); pts.rotation.y += 0.0005; renderer.render(scene, camera); }
-        anim();
-        window.onresize = () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); };
+
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = [];
+        for(let i=0; i<6000; i++) {
+            starPos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        }
+        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0x00f2ff, size: 1.5}));
+        scene.add(stars);
+        camera.position.z = 1;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.y += 0.001;
+            stars.rotation.x += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
     </script>
 </body>
 </html>
