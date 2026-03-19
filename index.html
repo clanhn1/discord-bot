@@ -3,127 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN AL-SHAMMARI | THE ROYAL PASS</title>
+    <title>HASSAN AL-SHAMMARI | OFFICIAL</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@800&family=Caveat:wght@700&family=Poppins:wght@300;600;900&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --royal-white: #ffffff;
-            --glass-panel: rgba(255, 255, 255, 0.04);
-        }
+        :root { --royal-white: #ffffff; --glass: rgba(255, 255, 255, 0.05); }
 
-        body, html {
-            margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background: #000; font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-        }
+        body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: 'Poppins', sans-serif; }
 
         /* شاشة الترحيب التلقائية */
         #auto-welcome {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 10000; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; transition: 2s ease-in-out;
+            align-items: center; justify-content: center; transition: 1.5s ease-in-out;
         }
-        .loading-text {
-            color: #fff; font-family: 'Anek Malayalam'; font-size: 35px;
-            opacity: 0; transform: translateY(20px);
-        }
+        .loading-text { color: #fff; font-family: 'Anek Malayalam'; font-size: 30px; opacity: 0; transform: translateY(20px); text-align: center; padding: 0 20px; }
 
-        /* رادار الترحيب بالدولة */
+        /* رادار الترحيب الودود */
         #geo-welcome {
             position: fixed; top: 30px; left: -500px; z-index: 9999;
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
-            border-left: 4px solid #fff; padding: 20px 40px; border-radius: 0 15px 15px 0;
-            box-shadow: 10px 0 40px rgba(0,0,0,0.5);
-            color: #fff; font-size: 19px; transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+            background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px);
+            border-left: 4px solid #fff; padding: 15px 30px; border-radius: 0 15px 15px 0;
+            color: #fff; font-size: 18px; transition: 1.2s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        /* الخلفية والنجوم */
-        #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        #canvas-bg { position: absolute; top: 0; left: 0; z-index: 1; }
         #video-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0; transition: 3s; }
-        iframe { width: 100vw; height: 100vh; transform: scale(1.6); border: none; }
+        iframe { width: 100vw; height: 100vh; transform: scale(1.6); border: none; pointer-events: none; }
 
-        /* البطاقة الملكية 3D */
+        /* البطاقة الملكية */
         .royal-card {
-            position: relative; z-index: 10; width: 440px;
-            background: var(--glass-panel); backdrop-filter: blur(50px);
+            position: relative; z-index: 10; width: 400px;
+            background: var(--glass); backdrop-filter: blur(50px);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 50px;
-            padding: 60px 30px; text-align: center;
-            opacity: 0; transform: scale(0.8) translateY(50px);
-            transform-style: preserve-3d;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            padding: 60px 20px; text-align: center;
+            opacity: 0; transform: scale(0.8); transition: 1.5s;
         }
 
-        .img-glow-frame {
-            width: 180px; height: 180px; margin: 0 auto 30px auto;
-            border: 2px solid #fff; border-radius: 50%; padding: 8px;
-            box-shadow: 0 0 50px rgba(255,255,255,0.2); transform: translateZ(60px);
+        .avatar-frame {
+            width: 170px; height: 170px; margin: 0 auto 25px auto;
+            border: 2px solid #fff; border-radius: 50%; padding: 6px;
+            box-shadow: 0 0 40px rgba(255,255,255,0.2);
         }
-        .img-glow-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        /* تم إصلاح الرابط هنا */
+        .avatar-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-        h1 { font-family: 'Anek Malayalam', sans-serif; font-size: 46px; color: #fff; margin: 0; transform: translateZ(50px); }
-        .sub-name { font-family: 'Caveat', cursive; color: #fff; opacity: 0.7; font-size: 34px; margin-bottom: 35px; display: block; transform: translateZ(40px); }
+        h1 { font-family: 'Anek Malayalam', sans-serif; font-size: 40px; color: #fff; margin: 0; }
+        .sub-name { font-family: 'Caveat', cursive; color: #aaa; font-size: 28px; margin-bottom: 30px; display: block; }
 
-        .discord-link {
-            display: inline-block; padding: 20px 70px; background: #fff; color: #000;
+        .discord-btn {
+            display: inline-block; padding: 18px 60px; background: #fff; color: #000;
             text-decoration: none; font-weight: 900; border-radius: 100px;
-            font-size: 20px; transition: 0.4s; transform: translateZ(50px);
-            box-shadow: 0 10px 40px rgba(255,255,255,0.2);
+            font-size: 18px; transition: 0.4s; box-shadow: 0 10px 30px rgba(255,255,255,0.2);
         }
-        .discord-link:hover { transform: translateZ(70px) scale(1.05); box-shadow: 0 0 60px #fff; }
+        .discord-btn:hover { transform: scale(1.05); box-shadow: 0 0 50px #fff; }
 
-        /* السوشيال ميديا في الأسفل */
-        .social-bar {
-            display: flex; justify-content: center; gap: 50px; margin-top: 40px;
-            padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);
-            transform: translateZ(30px);
+        .social-links {
+            display: flex; justify-content: center; gap: 40px; margin-top: 40px;
+            padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.05);
         }
-        .social-bar a { color: #fff; font-size: 38px; opacity: 0.5; transition: 0.4s; }
-        .social-bar a:hover { opacity: 1; transform: translateY(-10px) scale(1.3); filter: drop-shadow(0 0 20px #fff); }
+        .social-links a { color: #fff; font-size: 32px; opacity: 0.6; transition: 0.3s; }
+        .social-links a:hover { opacity: 1; transform: translateY(-5px); filter: drop-shadow(0 0 10px #fff); }
 
-        /* توهج نبض الموسيقى المحيط */
-        .pulse-aura {
+        .pulse-effect {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             border-radius: 50px; z-index: -1; opacity: 0;
-            box-shadow: 0 0 0px #fff; transition: 0.2s;
+            animation: pulseAnim 0.5s infinite alternate;
         }
-        .active-beat { animation: royalPulse 0.5s infinite alternate; }
-        @keyframes royalPulse { to { box-shadow: 0 0 140px rgba(255,255,255,0.3); } }
+        @keyframes pulseAnim { to { box-shadow: 0 0 120px rgba(255,255,255,0.25); } }
     </style>
 </head>
 <body style="display:flex; align-items:center; justify-content:center;">
 
     <div id="auto-welcome">
         <div class="loading-text" id="t1">مرحباً بك..</div>
-        <div class="loading-text" id="t2" style="margin-top: 20px; font-size: 45px;">في عالم حسن علي الشمري</div>
+        <div class="loading-text" id="t2" style="margin-top:15px; font-size:40px;">في مملكة حسن علي</div>
     </div>
 
     <div id="geo-welcome">
-        <i class="fas fa-heart" style="color:#fff; margin-left:10px;"></i>
-        <span id="welcome-msg">نورتنا يا غالي...</span>
+        <i class="fas fa-heart"></i> <span id="welcome-msg">أهلاً بك يا غالي..</span>
     </div>
 
     <div id="video-bg"><div id="player"></div></div>
     <canvas id="canvas-bg"></canvas>
 
-    <div class="royal-card" id="card-ui" data-tilt data-tilt-max="12" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.2">
-        <div class="pulse-aura" id="aura"></div>
-        
-        <div class="img-glow-frame">
+    <div class="royal-card" id="main-card" data-tilt data-tilt-max="10">
+        <div class="pulse-effect" id="aura"></div>
+        <div class="avatar-frame">
             <img src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" alt="Hassan">
         </div>
-        
         <h1>حسن علي الشمري</h1>
         <span class="sub-name"># ابن ساير</span>
-
-        <a href="https://discord.gg/CTwKRt7u" class="discord-link" target="_blank">انضم لسيرفر الدسكورد</a>
-
-        <div class="social-bar">
+        <a href="https://discord.gg/CTwKRt7u" class="discord-btn" target="_blank">انضم لسيرفري</a>
+        <div class="social-links">
             <a href="https://www.instagram.com/76h16/?hl=ar" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="https://www.tiktok.com/@6r09" target="_blank"><i class="fab fa-tiktok"></i></a>
         </div>
@@ -142,68 +119,51 @@
             });
         }
 
-        // تسلسل الدخول التلقائي (5 ثواني)
+        // الدخول التلقائي
         window.addEventListener('load', () => {
-            // تحريك نصوص الترحيب
             gsap.to("#t1", { opacity: 1, y: 0, duration: 1, delay: 0.5 });
-            gsap.to("#t2", { opacity: 1, y: 0, duration: 1, delay: 1.5 });
+            gsap.to("#t2", { opacity: 1, y: 0, duration: 1, delay: 1.2 });
 
-            // نطق الترحيب
+            // الترحيب الصوتي
             setTimeout(() => {
-                let speech = new SpeechSynthesisUtterance("أهلاً بك.. نورت ملف الشخصي الخاص بـ حسن علي الشمري، ابن ساير.");
+                let speech = new SpeechSynthesisUtterance("أهلاً بك.. نورت عالم حسن علي الشمري، ابن ساير.");
                 speech.lang = 'ar-SA';
-                speech.rate = 0.9;
                 window.speechSynthesis.speak(speech);
-            }, 1000);
+            }, 800);
 
-            // الدخول التلقائي بعد 5 ثواني
+            // الانتقال بعد 5 ثواني
             setTimeout(() => {
                 const welcome = document.getElementById('auto-welcome');
                 welcome.style.opacity = '0';
-                welcome.style.transform = 'scale(1.2)';
-                
                 setTimeout(() => {
                     welcome.style.display = 'none';
-                    // إظهار البطاقة
-                    gsap.to("#card-ui", { opacity: 1, scale: 1, y: 0, duration: 2, ease: "power4.out" });
+                    gsap.to("#main-card", { opacity: 1, scale: 1, duration: 1.5 });
                     document.getElementById('video-bg').style.opacity = '0.35';
-                    
                     if (player) { player.unMute(); player.setVolume(100); }
-                    
-                    // تشغيل التوهج
-                    setTimeout(() => {
-                        document.getElementById('aura').style.opacity = '1';
-                        document.getElementById('aura').classList.add('active-beat');
-                    }, 1000);
-
-                    // كشف الموقع والترحيب الودود
+                    document.getElementById('aura').style.opacity = '1';
                     fetchLocation();
-                }, 1500);
+                }, 1000);
             }, 5000);
         });
 
         function fetchLocation() {
-            const countriesAr = {"Iraq": "العراق", "Saudi Arabia": "السعودية", "Egypt": "مصر", "Jordan": "الأردن", "Kuwait": "الكويت"};
-            fetch('https://get.geojs.io/v1/ip/geo.json')
-            .then(res => res.json())
-            .then(data => {
-                let c = countriesAr[data.country] || data.country;
-                document.getElementById('welcome-msg').innerHTML = `أهلاً بك يا غالي من أهل <span style="font-weight:900;">${c}</span>، نورت عالمي!`;
-                setTimeout(() => { document.getElementById('geo-welcome').style.left = '0'; }, 500);
+            fetch('https://get.geojs.io/v1/ip/geo.json').then(res => res.json()).then(data => {
+                document.getElementById('welcome-msg').innerText = `أهلاً بك يا غالي من ${data.country}، نورتنا!`;
+                document.getElementById('geo-welcome').style.left = '0';
             });
         }
 
-        // نجوم الخلفية (Full Screen)
+        // النجوم
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         const geo = new THREE.BufferGeometry(); const pos = [];
-        for(let i=0; i<4000; i++) pos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        for(let i=0; i<3000; i++) pos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
         geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
         const pts = new THREE.Points(geo, new THREE.PointsMaterial({color: 0xffffff, size: 2.5}));
         scene.add(pts); camera.position.z = 500;
-        function anim() { requestAnimationFrame(anim); pts.rotation.y += 0.0007; renderer.render(scene, camera); }
+        function anim() { requestAnimationFrame(anim); pts.rotation.y += 0.0008; renderer.render(scene, camera); }
         anim();
         window.onresize = () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); };
     </script>
