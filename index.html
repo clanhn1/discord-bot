@@ -3,195 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة حسن علي الشمري | HASSAN AL-SHAMMARI</title>
+    <title>HASSAN AL-SHAMMARI | NEURAL OS</title>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --neon: #00f2ff; --iraq: #ff0000; --dark: #050505; --glass: rgba(255,255,255,0.02); }
-        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Changa', sans-serif; overflow-x: hidden; }
+        :root { --p-color: #00f2ff; --owner-gold: #ffcc00; --bg: #000; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Changa', sans-serif; overflow: hidden; }
 
-        /* الهوية العراقية */
-        .hassan-header { position: fixed; top: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #ff0000 33%, #fff 33% 66%, #000 66%); z-index: 5000; }
+        /* خلفية الذكاء الاصطناعي الصادمة */
+        #canvas-container { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
 
-        /* واجهة المستخدم الزجاجية */
-        .main-container { width: 95%; max-width: 1400px; margin: 40px auto; background: var(--glass); backdrop-filter: blur(30px); border-radius: 40px; border: 1px solid rgba(255,255,255,0.05); min-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 50px 100px rgba(0,0,0,0.5); }
+        /* واجهة المالك (Owner UI) */
+        #owner-badge {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            background: rgba(255, 204, 0, 0.1); border: 1px solid var(--owner-gold);
+            padding: 10px 20px; border-radius: 50px; display: none;
+            font-family: 'Orbitron'; color: var(--owner-gold); font-size: 12px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.3); animation: pulse 2s infinite;
+        }
 
-        /* القائمة العلوية */
-        nav { padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .nav-brand { font-family: 'Orbitron'; font-size: 24px; font-weight: 900; color: #fff; text-decoration: none; }
-        .nav-links { display: flex; gap: 30px; }
-        .nav-btn { cursor: pointer; padding: 10px 20px; border-radius: 12px; transition: 0.3s; font-weight: 800; border: 1px solid transparent; }
-        .nav-btn.active { background: rgba(0,242,255,0.1); border-color: var(--neon); color: var(--neon); }
+        /* التصميم الزجاجي الفخم */
+        .glass-panel {
+            position: relative; z-index: 10; width: 92%; height: 90vh; margin: 5vh auto;
+            background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 40px;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
 
-        /* المحتوى الرئيسي */
-        .content { flex: 1; padding: 50px; }
-        .section { display: none; animation: fadeIn 0.5s ease-in-out; }
-        .section.active { display: block; }
+        /* الهيدر */
+        header { padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo { font-family: 'Orbitron'; font-size: 28px; font-weight: 900; letter-spacing: 4px; }
+        
+        /* التبويبات */
+        .tabs { display: flex; gap: 40px; }
+        .tab-link { cursor: pointer; opacity: 0.4; transition: 0.4s; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+        .tab-link.active { opacity: 1; color: var(--p-color); text-shadow: 0 0 15px var(--p-color); }
 
-        /* كروت المنتجات الشغالة */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-        .h-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 25px; padding: 25px; position: relative; transition: 0.4s; }
-        .h-card:hover { border-color: var(--neon); transform: translateY(-10px); background: rgba(0,242,255,0.02); }
-        .badge { position: absolute; top: 15px; left: 15px; background: #00ff88; color: #000; font-size: 10px; padding: 4px 12px; border-radius: 50px; font-weight: 900; }
-        .card-actions { margin-top: 20px; display: flex; gap: 10px; }
-        .btn-main { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .btn-download { background: #fff; color: #000; }
-        .btn-delete { background: #ff4b4b; color: #fff; max-width: 50px; }
+        /* منطقة العرض */
+        .viewport { flex: 1; padding: 40px; overflow-y: auto; scrollbar-width: none; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
 
-        /* لوحة الرفع (Admin) */
-        .upload-panel { max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.02); padding: 40px; border-radius: 30px; border: 1px dashed var(--neon); }
-        .h-input { width: 100%; padding: 15px; margin-bottom: 15px; background: #000; border: 1px solid #333; color: #fff; border-radius: 12px; outline: none; box-sizing: border-box; }
-        .h-input:focus { border-color: var(--neon); }
+        /* كرت المنتج الفخم */
+        .h-card {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px; padding: 40px; position: relative; transition: 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transform-style: preserve-3d;
+        }
+        .h-card:hover { transform: translateY(-20px) rotateX(10deg); border-color: var(--p-color); background: rgba(0, 242, 255, 0.03); }
+        .h-card h3 { font-family: 'Orbitron'; font-size: 22px; margin-bottom: 10px; }
+        .btn-action { width: 100%; padding: 15px; border-radius: 15px; border: none; background: #fff; color: #000; font-weight: 900; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-action:hover { background: var(--p-color); color: #fff; transform: scale(1.05); }
 
-        /* مشغل الموسيقى */
-        .music-footer { position: fixed; bottom: 30px; left: 30px; background: #000; padding: 15px 30px; border-radius: 100px; border: 1px solid var(--neon); display: flex; align-items: center; gap: 20px; z-index: 1000; }
-        .vol-slider { width: 80px; accent-color: var(--neon); cursor: pointer; }
+        /* لوحة المالك (مخفية للعامة) */
+        #admin-view { display: none; }
+        .admin-box { background: rgba(0,0,0,0.5); padding: 40px; border-radius: 30px; border: 1px dashed var(--owner-gold); }
+        .h-input { width: 100%; padding: 15px; margin-bottom: 15px; background: #000; border: 1px solid #222; color: #fff; border-radius: 12px; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
-    <div class="hassan-header"></div>
+    <div id="owner-badge"><i class="fas fa-crown"></i> OWNER: HASSAN ALI</div>
+    <div id="canvas-container"></div>
 
-    <div class="main-container">
-        <nav>
-            <div class="nav-brand">HASSAN <span style="color:var(--neon)">ALI</span></div>
-            <div class="nav-links">
-                <div class="nav-btn active" onclick="switchTab('store', this)">السكربتات</div>
-                <div class="nav-btn" onclick="switchTab('apps', this)">التطبيقات</div>
-                <div class="nav-btn" onclick="switchTab('admin', this)" style="color:var(--neon)">لوحة التحكم</div>
+    <div class="glass-panel">
+        <header>
+            <div class="logo">HASSAN<span style="color:var(--p-color)">.AI</span></div>
+            <div class="tabs">
+                <div class="tab-link active" onclick="switchTab('store', this)">المتجر العام</div>
+                <div class="tab-link" onclick="switchTab('apps', this)">التطبيقات</div>
+                <div id="owner-tab" class="tab-link" onclick="switchTab('admin', this)" style="display:none; color:var(--owner-gold)">التحكم بالمنصة</div>
             </div>
-            <div id="visitor-info" style="font-size:12px; font-family:'Orbitron'; color:var(--neon);">IP: FETCHING...</div>
-        </nav>
+            <div id="status" style="font-size:10px; font-family:'Orbitron'; color:var(--p-color);">SYSTEM: STABLE</div>
+        </header>
 
-        <main class="content">
-            <section id="tab-store" class="section active">
-                <h1 style="text-align:center; font-size:45px; margin-bottom:10px;">مكتبة حسن علي الشمري 🇮🇶</h1>
-                <p style="text-align:center; opacity:0.5; margin-bottom:50px;">جميع السكربتات مجانية وشغالة 100%</p>
-                <div class="grid" id="scripts-grid"></div>
-            </section>
+        <main class="viewport">
+            <div id="store-view" class="section active">
+                <h1 style="text-align:center; font-size:50px; font-weight:800; margin-bottom:50px;">مكتبة حسن علي الشمري</h1>
+                <div class="grid" id="items-grid"></div>
+            </div>
 
-            <section id="tab-apps" class="section">
-                <h1 style="text-align:center; font-size:45px; margin-bottom:50px;">التطبيقات المجانية</h1>
+            <div id="apps-view" class="section" style="display:none">
+                <h1 style="text-align:center; font-size:50px; font-weight:800; margin-bottom:50px;">التطبيقات المجانية</h1>
                 <div class="grid" id="apps-grid"></div>
-            </section>
+            </div>
 
-            <section id="tab-admin" class="section">
-                <div class="upload-panel">
-                    <h2 style="color:var(--neon); text-align:center;">إضافة محتوى جديد</h2>
-                    <input type="text" id="p-title" class="h-input" placeholder="عنوان السكربت أو التطبيق...">
-                    <textarea id="p-desc" class="h-input" style="height:100px;" placeholder="وصف بسيط للمحتوى..."></textarea>
-                    <input type="text" id="p-link" class="h-input" placeholder="ضع رابط التحميل أو كود السكربت هنا...">
-                    <select id="p-type" class="h-input">
-                        <option value="script">سكربت برمجيات</option>
-                        <option value="app">تطبيق أندرويد/آيفون</option>
+            <div id="admin-view" class="section">
+                <div class="admin-box">
+                    <h2>نظام رفع البيانات الذكي</h2>
+                    <input type="text" id="title" class="h-input" placeholder="عنوان العمل...">
+                    <textarea id="desc" class="h-input" placeholder="الوصف..."></textarea>
+                    <input type="text" id="link" class="h-input" placeholder="الرابط أو الكود...">
+                    <select id="type" class="h-input">
+                        <option value="store">سكربت</option>
+                        <option value="apps">تطبيق</option>
                     </select>
-                    <button class="btn-main" style="background:var(--neon); color:#000; width:100%;" onclick="processUpload()">نشر المحتوى فوراً</button>
+                    <button class="btn-action" style="background:var(--owner-gold); color:#000;" onclick="uploadItem()">نشر في الموقع الآن</button>
                 </div>
-            </section>
+            </div>
         </main>
     </div>
 
-    <div class="music-footer">
-        <i class="fas fa-play" id="m-btn" style="cursor:pointer; color:var(--neon);" onclick="toggleHassanMusic()"></i>
-        <div style="font-size:12px; font-weight:800;">Hassan Radio</div>
-        <input type="range" id="vol" class="vol-slider" min="0" max="100" value="20">
-    </div>
-
     <script>
-        // --- محرك البيانات الحقيقي (Logical Core) ---
-        let storage = JSON.parse(localStorage.getItem('hassan_data')) || [
-            {id: 1, title: 'Blox Fruits Auto Farm', desc: 'أقوى سكربت تجميع تلقائي مجاني.', link: 'https://pastebin.com/raw/test', type: 'script'},
-            {id: 2, title: 'Hassan Executor V1', desc: 'تطبيق حقن سكربتات سريع جداً.', link: 'https://mega.nz/file', type: 'app'}
-        ];
+        // --- حماية المالك (Ownership Logic) ---
+        // ملاحظة: لكي يعمل هذا عليك فتحه من الـ PC الخاص بك مرة واحدة ليقوم النظام بحفظ بصمتك.
+        function setupOwner() {
+            const pcId = localStorage.getItem('hassan_owner_key');
+            if (!pcId) {
+                // أول مرة تفتح الموقع من جهازك، سيتم اعتباره جهاز المالك
+                localStorage.setItem('hassan_owner_key', 'HASSAN_PC_VALIDATED');
+            }
+            
+            // تحقق إذا كان هذا هو جهاز حسن
+            if(localStorage.getItem('hassan_owner_key') === 'HASSAN_PC_VALIDATED') {
+                document.getElementById('owner-badge').style.display = 'block';
+                document.getElementById('owner-tab').style.display = 'block';
+                return true;
+            }
+            return false;
+        }
 
-        function renderAll() {
-            const sGrid = document.getElementById('scripts-grid');
+        // --- محرك البيانات ---
+        let storage = JSON.parse(localStorage.getItem('hassan_neural_data')) || [];
+
+        function render() {
+            const sGrid = document.getElementById('items-grid');
             const aGrid = document.getElementById('apps-grid');
             sGrid.innerHTML = ''; aGrid.innerHTML = '';
 
-            storage.forEach(item => {
+            storage.forEach((item, index) => {
                 const card = `
                     <div class="h-card">
-                        <span class="badge">مجاني</span>
-                        <h3 style="font-family:'Orbitron'">${item.title}</h3>
-                        <p style="opacity:0.6; font-size:14px; min-height:40px;">${item.desc}</p>
-                        <div class="card-actions">
-                            <button class="btn-main btn-download" onclick="copyOrDownload('${item.link}')">
-                                ${item.type === 'script' ? 'نسخ الكود' : 'تحميل التطبيق'}
-                            </button>
-                            <button class="btn-main btn-delete" onclick="deleteItem(${item.id})"><i class="fas fa-trash"></i></button>
-                        </div>
+                        <div style="font-size:10px; color:var(--p-color); margin-bottom:10px;">ID: #${index+100}</div>
+                        <h3>${item.title}</h3>
+                        <p style="opacity:0.5; font-size:14px;">${item.desc}</p>
+                        <button class="btn-action" onclick="window.open('${item.link}')">استخدام الآن</button>
+                        ${setupOwner() ? `<button onclick="deleteItem(${index})" style="background:none; border:none; color:red; cursor:pointer; margin-top:10px; font-size:10px;">حذف من النظام</button>` : ''}
                     </div>
                 `;
-                if(item.type === 'script') sGrid.innerHTML += card;
+                if(item.type === 'store') sGrid.innerHTML += card;
                 else aGrid.innerHTML += card;
             });
-            localStorage.setItem('hassan_data', JSON.stringify(storage));
+            localStorage.setItem('hassan_neural_data', JSON.stringify(storage));
         }
 
-        function processUpload() {
-            const title = document.getElementById('p-title').value;
-            const desc = document.getElementById('p-desc').value;
-            const link = document.getElementById('p-link').value;
-            const type = document.getElementById('p-type').value;
+        function uploadItem() {
+            const title = document.getElementById('title').value;
+            const desc = document.getElementById('desc').value;
+            const link = document.getElementById('link').value;
+            const type = document.getElementById('type').value;
 
             if(title && link) {
-                const newItem = { id: Date.now(), title, desc, link, type };
-                storage.push(newItem);
-                renderAll();
-                alert("تم النشر بنجاح يا حسن! ستجده الآن في القائمة.");
-                // مسح الحقول
-                document.getElementById('p-title').value = '';
-                document.getElementById('p-link').value = '';
-            } else {
-                alert("يرجى ملء البيانات أولاً!");
+                storage.push({title, desc, link, type});
+                render();
+                alert("تم النشر بنجاح يا حسن!");
             }
         }
 
-        function deleteItem(id) {
-            if(confirm("هل تريد حذف هذا المنتج نهائياً؟")) {
-                storage = storage.filter(i => i.id !== id);
-                renderAll();
-            }
+        function deleteItem(index) {
+            storage.splice(index, 1);
+            render();
         }
 
-        function copyOrDownload(link) {
-            navigator.clipboard.writeText(link);
-            alert("تم نسخ الرابط/الكود بنجاح!");
-            if(link.startsWith('http')) window.open(link, '_blank');
-        }
-
-        // --- نظام التبويبات ---
         function switchTab(id, btn) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById('tab-' + id).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.getElementById(id + '-view').style.display = 'block';
+            document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
             btn.classList.add('active');
         }
 
-        // --- نظام الصوت والذكاء ---
-        async function fetchIP() {
-            try {
-                const r = await fetch('https://api.ipify.org?format=json');
-                const d = await r.json();
-                document.getElementById('visitor-info').innerText = "IP: " + d.ip;
-            } catch(e) { document.getElementById('visitor-info').innerText = "IP: PROTECTED"; }
-        }
+        // --- التأثيرات البصرية (AI Visuals) ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // ترحيب صوتي عند الدخول
-        window.onload = () => {
-            renderAll();
-            fetchIP();
-            setTimeout(() => {
-                let s = new SpeechSynthesisUtterance("أهلاً بك في منصة حسن علي الشمري. الموقع جاهز للعمل.");
-                s.lang = 'ar-SA'; window.speechSynthesis.speak(s);
-            }, 1000);
-        };
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = [];
+        for(let i=0; i<15000; i++) {
+            starPos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        }
+        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+        const starMat = new THREE.PointsMaterial({ color: 0x00f2ff, size: 0.7 });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+
+        // ثقب أسود مركزي
+        const holeGeo = new THREE.TorusGeometry(10, 3, 16, 100);
+        const holeMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const hole = new THREE.Mesh(holeGeo, holeMat);
+        scene.add(hole);
+
+        camera.position.z = 500;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.y += 0.0005;
+            stars.rotation.x += 0.0002;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.onload = () => { setupOwner(); render(); };
     </script>
 </body>
 </html>
