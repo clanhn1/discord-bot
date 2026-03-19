@@ -3,316 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN ELITE | ADVANCED CONTROL SYSTEM</title>
+    <title>HASSAN HUB | THE IRAQI DEVELOPER</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;700&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;800&family=Orbitron:wght@500;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --p-color: #ffffff;
-            --accent: #00f2ff;
-            --glass: rgba(255, 255, 255, 0.02);
-            --border: rgba(255, 255, 255, 0.1);
+            --neon: #ffffff;
+            --accent: #00d2ff;
+            --glass: rgba(255, 255, 255, 0.03);
+            --bg: #030303;
         }
 
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background: #000; overflow: hidden; font-family: 'Changa', sans-serif;
-            color: #fff; user-select: none;
+            background: var(--bg); color: #fff; font-family: 'Changa', sans-serif;
+            overflow: hidden;
         }
 
-        /* شاشة الدخول الذكية */
-        #ai-loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
-            z-index: 10000; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; transition: 1.5s cubic-bezier(0.95, 0.05, 0.795, 0.035);
+        /* علم العراق المتحرك */
+        #iraq-flag {
+            position: fixed; top: 20px; left: 20px; z-index: 1000;
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.1); padding: 10px 20px;
+            border-radius: 50px; border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px); animation: float 3s infinite ease-in-out;
         }
-        .ai-brain-icon { font-size: 60px; color: var(--accent); animation: pulse 2s infinite; margin-bottom: 20px; }
-        @keyframes pulse { 0% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.3; transform: scale(0.8); } }
+        .flag-wave {
+            width: 40px; height: 25px; background: linear-gradient(to bottom, #ff0000 33%, #ffffff 33% 66%, #000000 66%);
+            position: relative; border-radius: 3px; overflow: hidden;
+        }
+        .flag-wave::after { content: "الله أكبر"; color: green; font-size: 6px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        /* الواجهة الرئيسية الهولوغرامية */
-        #app-container {
-            position: relative; z-index: 100; width: 95%; max-width: 1300px;
-            height: 90vh; background: var(--glass); backdrop-filter: blur(50px);
-            border: 1px solid var(--border); border-radius: 40px;
-            display: flex; opacity: 0; transform: translateY(50px);
-            box-shadow: 0 0 50px rgba(0,0,0,0.8); overflow: hidden;
-        }
-
-        /* الجانب الأيمن (Navigation) */
-        .sidebar {
-            width: 280px; border-left: 1px solid var(--border);
-            background: rgba(0,0,0,0.3); padding: 30px 15px;
-            display: flex; flex-direction: column; gap: 15px;
-        }
-        .nav-link {
-            padding: 18px; border-radius: 20px; cursor: pointer;
-            transition: 0.4s; display: flex; align-items: center; gap: 15px;
-            font-weight: bold; color: rgba(255,255,255,0.5); border: 1px solid transparent;
-        }
-        .nav-link.active, .nav-link:hover {
-            background: linear-gradient(90deg, rgba(255,255,255,0.1), transparent);
-            color: #fff; border-color: rgba(255,255,255,0.2);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        /* الشاشة الرئيسية - القائمة الكاملة */
+        #main-wrapper {
+            position: relative; z-index: 100; width: 95%; height: 90vh;
+            margin: 5vh auto; background: var(--glass); backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 40px;
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 0 100px rgba(0,0,0,0.8);
         }
 
-        /* المحتوى الأساسي */
-        .main-view { flex: 1; padding: 40px; overflow-y: auto; position: relative; }
-        .view-section { display: none; animation: slideUp 0.6s ease-out forwards; }
-        .view-section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* التحكم في الصوت (الخط المنصي) */
-        .audio-control {
-            position: absolute; bottom: 30px; left: 30px;
-            display: flex; align-items: center; gap: 15px;
-            background: rgba(255,255,255,0.05); padding: 10px 20px;
-            border-radius: 100px; border: 1px solid var(--border);
+        /* الهيدر العلوي الفخم */
+        nav {
+            padding: 20px 50px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: space-between; align-items: center;
         }
-        input[type=range] { width: 120px; cursor: pointer; accent-color: #fff; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links div {
+            cursor: pointer; font-weight: 800; font-family: 'Orbitron';
+            letter-spacing: 2px; opacity: 0.6; transition: 0.3s;
+        }
+        .nav-links div:hover, .nav-links div.active { opacity: 1; color: var(--accent); text-shadow: 0 0 15px var(--accent); }
 
-        /* لوحة التحكم (للمطور فقط) */
-        .admin-panel {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--accent);
-            padding: 25px; border-radius: 25px; margin-top: 20px;
+        /* منطقة المحتوى */
+        .content-area { flex: 1; padding: 40px; overflow-y: auto; }
+        .grid-container {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px; animation: fadeInUp 0.8s ease;
+        }
+
+        /* كرت السكربت المتطور */
+        .script-card {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px; padding: 30px; position: relative; transition: 0.4s;
+        }
+        .script-card:hover { transform: translateY(-10px); border-color: var(--accent); background: rgba(0,210,255,0.05); }
+        .card-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn {
+            flex: 1; padding: 12px; border: none; border-radius: 12px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-copy { background: #fff; color: #000; }
+        .btn-delete { background: #ff4b4b; color: #fff; display: none; } /* يظهر للمطور فقط */
+
+        /* لوحة التحكم (المطور) */
+        .admin-section {
+            background: rgba(255,255,255,0.05); padding: 30px; border-radius: 25px;
+            margin-bottom: 40px; border: 1px dashed var(--accent);
         }
         .admin-input {
-            width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px;
-            background: #000; border: 1px solid #444; color: #fff; outline: none;
-        }
-        .save-btn {
-            background: var(--accent); color: #000; padding: 10px 30px;
-            border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+            background: #000; border: 1px solid #333; color: #fff;
+            padding: 15px; border-radius: 12px; width: 100%; margin-bottom: 15px; outline: none;
         }
 
-        /* كروت المتجر الفخمة */
-        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-        .script-card {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            border-radius: 25px; padding: 25px; transition: 0.5s;
-            transform-style: preserve-3d;
+        /* التحكم في الصوت */
+        .audio-hub {
+            position: fixed; bottom: 30px; right: 30px; z-index: 1001;
+            background: rgba(0,0,0,0.5); padding: 10px 25px; border-radius: 100px;
+            display: flex; align-items: center; gap: 15px; border: 1px solid var(--accent);
         }
-        .script-card:hover { border-color: var(--accent); background: rgba(0, 242, 255, 0.05); }
+        input[type=range] { width: 100px; accent-color: var(--accent); cursor: pointer; }
 
-        /* الخلفيات */
-        #canvas-bg { position: fixed; top: 0; left: 0; z-index: 1; }
-        #video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.2; }
+        #video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.2; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 0; }
 
-        .ip-badge {
-            background: rgba(0, 255, 157, 0.1); color: #00ff9d;
-            padding: 5px 15px; border-radius: 5px; font-family: 'Orbitron'; font-size: 12px;
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div id="ai-loader">
-        <i class="fas fa-microchip ai-brain-icon"></i>
-        <div id="ai-status" style="font-family: 'Orbitron'; letter-spacing: 5px;">SYSTEM INITIALIZING...</div>
-        <div id="visitor-ip" style="margin-top: 20px; color: #555;">IP: FETCHING...</div>
+    <div id="iraq-flag">
+        <div class="flag-wave"></div>
+        <div style="font-size: 14px; font-weight: 900;">المطور حسن | IRAQ</div>
     </div>
 
     <div id="video-bg"><div id="player"></div></div>
-    <canvas id="canvas-bg"></canvas>
+    <canvas id="starfield"></canvas>
 
-    <div id="app-container">
-        <div class="sidebar">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <img id="profile-img" src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 20px var(--accent);">
-                <h3 id="dev-name" style="margin-top: 15px; font-family: 'Orbitron';">HASSAN ALI</h3>
-                <span class="ip-badge" id="my-ip-display">IP: 0.0.0.0</span>
+    <div id="main-wrapper">
+        <nav>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <img id="profile-pic" src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" style="width:50px; height:50px; border-radius:50%; border:2px solid #fff;">
+                <h2 style="font-family:'Orbitron'; margin:0;">HASSAN HUB</h2>
             </div>
-            
-            <div class="nav-link active" onclick="showView('home', this)"><i class="fas fa-th-large"></i> البوابة الرئيسية</div>
-            <div class="nav-link" onclick="showView('scripts', this)"><i class="fas fa-code"></i> متجر السكربتات</div>
-            <div class="nav-link" onclick="showView('apps', this)"><i class="fas fa-box-open"></i> مركز التطبيقات</div>
-            <div class="nav-link" onclick="showView('admin', this)" style="margin-top: auto; border-top: 1px solid var(--border);"><i class="fas fa-user-shield"></i> إعدادات المطور</div>
+            <div class="nav-links">
+                <div class="active" onclick="switchTab('store', this)">المتجر</div>
+                <div onclick="switchTab('apps', this)">التطبيقات</div>
+                <div onclick="switchTab('admin', this)">لوحة التحكم</div>
+                <div onclick="switchTab('logs', this)">الرصد</div>
+            </div>
+        </nav>
+
+        <div class="content-area">
+            <section id="tab-store" class="tab-content">
+                <h1 style="text-align:center; font-size:40px; margin-bottom:40px;">أقوى السكربتات العالمية 💎</h1>
+                <div class="grid-container" id="scripts-list">
+                    </div>
+            </section>
+
+            <section id="tab-apps" class="tab-content" style="display:none;">
+                <h1 style="text-align:center; font-size:40px; margin-bottom:40px;">مركز التطبيقات المعدلة 📱</h1>
+                <div class="grid-container" id="apps-list">
+                    </div>
+            </section>
+
+            <section id="tab-admin" class="tab-content" style="display:none;">
+                <div class="admin-section">
+                    <h2>إضافة محتوى جديد (سكربت/تطبيق)</h2>
+                    <input type="text" id="new-title" class="admin-input" placeholder="عنوان العمل...">
+                    <textarea id="new-desc" class="admin-input" style="height:100px;" placeholder="وصف العمل..."></textarea>
+                    <input type="text" id="new-link" class="admin-input" placeholder="الرابط أو الكود...">
+                    <select id="new-type" class="admin-input">
+                        <option value="script">سكربت</option>
+                        <option value="app">تطبيق</option>
+                    </select>
+                    <button class="btn" style="background:var(--accent); color:#000; width:100%;" onclick="addItem()">نشر الآن</button>
+                </div>
+            </section>
+
+            <section id="tab-logs" class="tab-content" style="display:none;">
+                <h2>سجل الزوار والمرصد الذكي</h2>
+                <div id="ip-table" style="background:rgba(0,0,0,0.5); padding:20px; border-radius:20px; font-family:monospace; color:#0f0;">
+                    [System] جاري سحب البيانات...
+                </div>
+            </section>
         </div>
+    </div>
 
-        <main class="main-view">
-            <section id="home" class="view-section active">
-                <h1 style="font-size: 50px; margin: 0;">أهلاً بك يا <span id="user-country" style="color:var(--accent);">بطل</span></h1>
-                <p style="font-size: 20px; color: #aaa; max-width: 600px;">أنت الآن في المركز المعتمد لتطوير السكربتات. يرجى استخدام الأدوات بحكمة واستمتاع.</p>
-                <div style="margin-top: 40px; display: flex; gap: 20px;">
-                    <div class="script-card" style="flex: 1;">
-                        <h4>حالة السيرفر</h4>
-                        <p style="color: #0f0;">● متصل ومستقر</p>
-                    </div>
-                    <div class="script-card" style="flex: 1;">
-                        <h4>عدد السكربتات</h4>
-                        <p>+150 أداة جاهزة</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="scripts" class="view-section">
-                <h2 style="font-family: 'Orbitron';">PREMIUM SCRIPTS</h2>
-                <div class="store-grid">
-                    <div class="script-card" data-tilt>
-                        <h3 style="color: var(--accent);">Blox Fruits - Auto Farm</h3>
-                        <p>سكربت تجميع تلقائي متقدم مع حماية من الباند وتخطي الكابتشا.</p>
-                        <button class="save-btn" style="width: 100%;">نسخ الرابط</button>
-                    </div>
-                    <div class="script-card" data-tilt>
-                        <h3 style="color: var(--accent);">Universal Admin V3</h3>
-                        <p>لوحة تحكم كاملة لجميع ألعاب روبلوكس (Fly, Speed, Inf Jump).</p>
-                        <button class="save-btn" style="width: 100%;">نسخ الرابط</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="admin" class="view-section">
-                <h2>⚙️ لوحة تحكم المطور (حسن)</h2>
-                <div class="admin-panel">
-                    <label>تغيير رابط الصورة الشخصية:</label>
-                    <input type="text" id="img-url-input" class="admin-input" placeholder="ضع رابط الصورة هنا...">
-                    
-                    <label>تغيير رابط فيديو الموسيقى (ID اليوتيوب):</label>
-                    <input type="text" id="vid-id-input" class="admin-input" placeholder="مثال: RW7DcfTGdHk">
-                    
-                    <label>تغيير اسم المطور:</label>
-                    <input type="text" id="name-input" class="admin-input" placeholder="اكتب اسمك الجديد...">
-                    
-                    <button class="save-btn" onclick="saveSettings()">حفظ التحديثات الآن</button>
-                </div>
-                
-                <h3 style="margin-top: 30px;">سجل الزوار (IP Logs)</h3>
-                <div id="ip-logs" style="background: #000; padding: 15px; border-radius: 15px; height: 150px; overflow-y: auto; font-family: monospace; font-size: 12px; color: #0f0;">
-                    [System] تم تفعيل سجل الرصد الذكي...
-                </div>
-            </section>
-
-            <div class="audio-control">
-                <i class="fas fa-volume-down"></i>
-                <input type="range" id="volume-slider" min="0" max="100" value="30">
-                <i class="fas fa-volume-up"></i>
-            </div>
-        </main>
+    <div class="audio-hub">
+        <i class="fas fa-music"></i>
+        <input type="range" id="vol" min="0" max="100" value="20">
+        <i class="fas fa-volume-down"></i>
     </div>
 
     <script>
-        // --- 1. نظام إدارة البيانات (Local Storage) ---
-        function saveSettings() {
-            const img = document.getElementById('img-url-input').value;
-            const vid = document.getElementById('vid-id-input').value;
-            const name = document.getElementById('name-input').value;
+        // --- إدارة المحتوى (تعديل مستمر) ---
+        let items = JSON.parse(localStorage.getItem('hassan_items')) || [
+            {id: 1, title: 'Roblox Admin V4', desc: 'أفضل سكربت إدمن شامل بجميع الميزات.', link: 'loadstring(game:HttpGet("..."))()', type: 'script'},
+            {id: 2, title: 'Elite Executor', desc: 'تطبيق حاقن سريع جداً وخفيف.', link: 'https://download.com', type: 'app'}
+        ];
 
-            if(img) localStorage.setItem('hassan_img', img);
-            if(vid) localStorage.setItem('hassan_vid', vid);
-            if(name) localStorage.setItem('hassan_name', name);
+        function renderItems() {
+            const sList = document.getElementById('scripts-list');
+            const aList = document.getElementById('apps-list');
+            sList.innerHTML = ''; aList.innerHTML = '';
 
-            alert("تم حفظ التعديلات! سيتم تحديث الموقع الآن.");
-            location.reload();
-        }
-
-        function loadSettings() {
-            if(localStorage.getItem('hassan_img')) document.getElementById('profile-img').src = localStorage.getItem('hassan_img');
-            if(localStorage.getItem('hassan_name')) document.getElementById('dev-name').innerText = localStorage.getItem('hassan_name');
-            // سيتم تحميل الفيديو في كود اليوتيوب أدناه
-        }
-
-        // --- 2. نظام اليوتيوب والموسيقى الناصية ---
-        var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        
-        var player;
-        const videoID = localStorage.getItem('hassan_vid') || 'RW7DcfTGdHk';
-
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                videoId: videoID,
-                playerVars: { 'autoplay': 1, 'controls': 0, 'loop': 1, 'playlist': videoID, 'mute': 1 }
+            items.forEach(item => {
+                const html = `
+                    <div class="script-card">
+                        <h3>${item.title}</h3>
+                        <p>${item.desc}</p>
+                        <div class="card-actions">
+                            <button class="btn btn-copy" onclick="copyAction('${item.link}')">${item.type === 'script' ? 'نسخ الكود' : 'تحميل الآن'}</button>
+                            <button class="btn btn-delete" style="display:block" onclick="deleteItem(${item.id})">حذف</button>
+                        </div>
+                    </div>
+                `;
+                if(item.type === 'script') sList.innerHTML += html;
+                else aList.innerHTML += html;
             });
+            localStorage.setItem('hassan_items', JSON.stringify(items));
         }
 
-        document.getElementById('volume-slider').addEventListener('input', (e) => {
-            if(player) {
-                player.unMute();
-                player.setVolume(e.target.value);
+        function addItem() {
+            const title = document.getElementById('new-title').value;
+            const desc = document.getElementById('new-desc').value;
+            const link = document.getElementById('new-link').value;
+            const type = document.getElementById('new-type').value;
+
+            if(title && link) {
+                items.push({id: Date.now(), title, desc, link, type});
+                renderItems();
+                alert("تمت الإضافة بنجاح!");
             }
-        });
-
-        // --- 3. نظام الرصد الذكي (IP Fetching) ---
-        async function fetchAIContext() {
-            try {
-                const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
-                const data = await res.json();
-                document.getElementById('visitor-ip').innerText = `IP: ${data.ip}`;
-                document.getElementById('my-ip-display').innerText = `IP: ${data.ip}`;
-                document.getElementById('user-country').innerText = `بطل من ${data.country}`;
-                
-                // إضافة السجل
-                const log = document.getElementById('ip-logs');
-                log.innerHTML += `<br>[${new Date().toLocaleTimeString()}] دخول جديد من ${data.country} (IP: ${data.ip})`;
-            } catch (e) { console.log("AI Offline"); }
         }
 
-        // --- 4. نظام الدخول التلقائي ---
-        window.addEventListener('load', () => {
-            loadSettings();
-            fetchAIContext();
+        function deleteItem(id) {
+            items = items.filter(i => i.id !== id);
+            renderItems();
+        }
 
-            // تسلسل الترحيب الصوتي
-            setTimeout(() => {
-                let speech = new SpeechSynthesisUtterance("نظام حسن علي المطور، قيد التشغيل. تم رصد هويتك، أهلاً بك.");
-                speech.lang = 'ar-SA';
-                window.speechSynthesis.speak(speech);
-            }, 1000);
+        function copyAction(text) {
+            navigator.clipboard.writeText(text);
+            alert("تم النسخ بنجاح!");
+        }
 
-            // فتح الموقع بعد 5 ثواني
-            setTimeout(() => {
-                const loader = document.getElementById('ai-loader');
-                loader.style.opacity = '0';
-                loader.style.transform = 'translateY(-100%)';
-                
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    gsap.to("#app-container", { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" });
-                    if(player) { 
-                        player.unMute(); 
-                        player.setVolume(30); // الموسيقى ناصية تلقائياً
-                    }
-                }, 1000);
-            }, 5000);
-        });
-
-        // --- 5. نظام التنقل ---
-        function showView(id, btn) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+        // --- نظام التبويبات ---
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.nav-links div').forEach(d => d.classList.remove('active'));
+            document.getElementById('tab-' + tab).style.display = 'block';
             btn.classList.add('active');
         }
 
-        // --- 6. تأثيرات الخلفية الفخمة ---
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        const starGeo = new THREE.BufferGeometry();
-        const starPos = [];
-        for(let i=0; i<6000; i++) {
-            starPos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        // --- اليوتيوب والموسيقى ---
+        var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                videoId: 'RW7DcfTGdHk',
+                playerVars: { 'autoplay': 1, 'controls': 0, 'loop': 1, 'playlist': 'RW7DcfTGdHk', 'mute': 1 }
+            });
         }
-        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
-        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0x00f2ff, size: 1.5}));
-        scene.add(stars);
-        camera.position.z = 1;
+        document.getElementById('vol').addEventListener('input', (e) => {
+            if(player) { player.unMute(); player.setVolume(e.target.value); }
+        });
 
-        function animate() {
-            requestAnimationFrame(animate);
-            stars.rotation.y += 0.001;
-            stars.rotation.x += 0.0005;
-            renderer.render(scene, camera);
+        // --- الرصد الذكي ---
+        async function fetchIP() {
+            const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
+            const data = await res.json();
+            const logBox = document.getElementById('ip-table');
+            logBox.innerHTML += `<br>[${new Date().toLocaleTimeString()}] رصد دخول من: ${data.country} | IP: ${data.ip}`;
         }
-        animate();
+
+        // --- نجوم الخلفية ---
+        const sc = new THREE.Scene();
+        const cam = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const rd = new THREE.WebGLRenderer({ canvas: document.getElementById('starfield'), alpha: true });
+        rd.setSize(window.innerWidth, window.innerHeight);
+        const stGeo = new THREE.BufferGeometry(); const stPos = [];
+        for(let i=0; i<5000; i++) stPos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+        stGeo.setAttribute('position', new THREE.Float32BufferAttribute(stPos, 3));
+        const stars = new THREE.Points(stGeo, new THREE.PointsMaterial({color: 0xffffff, size: 1.2}));
+        sc.add(stars); cam.position.z = 1;
+        function anim() { requestAnimationFrame(anim); stars.rotation.y += 0.001; rd.render(sc, cam); }
+        
+        window.onload = () => {
+            renderItems();
+            fetchIP();
+            anim();
+            // ترحيب صوتي ملكي
+            setTimeout(() => {
+                let s = new SpeechSynthesisUtterance("أهلاً بك في منصة المطور حسن العراقي. تم تحميل النظام بنجاح.");
+                s.lang = 'ar-SA'; window.speechSynthesis.speak(s);
+            }, 1000);
+        };
     </script>
 </body>
 </html>
