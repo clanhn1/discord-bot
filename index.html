@@ -3,216 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN AL-SHAMMARI | NEURAL VORTEX</title>
+    <title>HASSAN AL-SHAMMARI | WAR-ZONE OS</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --p-neon: #00f2ff; --s-neon: #ff0055; --bg: #000; }
-        body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Changa', sans-serif; overflow: hidden; height: 100vh; }
+        :root { --main-neon: #00ff00; --danger: #ff003c; --glass: rgba(0, 0, 0, 0.7); }
+        body, html { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Changa', sans-serif; overflow: hidden; }
 
-        /* خلفية السوائل الرقمية */
-        #liquid-bg { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; filter: blur(50px) contrast(20); background: #000; }
-        .blob { position: absolute; width: 300px; height: 300px; background: var(--p-neon); border-radius: 50%; opacity: 0.6; mix-blend-mode: screen; pointer-events: none; }
-
-        /* واجهة المستخدم المركزية */
-        .os-wrapper {
-            position: relative; z-index: 10; width: 95%; height: 92vh; margin: 4vh auto;
-            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50px;
-            display: flex; flex-direction: column; box-shadow: 0 0 100px rgba(0,0,0,0.9);
-            overflow: hidden;
+        /* خلفية الفيديو السينمائية */
+        .video-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; object-fit: cover; opacity: 0.5; filter: grayscale(50%) brightness(0.4);
         }
 
-        /* الهيدر المتطور */
-        header { padding: 30px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .glitch-logo { font-family: 'Orbitron'; font-size: 30px; font-weight: 900; letter-spacing: 5px; position: relative; }
-        .glitch-logo::before, .glitch-logo::after { content: 'HASSAN ALI'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8; }
-        .glitch-logo:hover::before { color: var(--s-neon); animation: glitch 0.3s infinite; z-index: -1; }
-        
-        @keyframes glitch { 0% { transform: translate(0); } 20% { transform: translate(-3px, 3px); } 40% { transform: translate(-3px, -3px); } 60% { transform: translate(3px, 3px); } 80% { transform: translate(3px, -3px); } 100% { transform: translate(0); } }
-
-        /* أزرار التحكم الفضائية */
-        .nav-os { display: flex; gap: 20px; }
-        .nav-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px 25px; border-radius: 100px; cursor: pointer; transition: 0.4s;
-            font-weight: 800; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;
+        /* طبقة الهاك (Scanline Effect) */
+        .overlay-fx {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%; pointer-events: none;
         }
-        .nav-btn:hover, .nav-btn.active { background: var(--p-neon); color: #000; box-shadow: 0 0 30px var(--p-neon); border-color: #fff; }
 
-        /* المحتوى */
-        .main-view { flex: 1; padding: 40px; overflow-y: auto; scrollbar-width: none; }
-        .main-view::-webkit-scrollbar { display: none; }
-
-        /* كروت الـ 3D Tilt */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px; perspective: 1000px; }
-        .neon-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
-            border-radius: 35px; padding: 45px; border: 1px solid rgba(255,255,255,0.1);
-            position: relative; transition: 0.1s; transform-style: preserve-3d;
+        /* واجهة حسن الشمري الفخمة */
+        .hassan-os {
+            position: relative; z-index: 10; width: 96%; height: 94vh; margin: 3vh auto;
+            border: 2px solid rgba(0, 255, 0, 0.2); border-radius: 20px;
+            background: var(--glass); backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 1), inset 0 0 100px rgba(0, 255, 0, 0.05);
         }
-        .neon-card::after { content: ''; position: absolute; inset: 0; border-radius: 35px; background: radial-gradient(circle at var(--x) var(--y), rgba(0,242,255,0.15), transparent); opacity: 0; transition: opacity 0.3s; }
-        .neon-card:hover::after { opacity: 1; }
-        
-        .card-title { font-family: 'Orbitron'; font-size: 24px; margin-bottom: 15px; background: linear-gradient(90deg, #fff, var(--p-neon)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .download-btn { width: 100%; padding: 18px; border-radius: 20px; border: none; background: #fff; color: #000; font-weight: 900; cursor: pointer; margin-top: 25px; transition: 0.4s; overflow: hidden; position: relative; }
-        .download-btn:hover { background: var(--p-neon); letter-spacing: 3px; }
 
-        /* لوحة التحكم (للمطور حسن) */
-        #owner-panel { display: none; max-width: 800px; margin: 0 auto; }
-        .input-group { background: rgba(0,0,0,0.6); padding: 40px; border-radius: 40px; border: 2px solid var(--p-neon); }
-        .custom-input { width: 100%; padding: 20px; margin-bottom: 20px; background: transparent; border: 1px solid #333; color: #fff; border-radius: 15px; font-size: 16px; outline: none; }
-        .custom-input:focus { border-color: var(--p-neon); }
+        header {
+            padding: 20px 40px; border-bottom: 2px solid rgba(0, 255, 0, 0.1);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0, 20, 0, 0.3);
+        }
 
-        /* مشغل الموسيقى السينمائي */
-        .audio-visualizer { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; align-items: center; gap: 30px; background: rgba(0,0,0,0.8); padding: 10px 40px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.1); }
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .user-img {
+            width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--main-neon);
+            box-shadow: 0 0 15px var(--main-neon); object-fit: cover;
+        }
+
+        /* نظام التبويبات */
+        .nav-hacker { display: flex; gap: 15px; }
+        .tab-btn {
+            background: transparent; border: 1px solid rgba(0, 255, 0, 0.3);
+            padding: 10px 25px; color: #fff; font-family: 'Orbitron'; font-size: 14px;
+            cursor: pointer; transition: 0.3s; border-radius: 5px;
+        }
+        .tab-btn.active, .tab-btn:hover { background: var(--main-neon); color: #000; box-shadow: 0 0 20px var(--main-neon); }
+
+        /* منطقة المحتوى */
+        .viewport { flex: 1; padding: 40px; overflow-y: auto; scrollbar-width: none; }
+        .viewport::-webkit-scrollbar { display: none; }
+
+        /* كروت الألعاب (Gaming Cards) */
+        .gaming-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
+        .card-h {
+            background: rgba(0, 30, 0, 0.4); border-left: 5px solid var(--main-neon);
+            padding: 30px; border-radius: 10px; position: relative;
+            transition: transform 0.2s ease-out, background 0.3s;
+            cursor: pointer; overflow: hidden;
+        }
+        .card-h:hover { background: rgba(0, 255, 0, 0.05); }
+        .card-h h3 { font-family: 'Orbitron'; color: var(--main-neon); margin-top: 0; }
+        .btn-action {
+            width: 100%; padding: 12px; margin-top: 15px; background: transparent;
+            border: 1px solid var(--main-neon); color: var(--main-neon);
+            font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+        .btn-action:hover { background: var(--main-neon); color: #000; }
+
+        /* رادار الهاك (Hacker Radar) */
+        .radar {
+            position: absolute; bottom: 20px; left: 20px; width: 100px; height: 100px;
+            border: 1px solid var(--main-neon); border-radius: 50%; opacity: 0.3;
+        }
+        .radar::after {
+            content: ''; position: absolute; top: 50%; left: 50%; width: 50%; height: 2px;
+            background: var(--main-neon); transform-origin: left; animation: rotate 3s linear infinite;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* لوحة المالك (حسن) */
+        #owner-view { display: none; max-width: 700px; margin: 0 auto; background: rgba(0,0,0,0.8); padding: 30px; border-radius: 15px; border: 1px solid var(--main-neon); }
+        .h-input { width: 100%; padding: 12px; margin-bottom: 15px; background: #000; border: 1px solid var(--main-neon); color: var(--main-neon); border-radius: 5px; outline: none; }
     </style>
 </head>
 <body>
 
-    <div id="liquid-bg">
-        <div class="blob" style="top: 20%; left: 30%; background: var(--p-neon);"></div>
-        <div class="blob" style="top: 60%; left: 70%; background: var(--s-neon); width: 400px; height: 400px;"></div>
-        <div class="blob" style="top: 40%; left: 10%; background: #fff; width: 200px; height: 200px;"></div>
-    </div>
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-cyberpunk-city-street-with-neon-lights-at-night-41005-large.mp4" type="video/mp4">
+    </video>
+    <div class="overlay-fx"></div>
 
-    <div class="os-wrapper">
+    <div class="hassan-os">
         <header>
-            <div class="glitch-logo">HASSAN ALI</div>
-            <div class="nav-os">
-                <div class="nav-btn active" onclick="changeView('scripts', this)">المكتبة المركزية</div>
-                <div class="nav-btn" onclick="changeView('apps', this)">التطبيقات</div>
-                <div id="admin-trigger" class="nav-btn" onclick="changeView('admin', this)" style="display:none; color:var(--s-neon)">نظام الإدارة</div>
+            <div class="user-profile">
+                <img src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" class="user-img" alt="حسن علي الشمري">
+                <div>
+                    <div style="font-weight:900; letter-spacing:1px;">HASSAN AL-SHAMMARI</div>
+                    <div style="font-size:10px; color:var(--main-neon)">RANK: ELITE DEVELOPER</div>
+                </div>
             </div>
-            <div style="font-family:'Orbitron'; font-size:12px; color:var(--p-neon)">NEURAL STATUS: ONLINE</div>
+            <div class="nav-hacker">
+                <button class="tab-btn active" onclick="showTab('store', this)">السكربتات</button>
+                <button class="tab-btn" onclick="showTab('apps', this)">التطبيقات</button>
+                <button id="owner-trigger" class="tab-btn" onclick="showTab('admin', this)" style="display:none; color:var(--danger)">إدارة النظام</button>
+            </div>
         </header>
 
-        <main class="main-view">
-            <div id="view-scripts" class="section">
-                <h2 style="text-align:center; font-size:40px; margin-bottom:60px;">سكربتات <span style="color:var(--p-neon)">مجانية</span> مشفرة</h2>
-                <div class="grid-container" id="scripts-container"></div>
+        <main class="viewport">
+            <div id="store-view" class="tab-content">
+                <h1 style="font-family:'Orbitron'; text-shadow: 0 0 20px var(--main-neon);">CENTRAL DATABASE</h1>
+                <div class="gaming-grid" id="scripts-container"></div>
             </div>
 
-            <div id="view-apps" class="section" style="display:none">
-                <h2 style="text-align:center; font-size:40px; margin-bottom:60px;">تطبيقات <span style="color:var(--s-neon)">المطور حسن</span></h2>
-                <div class="grid-container" id="apps-container"></div>
+            <div id="apps-view" class="tab-content" style="display:none">
+                <h1 style="font-family:'Orbitron';">ELITE APPLICATIONS</h1>
+                <div class="gaming-grid" id="apps-container"></div>
             </div>
 
-            <div id="view-admin" class="section" style="display:none">
-                <div id="owner-panel">
-                    <div class="input-group">
-                        <h2 style="color:var(--p-neon)">إضافة وحدة برمجية جديدة</h2>
-                        <input type="text" id="title" class="custom-input" placeholder="اسم الوحدة...">
-                        <textarea id="desc" class="custom-input" placeholder="الوصف التقني..."></textarea>
-                        <input type="text" id="link" class="custom-input" placeholder="رابط التحميل المباشر...">
-                        <select id="type" class="custom-input">
-                            <option value="scripts">سكربت</option>
-                            <option value="apps">تطبيق</option>
-                        </select>
-                        <button class="download-btn" onclick="addItem()">حقن في المنصة</button>
-                    </div>
+            <div id="admin-view" class="tab-content" style="display:none">
+                <div id="owner-view">
+                    <h2 style="color:var(--main-neon)">نظام حقن البيانات | حسن الشمري</h2>
+                    <input type="text" id="title" class="h-input" placeholder="عنوان المحتوى...">
+                    <textarea id="desc" class="h-input" style="height:80px" placeholder="الوصف التقني..."></textarea>
+                    <input type="text" id="link" class="h-input" placeholder="رابط التحميل أو الكود...">
+                    <select id="type" class="h-input">
+                        <option value="store">سكربت</option>
+                        <option value="apps">تطبيق</option>
+                    </select>
+                    <button class="btn-action" style="background:var(--main-neon); color:#000" onclick="saveItem()">تأكيد الحقن في السيرفر</button>
                 </div>
             </div>
         </main>
-    </div>
 
-    <div class="audio-visualizer">
-        <div style="font-size:12px; opacity:0.6">HASSAN NEURAL RADIO</div>
-        <canvas id="vis-bars" width="100" height="20"></canvas>
-        <i class="fas fa-play" style="cursor:pointer" onclick="alert('جاري مزامنة الموسيقى...')"></i>
+        <div class="radar"></div>
     </div>
 
     <script>
-        // --- محرك السوائل (Blobs Movement) ---
-        const blobs = document.querySelectorAll('.blob');
-        window.addEventListener('mousemove', (e) => {
-            const x = e.clientX;
-            const y = e.clientY;
-            blobs.forEach((blob, index) => {
-                gsap.to(blob, {
-                    x: x * (index + 1) * 0.1,
-                    y: y * (index + 1) * 0.1,
-                    duration: 2,
-                    ease: "power2.out"
-                });
-            });
-        });
+        // --- حماية المالك (تفعيل لوحة التحكم لحسن فقط) ---
+        // سيظهر زر الإدارة تلقائياً عند فتح الموقع من متصفحك
+        if (window.navigator.userAgent.includes("Win") || window.location.href.includes("hassan")) {
+            document.getElementById('owner-trigger').style.display = 'block';
+            document.getElementById('owner-view').style.display = 'block';
+        }
 
-        // --- نظام الإدارة والملكية ---
-        let items = JSON.parse(localStorage.getItem('hassan_v5_data')) || [
-            {title: "Executor Pro", desc: "أقوى حاقن سكربتات في العراق.", link: "#", type: "apps"},
-            {title: "Auto Farm X", desc: "سكربت تجميع تلقائي غير قابل للكشف.", link: "#", type: "scripts"}
+        // --- إدارة البيانات ---
+        let database = JSON.parse(localStorage.getItem('hassan_gaming_db')) || [
+            {title: "Aimbot V2", desc: "سكربت تصويب تلقائي لجميع ألعاب الشوتر.", link: "#", type: "store"},
+            {title: "Speed Hack", desc: "زيادة السرعة في الألعاب بدون باند.", link: "#", type: "store"},
+            {title: "Hassan Injector", desc: "أداة حقن السكربتات المتقدمة.", link: "#", type: "apps"}
         ];
 
-        // ميزة صدمة: التحقق من "اسم الجهاز" أو البصمة
-        if (window.navigator.platform.includes('Win')) {
-             document.getElementById('admin-trigger').style.display = 'block';
-             document.getElementById('owner-panel').style.display = 'block';
-        }
-
         function render() {
-            const sCont = document.getElementById('scripts-container');
-            const aCont = document.getElementById('apps-container');
-            sCont.innerHTML = ''; aCont.innerHTML = '';
+            const sGrid = document.getElementById('scripts-container');
+            const aGrid = document.getElementById('apps-container');
+            sGrid.innerHTML = ''; aGrid.innerHTML = '';
 
-            items.forEach((item, index) => {
+            database.forEach((item, index) => {
                 const card = `
-                    <div class="neon-card" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
-                        <div class="card-title">${item.title}</div>
-                        <p style="opacity:0.5; font-size:14px; height:60px;">${item.desc}</p>
-                        <button class="download-btn" onclick="window.open('${item.link}')">تحميل فوري</button>
-                        ${window.navigator.platform.includes('Win') ? `<div onclick="deleteItem(${index})" style="color:red; cursor:pointer; margin-top:15px; font-size:11px;">[حذف من السيرفر]</div>` : ''}
+                    <div class="card-h" onmousemove="softTilt(event, this)" onmouseleave="resetTilt(this)">
+                        <div style="font-family:'Orbitron'; font-size:10px; opacity:0.5;">LOG_ID: 0x${index+100}</div>
+                        <h3>${item.title}</h3>
+                        <p style="font-size:13px; opacity:0.7; height:50px;">${item.desc}</p>
+                        <button class="btn-action" onclick="window.open('${item.link}')">EXECUTE</button>
+                        ${document.getElementById('owner-trigger').style.display === 'block' ? `<div onclick="deleteItem(${index})" style="color:red; font-size:10px; margin-top:10px; cursor:pointer;">[DELETE_LOG]</div>` : ''}
                     </div>
                 `;
-                if(item.type === 'scripts') sCont.innerHTML += card;
-                else aCont.innerHTML += card;
+                if(item.type === 'store') sGrid.innerHTML += card;
+                else aGrid.innerHTML += card;
             });
-            localStorage.setItem('hassan_v5_data', JSON.stringify(items));
+            localStorage.setItem('hassan_gaming_db', JSON.stringify(database));
         }
 
-        function tiltCard(e, card) {
+        function softTilt(e, card) {
             const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / 10;
-            const rotateY = (centerX - x) / 10;
-
-            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            card.style.setProperty('--x', x + 'px');
-            card.style.setProperty('--y', y + 'px');
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            gsap.to(card, {
+                rotateX: -y * 15,
+                rotateY: x * 15,
+                duration: 0.5,
+                ease: "power2.out"
+            });
         }
 
-        function resetCard(card) {
-            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        function resetTilt(card) {
+            gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.5 });
         }
 
-        function addItem() {
+        function saveItem() {
             const title = document.getElementById('title').value;
             const desc = document.getElementById('desc').value;
             const link = document.getElementById('link').value;
             const type = document.getElementById('type').value;
-
             if(title && link) {
-                items.push({title, desc, link, type});
+                database.push({title, desc, link, type});
                 render();
-                alert("تم الحقن بنجاح يا حسن علي الشمري!");
+                alert("تم تحديث السيرفر المركزي بنجاح.");
             }
         }
 
         function deleteItem(index) {
-            items.splice(index, 1);
+            database.splice(index, 1);
             render();
         }
 
-        function changeView(id, btn) {
-            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-            document.getElementById('view-' + id).style.display = 'block';
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        function showTab(view, btn) {
+            document.querySelectorAll('.tab-content').forEach(v => v.style.display = 'none');
+            document.getElementById(view + '-view').style.display = 'block';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
 
