@@ -3,186 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN ELITE OS | المنصة العظمى</title>
+    <title>منصة حسن علي الشمري | HASSAN AL-SHAMMARI</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --neon: #00f2ff; --iraq-red: #ff0000; --bg: #000000; }
-        body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Changa', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+        :root { --neon: #00f2ff; --iraq: #ff0000; --dark: #050505; --glass: rgba(255,255,255,0.02); }
+        body, html { margin: 0; padding: 0; background: var(--dark); color: #fff; font-family: 'Changa', sans-serif; overflow-x: hidden; }
 
-        /* شريط الهوية العراقية الفخم */
-        .iraq-header { position: fixed; top: 0; width: 100%; height: 5px; background: linear-gradient(90deg, var(--iraq-red) 33%, #fff 33% 66%, #000 66%); z-index: 5000; }
+        /* الهوية العراقية */
+        .hassan-header { position: fixed; top: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #ff0000 33%, #fff 33% 66%, #000 66%); z-index: 5000; }
 
-        /* شاشة التحميل الذكية */
-        #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 1s; }
-        .boot-text { font-family: 'Orbitron'; color: var(--neon); letter-spacing: 5px; animation: blink 0.1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        /* واجهة المستخدم الزجاجية */
+        .main-container { width: 95%; max-width: 1400px; margin: 40px auto; background: var(--glass); backdrop-filter: blur(30px); border-radius: 40px; border: 1px solid rgba(255,255,255,0.05); min-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 50px 100px rgba(0,0,0,0.5); }
 
-        /* الهيكل الرئيسي (Full Screen) */
-        .glass-ui { position: relative; z-index: 100; width: 95%; min-height: 90vh; margin: 5vh auto; background: rgba(255,255,255,0.01); backdrop-filter: blur(50px); border: 1px solid rgba(255,255,255,0.05); border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 100px rgba(0,0,0,1); }
+        /* القائمة العلوية */
+        nav { padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .nav-brand { font-family: 'Orbitron'; font-size: 24px; font-weight: 900; color: #fff; text-decoration: none; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-btn { cursor: pointer; padding: 10px 20px; border-radius: 12px; transition: 0.3s; font-weight: 800; border: 1px solid transparent; }
+        .nav-btn.active { background: rgba(0,242,255,0.1); border-color: var(--neon); color: var(--neon); }
 
-        /* التنقل العلوي */
-        nav { padding: 30px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .nav-items { display: flex; gap: 40px; font-weight: 800; font-family: 'Orbitron'; }
-        .nav-link { cursor: pointer; opacity: 0.5; transition: 0.3s; position: relative; }
-        .nav-link:hover, .nav-link.active { opacity: 1; color: var(--neon); text-shadow: 0 0 20px var(--neon); }
+        /* المحتوى الرئيسي */
+        .content { flex: 1; padding: 50px; }
+        .section { display: none; animation: fadeIn 0.5s ease-in-out; }
+        .section.active { display: block; }
 
-        /* منطقة المحتوى */
-        .viewport { flex: 1; padding: 50px; overflow-y: auto; }
-        .hero-section { text-align: center; margin-bottom: 80px; }
-        .hero-section h1 { font-size: 80px; font-family: 'Orbitron'; margin: 0; background: linear-gradient(to bottom, #fff, #444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* كروت المنتجات الشغالة */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .h-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 25px; padding: 25px; position: relative; transition: 0.4s; }
+        .h-card:hover { border-color: var(--neon); transform: translateY(-10px); background: rgba(0,242,255,0.02); }
+        .badge { position: absolute; top: 15px; left: 15px; background: #00ff88; color: #000; font-size: 10px; padding: 4px 12px; border-radius: 50px; font-weight: 900; }
+        .card-actions { margin-top: 20px; display: flex; gap: 10px; }
+        .btn-main { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .btn-download { background: #fff; color: #000; }
+        .btn-delete { background: #ff4b4b; color: #fff; max-width: 50px; }
 
-        /* كروت الهولوغرام */
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 35px; }
-        .hologram-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 30px; padding: 35px; position: relative; transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1); cursor: pointer; overflow: hidden; }
-        .hologram-card:hover { transform: translateY(-15px) rotateX(10deg); border-color: var(--neon); box-shadow: 0 20px 50px rgba(0,242,255,0.1); }
-        .hologram-card i { font-size: 40px; color: var(--neon); margin-bottom: 20px; }
-        .free-badge { position: absolute; top: 20px; left: 20px; background: #00ff88; color: #000; padding: 5px 15px; border-radius: 50px; font-size: 12px; font-weight: 900; }
+        /* لوحة الرفع (Admin) */
+        .upload-panel { max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.02); padding: 40px; border-radius: 30px; border: 1px dashed var(--neon); }
+        .h-input { width: 100%; padding: 15px; margin-bottom: 15px; background: #000; border: 1px solid #333; color: #fff; border-radius: 12px; outline: none; box-sizing: border-box; }
+        .h-input:focus { border-color: var(--neon); }
 
-        /* مشغل الموسيقى (Visualizer) */
-        .music-bar { position: fixed; bottom: 40px; right: 40px; background: rgba(0,0,0,0.8); padding: 15px 30px; border-radius: 100px; border: 1px solid var(--neon); display: flex; align-items: center; gap: 20px; z-index: 1000; backdrop-filter: blur(10px); }
-        .wave-container { display: flex; align-items: center; gap: 4px; height: 30px; }
-        .wave-bar { width: 3px; height: 10px; background: var(--neon); animation: musicWave 0.8s infinite alternate; }
+        /* مشغل الموسيقى */
+        .music-footer { position: fixed; bottom: 30px; left: 30px; background: #000; padding: 15px 30px; border-radius: 100px; border: 1px solid var(--neon); display: flex; align-items: center; gap: 20px; z-index: 1000; }
+        .vol-slider { width: 80px; accent-color: var(--neon); cursor: pointer; }
 
-        @keyframes musicWave { from { height: 5px; } to { height: 30px; } }
-
-        /* خلفية المصفوفة */
-        canvas#matrix { position: fixed; top: 0; left: 0; z-index: 1; opacity: 0.15; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="iraq-header"></div>
-    <canvas id="matrix"></canvas>
-    <canvas id="stars"></canvas>
+    <div class="hassan-header"></div>
 
-    <div id="boot-screen">
-        <div class="boot-text">HASSAN_SYSTEM_BOOTING_V4.0</div>
-        <div id="progress" style="width: 200px; height: 2px; background: #222; margin-top: 20px; position: relative; overflow: hidden;">
-            <div id="bar" style="position: absolute; width: 0%; height: 100%; background: var(--neon); box-shadow: 0 0 10px var(--neon);"></div>
-        </div>
-    </div>
-
-    <div class="glass-ui">
+    <div class="main-container">
         <nav>
-            <div style="display:flex; align-items:center; gap:15px;">
-                <img src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" style="width:55px; height:55px; border-radius:50%; border:2px solid #fff; box-shadow: 0 0 20px var(--neon);">
-                <div>
-                    <div style="font-weight:900; font-size:18px; font-family:'Orbitron';">HASSAN ALI</div>
-                    <div style="font-size:10px; color:var(--neon);">[ IRAQI DEVELOPER ]</div>
-                </div>
+            <div class="nav-brand">HASSAN <span style="color:var(--neon)">ALI</span></div>
+            <div class="nav-links">
+                <div class="nav-btn active" onclick="switchTab('store', this)">السكربتات</div>
+                <div class="nav-btn" onclick="switchTab('apps', this)">التطبيقات</div>
+                <div class="nav-btn" onclick="switchTab('admin', this)" style="color:var(--neon)">لوحة التحكم</div>
             </div>
-            <div class="nav-items">
-                <div class="nav-link active" onclick="showTab('scripts')">السكربتات المجانية</div>
-                <div class="nav-link" onclick="showTab('apps')">التطبيقات المجانية</div>
-                <div class="nav-link" onclick="showTab('upload')">مركز الرفع</div>
-            </div>
+            <div id="visitor-info" style="font-size:12px; font-family:'Orbitron'; color:var(--neon);">IP: FETCHING...</div>
         </nav>
 
-        <main class="viewport">
-            <div class="hero-section">
-                <h1>FREE <span style="color:var(--neon)">MATRIX</span></h1>
-                <p style="font-size:22px; color:#888;">كل شيء هنا مجاني بالكامل للأبد. من تطوير حسن علي الشمري.</p>
-            </div>
-
-            <section id="scripts" class="tab-content">
-                <div class="card-grid" id="script-list">
-                    </div>
+        <main class="content">
+            <section id="tab-store" class="section active">
+                <h1 style="text-align:center; font-size:45px; margin-bottom:10px;">مكتبة حسن علي الشمري 🇮🇶</h1>
+                <p style="text-align:center; opacity:0.5; margin-bottom:50px;">جميع السكربتات مجانية وشغالة 100%</p>
+                <div class="grid" id="scripts-grid"></div>
             </section>
 
-            <section id="upload" class="tab-content" style="display:none; text-align:center;">
-                <div style="border: 2px dashed var(--neon); padding: 80px; border-radius: 40px; background: rgba(0,242,255,0.01);">
-                    <i class="fas fa-terminal" style="font-size:60px; color:var(--neon); margin-bottom:30px;"></i>
-                    <h2>نظام رفع الأكواد المشفر</h2>
-                    <p>اسحب ملف السكربت هنا ليتم رفعه إلى سحابة حسن البرمجية.</p>
-                    <button class="nav-link active" style="background:none; border:1px solid var(--neon); padding:15px 40px; border-radius:10px; margin-top:20px;">ابدأ الرفع الآن</button>
+            <section id="tab-apps" class="section">
+                <h1 style="text-align:center; font-size:45px; margin-bottom:50px;">التطبيقات المجانية</h1>
+                <div class="grid" id="apps-grid"></div>
+            </section>
+
+            <section id="tab-admin" class="section">
+                <div class="upload-panel">
+                    <h2 style="color:var(--neon); text-align:center;">إضافة محتوى جديد</h2>
+                    <input type="text" id="p-title" class="h-input" placeholder="عنوان السكربت أو التطبيق...">
+                    <textarea id="p-desc" class="h-input" style="height:100px;" placeholder="وصف بسيط للمحتوى..."></textarea>
+                    <input type="text" id="p-link" class="h-input" placeholder="ضع رابط التحميل أو كود السكربت هنا...">
+                    <select id="p-type" class="h-input">
+                        <option value="script">سكربت برمجيات</option>
+                        <option value="app">تطبيق أندرويد/آيفون</option>
+                    </select>
+                    <button class="btn-main" style="background:var(--neon); color:#000; width:100%;" onclick="processUpload()">نشر المحتوى فوراً</button>
                 </div>
             </section>
         </main>
     </div>
 
-    <div class="music-bar">
-        <div class="wave-container">
-            <div class="wave-bar"></div><div class="wave-bar" style="animation-delay:0.2s"></div><div class="wave-bar" style="animation-delay:0.4s"></div>
-        </div>
-        <div style="font-family:'Orbitron'; font-size:12px;">HASSAN_RADIO_24/7</div>
-        <i class="fas fa-play" id="m-btn" style="cursor:pointer; color:var(--neon);" onclick="mToggle()"></i>
+    <div class="music-footer">
+        <i class="fas fa-play" id="m-btn" style="cursor:pointer; color:var(--neon);" onclick="toggleHassanMusic()"></i>
+        <div style="font-size:12px; font-weight:800;">Hassan Radio</div>
+        <input type="range" id="vol" class="vol-slider" min="0" max="100" value="20">
     </div>
 
     <script>
-        // --- إدارة المحتوى المجاني ---
-        const data = [
-            {title: "Auto Farm V4", type: "script", icon: "fa-code"},
-            {title: "Admin GUI", type: "script", icon: "fa-user-shield"},
-            {title: "Hassan Executor", type: "app", icon: "fa-mobile-alt"},
-            {title: "Discord Bot Lite", type: "app", icon: "fa-robot"}
+        // --- محرك البيانات الحقيقي (Logical Core) ---
+        let storage = JSON.parse(localStorage.getItem('hassan_data')) || [
+            {id: 1, title: 'Blox Fruits Auto Farm', desc: 'أقوى سكربت تجميع تلقائي مجاني.', link: 'https://pastebin.com/raw/test', type: 'script'},
+            {id: 2, title: 'Hassan Executor V1', desc: 'تطبيق حقن سكربتات سريع جداً.', link: 'https://mega.nz/file', type: 'app'}
         ];
 
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            event.target.classList.add('active');
-            renderCards(id === 'scripts' ? 'script' : 'app');
-        }
+        function renderAll() {
+            const sGrid = document.getElementById('scripts-grid');
+            const aGrid = document.getElementById('apps-grid');
+            sGrid.innerHTML = ''; aGrid.innerHTML = '';
 
-        function renderCards(filter) {
-            const list = document.getElementById('script-list');
-            list.innerHTML = '';
-            data.filter(d => d.type === filter).forEach(item => {
-                list.innerHTML += `
-                    <div class="hologram-card">
-                        <span class="free-badge">مجاني</span>
-                        <i class="fas ${item.icon}"></i>
+            storage.forEach(item => {
+                const card = `
+                    <div class="h-card">
+                        <span class="badge">مجاني</span>
                         <h3 style="font-family:'Orbitron'">${item.title}</h3>
-                        <p style="opacity:0.5; font-size:14px;">سكربت معالج بالكامل، يعمل بنسبة 100% بدون أي أخطاء برمجية.</p>
-                        <button style="width:100%; padding:12px; background:#fff; color:#000; border:none; border-radius:10px; font-weight:900; margin-top:20px; cursor:pointer;">نسخ الرابط</button>
+                        <p style="opacity:0.6; font-size:14px; min-height:40px;">${item.desc}</p>
+                        <div class="card-actions">
+                            <button class="btn-main btn-download" onclick="copyOrDownload('${item.link}')">
+                                ${item.type === 'script' ? 'نسخ الكود' : 'تحميل التطبيق'}
+                            </button>
+                            <button class="btn-main btn-delete" onclick="deleteItem(${item.id})"><i class="fas fa-trash"></i></button>
+                        </div>
                     </div>
                 `;
+                if(item.type === 'script') sGrid.innerHTML += card;
+                else aGrid.innerHTML += card;
             });
+            localStorage.setItem('hassan_data', JSON.stringify(storage));
         }
 
-        // --- تأثيرات المصفوفة (Matrix) ---
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-        function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#00f2ff"; ctx.font = fontSize + "px arial";
-            drops.forEach((y, i) => {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, y * fontSize);
-                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            });
-        }
-        setInterval(drawMatrix, 33);
+        function processUpload() {
+            const title = document.getElementById('p-title').value;
+            const desc = document.getElementById('p-desc').value;
+            const link = document.getElementById('p-link').value;
+            const type = document.getElementById('p-type').value;
 
-        // --- نظام الإقلاع ---
+            if(title && link) {
+                const newItem = { id: Date.now(), title, desc, link, type };
+                storage.push(newItem);
+                renderAll();
+                alert("تم النشر بنجاح يا حسن! ستجده الآن في القائمة.");
+                // مسح الحقول
+                document.getElementById('p-title').value = '';
+                document.getElementById('p-link').value = '';
+            } else {
+                alert("يرجى ملء البيانات أولاً!");
+            }
+        }
+
+        function deleteItem(id) {
+            if(confirm("هل تريد حذف هذا المنتج نهائياً؟")) {
+                storage = storage.filter(i => i.id !== id);
+                renderAll();
+            }
+        }
+
+        function copyOrDownload(link) {
+            navigator.clipboard.writeText(link);
+            alert("تم نسخ الرابط/الكود بنجاح!");
+            if(link.startsWith('http')) window.open(link, '_blank');
+        }
+
+        // --- نظام التبويبات ---
+        function switchTab(id, btn) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // --- نظام الصوت والذكاء ---
+        async function fetchIP() {
+            try {
+                const r = await fetch('https://api.ipify.org?format=json');
+                const d = await r.json();
+                document.getElementById('visitor-info').innerText = "IP: " + d.ip;
+            } catch(e) { document.getElementById('visitor-info').innerText = "IP: PROTECTED"; }
+        }
+
+        // ترحيب صوتي عند الدخول
         window.onload = () => {
-            renderCards('script');
-            let p = 0;
-            const interval = setInterval(() => {
-                p += 2;
-                document.getElementById('bar').style.width = p + "%";
-                if(p >= 100) {
-                    clearInterval(interval);
-                    gsap.to("#boot-screen", { opacity: 0, scale: 2, duration: 1, onComplete: () => document.getElementById('boot-screen').style.display='none' });
-                    // ترحيب صوتي عراقي فخم
-                    setTimeout(() => {
-                        let msg = new SpeechSynthesisUtterance("تم تشغيل نظام حسن علي. جميع السكربتات جاهزة للاستخدام المجاني.");
-                        msg.lang = 'ar-SA'; window.speechSynthesis.speak(msg);
-                    }, 500);
-                }
-            }, 30);
+            renderAll();
+            fetchIP();
+            setTimeout(() => {
+                let s = new SpeechSynthesisUtterance("أهلاً بك في منصة حسن علي الشمري. الموقع جاهز للعمل.");
+                s.lang = 'ar-SA'; window.speechSynthesis.speak(s);
+            }, 1000);
         };
     </script>
 </body>
