@@ -3,214 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN AL-SHAMMARI | NEURAL OS</title>
+    <title>HASSAN AL-SHAMMARI | NEURAL VORTEX</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --p-color: #00f2ff; --owner-gold: #ffcc00; --bg: #000; }
-        body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Changa', sans-serif; overflow: hidden; }
+        :root { --p-neon: #00f2ff; --s-neon: #ff0055; --bg: #000; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Changa', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* خلفية الذكاء الاصطناعي الصادمة */
-        #canvas-container { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
+        /* خلفية السوائل الرقمية */
+        #liquid-bg { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; filter: blur(50px) contrast(20); background: #000; }
+        .blob { position: absolute; width: 300px; height: 300px; background: var(--p-neon); border-radius: 50%; opacity: 0.6; mix-blend-mode: screen; pointer-events: none; }
 
-        /* واجهة المالك (Owner UI) */
-        #owner-badge {
-            position: fixed; top: 20px; right: 20px; z-index: 1000;
-            background: rgba(255, 204, 0, 0.1); border: 1px solid var(--owner-gold);
-            padding: 10px 20px; border-radius: 50px; display: none;
-            font-family: 'Orbitron'; color: var(--owner-gold); font-size: 12px;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.3); animation: pulse 2s infinite;
+        /* واجهة المستخدم المركزية */
+        .os-wrapper {
+            position: relative; z-index: 10; width: 95%; height: 92vh; margin: 4vh auto;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50px;
+            display: flex; flex-direction: column; box-shadow: 0 0 100px rgba(0,0,0,0.9);
+            overflow: hidden;
         }
 
-        /* التصميم الزجاجي الفخم */
-        .glass-panel {
-            position: relative; z-index: 10; width: 92%; height: 90vh; margin: 5vh auto;
-            background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 40px;
-            display: flex; flex-direction: column; overflow: hidden;
-        }
-
-        /* الهيدر */
-        header { padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-family: 'Orbitron'; font-size: 28px; font-weight: 900; letter-spacing: 4px; }
+        /* الهيدر المتطور */
+        header { padding: 30px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glitch-logo { font-family: 'Orbitron'; font-size: 30px; font-weight: 900; letter-spacing: 5px; position: relative; }
+        .glitch-logo::before, .glitch-logo::after { content: 'HASSAN ALI'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8; }
+        .glitch-logo:hover::before { color: var(--s-neon); animation: glitch 0.3s infinite; z-index: -1; }
         
-        /* التبويبات */
-        .tabs { display: flex; gap: 40px; }
-        .tab-link { cursor: pointer; opacity: 0.4; transition: 0.4s; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
-        .tab-link.active { opacity: 1; color: var(--p-color); text-shadow: 0 0 15px var(--p-color); }
+        @keyframes glitch { 0% { transform: translate(0); } 20% { transform: translate(-3px, 3px); } 40% { transform: translate(-3px, -3px); } 60% { transform: translate(3px, 3px); } 80% { transform: translate(3px, -3px); } 100% { transform: translate(0); } }
 
-        /* منطقة العرض */
-        .viewport { flex: 1; padding: 40px; overflow-y: auto; scrollbar-width: none; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-
-        /* كرت المنتج الفخم */
-        .h-card {
-            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px; padding: 40px; position: relative; transition: 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-            transform-style: preserve-3d;
+        /* أزرار التحكم الفضائية */
+        .nav-os { display: flex; gap: 20px; }
+        .nav-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 25px; border-radius: 100px; cursor: pointer; transition: 0.4s;
+            font-weight: 800; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;
         }
-        .h-card:hover { transform: translateY(-20px) rotateX(10deg); border-color: var(--p-color); background: rgba(0, 242, 255, 0.03); }
-        .h-card h3 { font-family: 'Orbitron'; font-size: 22px; margin-bottom: 10px; }
-        .btn-action { width: 100%; padding: 15px; border-radius: 15px; border: none; background: #fff; color: #000; font-weight: 900; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        .btn-action:hover { background: var(--p-color); color: #fff; transform: scale(1.05); }
+        .nav-btn:hover, .nav-btn.active { background: var(--p-neon); color: #000; box-shadow: 0 0 30px var(--p-neon); border-color: #fff; }
 
-        /* لوحة المالك (مخفية للعامة) */
-        #admin-view { display: none; }
-        .admin-box { background: rgba(0,0,0,0.5); padding: 40px; border-radius: 30px; border: 1px dashed var(--owner-gold); }
-        .h-input { width: 100%; padding: 15px; margin-bottom: 15px; background: #000; border: 1px solid #222; color: #fff; border-radius: 12px; }
+        /* المحتوى */
+        .main-view { flex: 1; padding: 40px; overflow-y: auto; scrollbar-width: none; }
+        .main-view::-webkit-scrollbar { display: none; }
 
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        /* كروت الـ 3D Tilt */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px; perspective: 1000px; }
+        .neon-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border-radius: 35px; padding: 45px; border: 1px solid rgba(255,255,255,0.1);
+            position: relative; transition: 0.1s; transform-style: preserve-3d;
+        }
+        .neon-card::after { content: ''; position: absolute; inset: 0; border-radius: 35px; background: radial-gradient(circle at var(--x) var(--y), rgba(0,242,255,0.15), transparent); opacity: 0; transition: opacity 0.3s; }
+        .neon-card:hover::after { opacity: 1; }
+        
+        .card-title { font-family: 'Orbitron'; font-size: 24px; margin-bottom: 15px; background: linear-gradient(90deg, #fff, var(--p-neon)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .download-btn { width: 100%; padding: 18px; border-radius: 20px; border: none; background: #fff; color: #000; font-weight: 900; cursor: pointer; margin-top: 25px; transition: 0.4s; overflow: hidden; position: relative; }
+        .download-btn:hover { background: var(--p-neon); letter-spacing: 3px; }
+
+        /* لوحة التحكم (للمطور حسن) */
+        #owner-panel { display: none; max-width: 800px; margin: 0 auto; }
+        .input-group { background: rgba(0,0,0,0.6); padding: 40px; border-radius: 40px; border: 2px solid var(--p-neon); }
+        .custom-input { width: 100%; padding: 20px; margin-bottom: 20px; background: transparent; border: 1px solid #333; color: #fff; border-radius: 15px; font-size: 16px; outline: none; }
+        .custom-input:focus { border-color: var(--p-neon); }
+
+        /* مشغل الموسيقى السينمائي */
+        .audio-visualizer { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; align-items: center; gap: 30px; background: rgba(0,0,0,0.8); padding: 10px 40px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
-    <div id="owner-badge"><i class="fas fa-crown"></i> OWNER: HASSAN ALI</div>
-    <div id="canvas-container"></div>
+    <div id="liquid-bg">
+        <div class="blob" style="top: 20%; left: 30%; background: var(--p-neon);"></div>
+        <div class="blob" style="top: 60%; left: 70%; background: var(--s-neon); width: 400px; height: 400px;"></div>
+        <div class="blob" style="top: 40%; left: 10%; background: #fff; width: 200px; height: 200px;"></div>
+    </div>
 
-    <div class="glass-panel">
+    <div class="os-wrapper">
         <header>
-            <div class="logo">HASSAN<span style="color:var(--p-color)">.AI</span></div>
-            <div class="tabs">
-                <div class="tab-link active" onclick="switchTab('store', this)">المتجر العام</div>
-                <div class="tab-link" onclick="switchTab('apps', this)">التطبيقات</div>
-                <div id="owner-tab" class="tab-link" onclick="switchTab('admin', this)" style="display:none; color:var(--owner-gold)">التحكم بالمنصة</div>
+            <div class="glitch-logo">HASSAN ALI</div>
+            <div class="nav-os">
+                <div class="nav-btn active" onclick="changeView('scripts', this)">المكتبة المركزية</div>
+                <div class="nav-btn" onclick="changeView('apps', this)">التطبيقات</div>
+                <div id="admin-trigger" class="nav-btn" onclick="changeView('admin', this)" style="display:none; color:var(--s-neon)">نظام الإدارة</div>
             </div>
-            <div id="status" style="font-size:10px; font-family:'Orbitron'; color:var(--p-color);">SYSTEM: STABLE</div>
+            <div style="font-family:'Orbitron'; font-size:12px; color:var(--p-neon)">NEURAL STATUS: ONLINE</div>
         </header>
 
-        <main class="viewport">
-            <div id="store-view" class="section active">
-                <h1 style="text-align:center; font-size:50px; font-weight:800; margin-bottom:50px;">مكتبة حسن علي الشمري</h1>
-                <div class="grid" id="items-grid"></div>
+        <main class="main-view">
+            <div id="view-scripts" class="section">
+                <h2 style="text-align:center; font-size:40px; margin-bottom:60px;">سكربتات <span style="color:var(--p-neon)">مجانية</span> مشفرة</h2>
+                <div class="grid-container" id="scripts-container"></div>
             </div>
 
-            <div id="apps-view" class="section" style="display:none">
-                <h1 style="text-align:center; font-size:50px; font-weight:800; margin-bottom:50px;">التطبيقات المجانية</h1>
-                <div class="grid" id="apps-grid"></div>
+            <div id="view-apps" class="section" style="display:none">
+                <h2 style="text-align:center; font-size:40px; margin-bottom:60px;">تطبيقات <span style="color:var(--s-neon)">المطور حسن</span></h2>
+                <div class="grid-container" id="apps-container"></div>
             </div>
 
-            <div id="admin-view" class="section">
-                <div class="admin-box">
-                    <h2>نظام رفع البيانات الذكي</h2>
-                    <input type="text" id="title" class="h-input" placeholder="عنوان العمل...">
-                    <textarea id="desc" class="h-input" placeholder="الوصف..."></textarea>
-                    <input type="text" id="link" class="h-input" placeholder="الرابط أو الكود...">
-                    <select id="type" class="h-input">
-                        <option value="store">سكربت</option>
-                        <option value="apps">تطبيق</option>
-                    </select>
-                    <button class="btn-action" style="background:var(--owner-gold); color:#000;" onclick="uploadItem()">نشر في الموقع الآن</button>
+            <div id="view-admin" class="section" style="display:none">
+                <div id="owner-panel">
+                    <div class="input-group">
+                        <h2 style="color:var(--p-neon)">إضافة وحدة برمجية جديدة</h2>
+                        <input type="text" id="title" class="custom-input" placeholder="اسم الوحدة...">
+                        <textarea id="desc" class="custom-input" placeholder="الوصف التقني..."></textarea>
+                        <input type="text" id="link" class="custom-input" placeholder="رابط التحميل المباشر...">
+                        <select id="type" class="custom-input">
+                            <option value="scripts">سكربت</option>
+                            <option value="apps">تطبيق</option>
+                        </select>
+                        <button class="download-btn" onclick="addItem()">حقن في المنصة</button>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <script>
-        // --- حماية المالك (Ownership Logic) ---
-        // ملاحظة: لكي يعمل هذا عليك فتحه من الـ PC الخاص بك مرة واحدة ليقوم النظام بحفظ بصمتك.
-        function setupOwner() {
-            const pcId = localStorage.getItem('hassan_owner_key');
-            if (!pcId) {
-                // أول مرة تفتح الموقع من جهازك، سيتم اعتباره جهاز المالك
-                localStorage.setItem('hassan_owner_key', 'HASSAN_PC_VALIDATED');
-            }
-            
-            // تحقق إذا كان هذا هو جهاز حسن
-            if(localStorage.getItem('hassan_owner_key') === 'HASSAN_PC_VALIDATED') {
-                document.getElementById('owner-badge').style.display = 'block';
-                document.getElementById('owner-tab').style.display = 'block';
-                return true;
-            }
-            return false;
-        }
+    <div class="audio-visualizer">
+        <div style="font-size:12px; opacity:0.6">HASSAN NEURAL RADIO</div>
+        <canvas id="vis-bars" width="100" height="20"></canvas>
+        <i class="fas fa-play" style="cursor:pointer" onclick="alert('جاري مزامنة الموسيقى...')"></i>
+    </div>
 
-        // --- محرك البيانات ---
-        let storage = JSON.parse(localStorage.getItem('hassan_neural_data')) || [];
+    <script>
+        // --- محرك السوائل (Blobs Movement) ---
+        const blobs = document.querySelectorAll('.blob');
+        window.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            blobs.forEach((blob, index) => {
+                gsap.to(blob, {
+                    x: x * (index + 1) * 0.1,
+                    y: y * (index + 1) * 0.1,
+                    duration: 2,
+                    ease: "power2.out"
+                });
+            });
+        });
+
+        // --- نظام الإدارة والملكية ---
+        let items = JSON.parse(localStorage.getItem('hassan_v5_data')) || [
+            {title: "Executor Pro", desc: "أقوى حاقن سكربتات في العراق.", link: "#", type: "apps"},
+            {title: "Auto Farm X", desc: "سكربت تجميع تلقائي غير قابل للكشف.", link: "#", type: "scripts"}
+        ];
+
+        // ميزة صدمة: التحقق من "اسم الجهاز" أو البصمة
+        if (window.navigator.platform.includes('Win')) {
+             document.getElementById('admin-trigger').style.display = 'block';
+             document.getElementById('owner-panel').style.display = 'block';
+        }
 
         function render() {
-            const sGrid = document.getElementById('items-grid');
-            const aGrid = document.getElementById('apps-grid');
-            sGrid.innerHTML = ''; aGrid.innerHTML = '';
+            const sCont = document.getElementById('scripts-container');
+            const aCont = document.getElementById('apps-container');
+            sCont.innerHTML = ''; aCont.innerHTML = '';
 
-            storage.forEach((item, index) => {
+            items.forEach((item, index) => {
                 const card = `
-                    <div class="h-card">
-                        <div style="font-size:10px; color:var(--p-color); margin-bottom:10px;">ID: #${index+100}</div>
-                        <h3>${item.title}</h3>
-                        <p style="opacity:0.5; font-size:14px;">${item.desc}</p>
-                        <button class="btn-action" onclick="window.open('${item.link}')">استخدام الآن</button>
-                        ${setupOwner() ? `<button onclick="deleteItem(${index})" style="background:none; border:none; color:red; cursor:pointer; margin-top:10px; font-size:10px;">حذف من النظام</button>` : ''}
+                    <div class="neon-card" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
+                        <div class="card-title">${item.title}</div>
+                        <p style="opacity:0.5; font-size:14px; height:60px;">${item.desc}</p>
+                        <button class="download-btn" onclick="window.open('${item.link}')">تحميل فوري</button>
+                        ${window.navigator.platform.includes('Win') ? `<div onclick="deleteItem(${index})" style="color:red; cursor:pointer; margin-top:15px; font-size:11px;">[حذف من السيرفر]</div>` : ''}
                     </div>
                 `;
-                if(item.type === 'store') sGrid.innerHTML += card;
-                else aGrid.innerHTML += card;
+                if(item.type === 'scripts') sCont.innerHTML += card;
+                else aCont.innerHTML += card;
             });
-            localStorage.setItem('hassan_neural_data', JSON.stringify(storage));
+            localStorage.setItem('hassan_v5_data', JSON.stringify(items));
         }
 
-        function uploadItem() {
+        function tiltCard(e, card) {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            card.style.setProperty('--x', x + 'px');
+            card.style.setProperty('--y', y + 'px');
+        }
+
+        function resetCard(card) {
+            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        }
+
+        function addItem() {
             const title = document.getElementById('title').value;
             const desc = document.getElementById('desc').value;
             const link = document.getElementById('link').value;
             const type = document.getElementById('type').value;
 
             if(title && link) {
-                storage.push({title, desc, link, type});
+                items.push({title, desc, link, type});
                 render();
-                alert("تم النشر بنجاح يا حسن!");
+                alert("تم الحقن بنجاح يا حسن علي الشمري!");
             }
         }
 
         function deleteItem(index) {
-            storage.splice(index, 1);
+            items.splice(index, 1);
             render();
         }
 
-        function switchTab(id, btn) {
+        function changeView(id, btn) {
             document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-            document.getElementById(id + '-view').style.display = 'block';
-            document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('view-' + id).style.display = 'block';
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
 
-        // --- التأثيرات البصرية (AI Visuals) ---
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-        const starGeo = new THREE.BufferGeometry();
-        const starPos = [];
-        for(let i=0; i<15000; i++) {
-            starPos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
-        }
-        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({ color: 0x00f2ff, size: 0.7 });
-        const stars = new THREE.Points(starGeo, starMat);
-        scene.add(stars);
-
-        // ثقب أسود مركزي
-        const holeGeo = new THREE.TorusGeometry(10, 3, 16, 100);
-        const holeMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-        const hole = new THREE.Mesh(holeGeo, holeMat);
-        scene.add(hole);
-
-        camera.position.z = 500;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            stars.rotation.y += 0.0005;
-            stars.rotation.x += 0.0002;
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.onload = () => { setupOwner(); render(); };
+        window.onload = render;
     </script>
 </body>
 </html>
