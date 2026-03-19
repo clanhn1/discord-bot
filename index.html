@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN AL-SHAMMARI | VIP SYSTEM</title>
+    <title>HASSAN AL-SHAMMARI | THE ROYAL PASS</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -13,133 +13,124 @@
     
     <style>
         :root {
-            --neon-color: #ffffff;
-            --glass-bg: rgba(255, 255, 255, 0.04);
-            --border-light: rgba(255, 255, 255, 0.15);
+            --royal-white: #ffffff;
+            --glass-panel: rgba(255, 255, 255, 0.04);
         }
 
         body, html {
             margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background: #050505; font-family: 'Poppins', sans-serif;
-            overflow: hidden; cursor: crosshair;
+            background: #000; font-family: 'Poppins', sans-serif;
+            overflow: hidden;
         }
 
-        /* حاوية الجزيئات لتكون ملء الشاشة 100% */
-        #canvas-bg { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
-        #video-bg { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; opacity: 0; transition: opacity 3s; pointer-events: none; }
-        iframe { width: 100vw; height: 100vh; transform: scale(1.5); pointer-events: none; border: none; }
-
-        /* شاشة النظام الأمنية */
-        #security-boot {
+        /* شاشة الترحيب التلقائية */
+        #auto-welcome {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle, #111 0%, #000 100%);
-            z-index: 10000; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; transition: 1s ease-in-out;
+            background: #000; z-index: 10000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; transition: 2s ease-in-out;
         }
-        .boot-btn {
-            color: #fff; font-size: 26px; font-weight: 900; letter-spacing: 10px;
-            border: 2px solid #fff; padding: 20px 60px; cursor: pointer;
-            text-transform: uppercase; border-radius: 5px; box-shadow: 0 0 20px rgba(255,255,255,0.2);
-            transition: 0.4s; position: relative; z-index: 2;
+        .loading-text {
+            color: #fff; font-family: 'Anek Malayalam'; font-size: 35px;
+            opacity: 0; transform: translateY(20px);
         }
-        .boot-btn:hover { background: #fff; color: #000; box-shadow: 0 0 50px #fff; letter-spacing: 15px; }
-        .system-status { color: #0f0; font-family: monospace; font-size: 18px; margin-top: 20px; opacity: 0; letter-spacing: 3px; text-shadow: 0 0 10px #0f0;}
 
-        /* رادار الدولة المخفي باليمين */
-        #location-badge {
-            position: fixed; top: 50px; right: -400px; z-index: 9999;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px);
-            border-right: 5px solid #fff; padding: 15px 30px; border-radius: 10px 0 0 10px;
-            box-shadow: -10px 0 30px rgba(255,255,255,0.1);
-            color: #fff; font-size: 18px; font-weight: bold; transition: 1s cubic-bezier(0.19, 1, 0.22, 1);
+        /* رادار الترحيب بالدولة */
+        #geo-welcome {
+            position: fixed; top: 30px; left: -500px; z-index: 9999;
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px);
+            border-left: 4px solid #fff; padding: 20px 40px; border-radius: 0 15px 15px 0;
+            box-shadow: 10px 0 40px rgba(0,0,0,0.5);
+            color: #fff; font-size: 19px; transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        .loc-icon { color: #fff; font-size: 22px; margin-left: 10px; text-shadow: 0 0 10px #fff; }
 
-        /* البطاقة 3D المركزية */
-        .hologram-card {
-            position: relative; z-index: 10; width: 450px; margin: auto;
-            background: var(--glass-bg); backdrop-filter: blur(45px);
-            border: 1px solid var(--border-light); border-radius: 40px;
-            padding: 50px 30px; text-align: center;
+        /* الخلفية والنجوم */
+        #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        #video-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0; transition: 3s; }
+        iframe { width: 100vw; height: 100vh; transform: scale(1.6); border: none; }
+
+        /* البطاقة الملكية 3D */
+        .royal-card {
+            position: relative; z-index: 10; width: 440px;
+            background: var(--glass-panel); backdrop-filter: blur(50px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 50px;
+            padding: 60px 30px; text-align: center;
             opacity: 0; transform: scale(0.8) translateY(50px);
-            transform-style: preserve-3d; /* لتفعيل عمق الـ 3D */
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,255,255,0.05);
-        }
-        
-        /* التوهج النبضي خلف البطاقة */
-        .aura-glow {
-            position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
-            border-radius: 42px; z-index: -1; opacity: 0;
-            box-shadow: 0 0 0px var(--neon-color); pointer-events: none;
+            transform-style: preserve-3d;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
         }
 
-        /* تفاصيل البطاقة الداخلية مع تحريك الـ Z للـ 3D */
-        .avatar-box {
-            width: 170px; height: 170px; margin: 0 auto 25px auto;
-            border: 3px solid #fff; border-radius: 50%; padding: 5px;
-            box-shadow: 0 0 40px rgba(255,255,255,0.3);
-            transform: translateZ(50px); /* يبرز للأمام */
+        .img-glow-frame {
+            width: 180px; height: 180px; margin: 0 auto 30px auto;
+            border: 2px solid #fff; border-radius: 50%; padding: 8px;
+            box-shadow: 0 0 50px rgba(255,255,255,0.2); transform: translateZ(60px);
         }
-        .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .img-glow-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-        h1 { font-family: 'Anek Malayalam', sans-serif; font-size: 44px; color: #fff; margin: 0; transform: translateZ(40px); }
-        .tag-name { font-family: 'Caveat', cursive; color: #bbb; font-size: 30px; display: block; margin-bottom: 30px; transform: translateZ(30px); }
+        h1 { font-family: 'Anek Malayalam', sans-serif; font-size: 46px; color: #fff; margin: 0; transform: translateZ(50px); }
+        .sub-name { font-family: 'Caveat', cursive; color: #fff; opacity: 0.7; font-size: 34px; margin-bottom: 35px; display: block; transform: translateZ(40px); }
 
-        .btn-join {
-            display: inline-block; padding: 18px 65px; background: #fff; color: #000;
+        .discord-link {
+            display: inline-block; padding: 20px 70px; background: #fff; color: #000;
             text-decoration: none; font-weight: 900; border-radius: 100px;
-            font-size: 20px; transition: 0.4s; transform: translateZ(40px);
+            font-size: 20px; transition: 0.4s; transform: translateZ(50px);
+            box-shadow: 0 10px 40px rgba(255,255,255,0.2);
         }
-        .btn-join:hover { box-shadow: 0 10px 40px #fff; transform: translateZ(50px) scale(1.05); }
+        .discord-link:hover { transform: translateZ(70px) scale(1.05); box-shadow: 0 0 60px #fff; }
 
-        .social-icons {
-            display: flex; justify-content: center; gap: 40px; margin-top: 35px;
-            padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.1);
-            transform: translateZ(20px);
+        /* السوشيال ميديا في الأسفل */
+        .social-bar {
+            display: flex; justify-content: center; gap: 50px; margin-top: 40px;
+            padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);
+            transform: translateZ(30px);
         }
-        .social-icons a { color: #fff; font-size: 35px; opacity: 0.6; transition: 0.4s; }
-        .social-icons a:hover { opacity: 1; transform: translateY(-8px) scale(1.2); text-shadow: 0 0 20px #fff; }
+        .social-bar a { color: #fff; font-size: 38px; opacity: 0.5; transition: 0.4s; }
+        .social-bar a:hover { opacity: 1; transform: translateY(-10px) scale(1.3); filter: drop-shadow(0 0 20px #fff); }
 
-        /* نبض الأغنية */
-        .beat-sync { animation: audioAura 0.5s infinite alternate ease-in-out; }
-        @keyframes audioAura { to { box-shadow: 0 0 150px rgba(255, 255, 255, 0.4); } }
+        /* توهج نبض الموسيقى المحيط */
+        .pulse-aura {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 50px; z-index: -1; opacity: 0;
+            box-shadow: 0 0 0px #fff; transition: 0.2s;
+        }
+        .active-beat { animation: royalPulse 0.5s infinite alternate; }
+        @keyframes royalPulse { to { box-shadow: 0 0 140px rgba(255,255,255,0.3); } }
     </style>
 </head>
 <body style="display:flex; align-items:center; justify-content:center;">
 
-    <div id="security-boot">
-        <div class="boot-btn" id="start-btn" onclick="activateSystem()">فك التشفير والدخول</div>
-        <div class="system-status" id="status-text">جاري تحليل الهوية والصوتيات...</div>
+    <div id="auto-welcome">
+        <div class="loading-text" id="t1">مرحباً بك..</div>
+        <div class="loading-text" id="t2" style="margin-top: 20px; font-size: 45px;">في عالم حسن علي الشمري</div>
     </div>
 
-    <div id="location-badge">
-        <i class="fas fa-satellite-dish loc-icon"></i>
-        <span id="loc-text">جاري الرصد...</span>
+    <div id="geo-welcome">
+        <i class="fas fa-heart" style="color:#fff; margin-left:10px;"></i>
+        <span id="welcome-msg">نورتنا يا غالي...</span>
     </div>
 
     <div id="video-bg"><div id="player"></div></div>
     <canvas id="canvas-bg"></canvas>
 
-    <div class="hologram-card" id="main-ui" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-        <div class="aura-glow" id="aura"></div>
+    <div class="royal-card" id="card-ui" data-tilt data-tilt-max="12" data-tilt-speed="500" data-tilt-glare data-tilt-max-glare="0.2">
+        <div class="pulse-aura" id="aura"></div>
         
-        <div class="avatar-box">
-            <img src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" class="avatar-img" alt="Hassan">
+        <div class="img-glow-frame">
+            <img src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" alt="Hassan">
         </div>
         
         <h1>حسن علي الشمري</h1>
-        <span class="tag-name"># ابن ساير</span>
+        <span class="sub-name"># ابن ساير</span>
 
-        <a href="https://discord.gg/CTwKRt7u" class="btn-join" target="_blank">انضم للمملكة</a>
+        <a href="https://discord.gg/CTwKRt7u" class="discord-link" target="_blank">انضم لسيرفر الدسكورد</a>
 
-        <div class="social-icons">
+        <div class="social-bar">
             <a href="https://www.instagram.com/76h16/?hl=ar" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="https://www.tiktok.com/@6r09" target="_blank"><i class="fab fa-tiktok"></i></a>
         </div>
     </div>
 
     <script>
-        // إعداد مشغل يوتيوب (يشتغل صامت في البداية)
+        // إعداد اليوتيوب
         var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -151,97 +142,70 @@
             });
         }
 
-        // قاموس الدول العربية لترجمتها
-        const arabCountries = {
-            "Iraq": "العراق", "Saudi Arabia": "السعودية", "Egypt": "مصر", "Syria": "سوريا",
-            "Jordan": "الأردن", "Lebanon": "لبنان", "United Arab Emirates": "الإمارات",
-            "Kuwait": "الكويت", "Qatar": "قطر", "Oman": "عُمان", "Bahrain": "البحرين",
-            "Yemen": "اليمن", "Morocco": "المغرب", "Algeria": "الجزائر", "Tunisia": "تونس"
-        };
+        // تسلسل الدخول التلقائي (5 ثواني)
+        window.addEventListener('load', () => {
+            // تحريك نصوص الترحيب
+            gsap.to("#t1", { opacity: 1, y: 0, duration: 1, delay: 0.5 });
+            gsap.to("#t2", { opacity: 1, y: 0, duration: 1, delay: 1.5 });
 
-        // نظام التفعيل والمزامنة الصوتية (الذكاء الاصطناعي)
-        function activateSystem() {
-            // 1. تغيير شكل الزر
-            document.getElementById('start-btn').style.display = 'none';
-            const status = document.getElementById('status-text');
-            status.style.opacity = '1';
-
-            // 2. تشغيل صوت الذكاء الاصطناعي
-            let welcomeSpeech = new SpeechSynthesisUtterance("تم فك التشفير بنجاح.. حياك الله في مملكة حسن ابن ساير.");
-            welcomeSpeech.lang = 'ar-SA';
-            welcomeSpeech.rate = 0.9;
-            
-            // 3. عند انتهاء نطق الذكاء الاصطناعي تماماً، تبدأ الأغنية ويظهر الموقع
-            welcomeSpeech.onend = function() {
-                launchInterface();
-            };
-
-            // تشغيل النطق (ووضع خطة بديلة لو المتصفح حظر الصوت)
-            window.speechSynthesis.speak(welcomeSpeech);
-            setTimeout(() => { if(document.getElementById('security-boot').style.display !== 'none') launchInterface(); }, 4500);
-        }
-
-        function launchInterface() {
-            // إخفاء شاشة البداية
-            const boot = document.getElementById('security-boot');
-            boot.style.transform = 'scale(2)'; boot.style.opacity = '0';
-            
+            // نطق الترحيب
             setTimeout(() => {
-                boot.style.display = 'none';
-                
-                // تشغيل الأغنية بصوت عالي
-                if (player) { player.unMute(); player.setVolume(100); }
-                document.getElementById('video-bg').style.opacity = '0.35';
+                let speech = new SpeechSynthesisUtterance("أهلاً بك.. نورت ملف الشخصي الخاص بـ حسن علي الشمري، ابن ساير.");
+                speech.lang = 'ar-SA';
+                speech.rate = 0.9;
+                window.speechSynthesis.speak(speech);
+            }, 1000);
 
-                // أنيميشن GSAP لظهور البطاقة بشكل فخم
-                gsap.to("#main-ui", { duration: 1.5, opacity: 1, scale: 1, y: 0, ease: "elastic.out(1, 0.7)" });
+            // الدخول التلقائي بعد 5 ثواني
+            setTimeout(() => {
+                const welcome = document.getElementById('auto-welcome');
+                welcome.style.opacity = '0';
+                welcome.style.transform = 'scale(1.2)';
                 
-                // تفعيل توهج النبض
                 setTimeout(() => {
-                    document.getElementById('aura').style.opacity = '1';
-                    document.getElementById('aura').classList.add('beat-sync');
-                }, 800);
+                    welcome.style.display = 'none';
+                    // إظهار البطاقة
+                    gsap.to("#card-ui", { opacity: 1, scale: 1, y: 0, duration: 2, ease: "power4.out" });
+                    document.getElementById('video-bg').style.opacity = '0.35';
+                    
+                    if (player) { player.unMute(); player.setVolume(100); }
+                    
+                    // تشغيل التوهج
+                    setTimeout(() => {
+                        document.getElementById('aura').style.opacity = '1';
+                        document.getElementById('aura').classList.add('active-beat');
+                    }, 1000);
 
-                // استدعاء الرادار لكشف الدولة
-                fetchLocation();
-            }, 500);
-        }
+                    // كشف الموقع والترحيب الودود
+                    fetchLocation();
+                }, 1500);
+            }, 5000);
+        });
 
-        // دالة كشف الموقع
         function fetchLocation() {
+            const countriesAr = {"Iraq": "العراق", "Saudi Arabia": "السعودية", "Egypt": "مصر", "Jordan": "الأردن", "Kuwait": "الكويت"};
             fetch('https://get.geojs.io/v1/ip/geo.json')
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                let countryName = arabCountries[data.country] || data.country;
-                document.getElementById('loc-text').innerHTML = `تم رصد الدخول من: <span style="color:#0f0;">${countryName}</span><br><span style="font-size:14px; color:#ccc;">حياك الله أنت وأهل ${countryName}</span>`;
-                // إظهار البطاقة من اليمين
-                setTimeout(() => {
-                    document.getElementById('location-badge').style.right = '0';
-                }, 1000);
-            }).catch(e => console.log("Radar Blocked"));
+                let c = countriesAr[data.country] || data.country;
+                document.getElementById('welcome-msg').innerHTML = `أهلاً بك يا غالي من أهل <span style="font-weight:900;">${c}</span>، نورت عالمي!`;
+                setTimeout(() => { document.getElementById('geo-welcome').style.left = '0'; }, 500);
+            });
         }
 
-        // إعداد النجوم Three.js المتجاوبة (Full Screen Fix)
+        // نجوم الخلفية (Full Screen)
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        
         const geo = new THREE.BufferGeometry(); const pos = [];
         for(let i=0; i<4000; i++) pos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
         geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-        const points = new THREE.Points(geo, new THREE.PointsMaterial({color: 0xffffff, size: 2.5}));
-        scene.add(points); camera.position.z = 500;
-
-        function animate() { requestAnimationFrame(animate); points.rotation.y += 0.0008; renderer.render(scene, camera); }
-        animate();
-
-        // تحديث النجوم عند تكبير/تصغير الشاشة لضمان Full Screen دائم
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        const pts = new THREE.Points(geo, new THREE.PointsMaterial({color: 0xffffff, size: 2.5}));
+        scene.add(pts); camera.position.z = 500;
+        function anim() { requestAnimationFrame(anim); pts.rotation.y += 0.0007; renderer.render(scene, camera); }
+        anim();
+        window.onresize = () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); };
     </script>
 </body>
 </html>
