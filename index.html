@@ -3,111 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN AL-SHAMMARI | OFFICIAL</title>
+    <title>HASSAN HUB | ELITE SCRIPTS</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@800&family=Caveat:wght@700&family=Poppins:wght@300;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@800&family=Changa:wght@300;600&family=Poppins:wght@300;600;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --royal-white: #ffffff; --glass: rgba(255, 255, 255, 0.05); }
+        :root {
+            --neon-blue: #00d2ff;
+            --neon-purple: #9d50bb;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
 
-        body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: 'Poppins', sans-serif; }
+        body, html {
+            margin: 0; padding: 0; width: 100vw; height: 100vh;
+            background: #020202; overflow: hidden; font-family: 'Changa', sans-serif;
+            color: #fff;
+        }
 
-        /* شاشة الترحيب التلقائية */
-        #auto-welcome {
+        /* شاشة الدخول التلقائي */
+        #welcome-gate {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 10000; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; transition: 1.5s ease-in-out;
+            align-items: center; justify-content: center; transition: 2s ease-in-out;
         }
-        .loading-text { color: #fff; font-family: 'Anek Malayalam'; font-size: 30px; opacity: 0; transform: translateY(20px); text-align: center; padding: 0 20px; }
+        .intro-text { font-size: 35px; opacity: 0; transform: translateY(30px); text-shadow: 0 0 20px #fff; }
 
-        /* رادار الترحيب الودود */
-        #geo-welcome {
-            position: fixed; top: 30px; left: -500px; z-index: 9999;
-            background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(20px);
-            border-left: 4px solid #fff; padding: 15px 30px; border-radius: 0 15px 15px 0;
-            color: #fff; font-size: 18px; transition: 1.2s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        #canvas-bg { position: absolute; top: 0; left: 0; z-index: 1; }
-        #video-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0; transition: 3s; }
-        iframe { width: 100vw; height: 100vh; transform: scale(1.6); border: none; pointer-events: none; }
-
-        /* البطاقة الملكية */
-        .royal-card {
-            position: relative; z-index: 10; width: 400px;
-            background: var(--glass); backdrop-filter: blur(50px);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 50px;
-            padding: 60px 20px; text-align: center;
-            opacity: 0; transform: scale(0.8); transition: 1.5s;
+        /* حاوية الموقع الرئيسية */
+        #main-app {
+            position: relative; z-index: 10; width: 90%; max-width: 1100px;
+            height: 85vh; background: var(--glass); backdrop-filter: blur(40px);
+            border: 1px solid var(--border); border-radius: 30px;
+            display: flex; flex-direction: column; opacity: 0; transform: scale(0.9);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.5); overflow: hidden;
         }
 
-        .avatar-frame {
-            width: 170px; height: 170px; margin: 0 auto 25px auto;
-            border: 2px solid #fff; border-radius: 50%; padding: 6px;
-            box-shadow: 0 0 40px rgba(255,255,255,0.2);
+        /* الهيدر */
+        header {
+            padding: 25px 40px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
         }
-        /* تم إصلاح الرابط هنا */
-        .avatar-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .user-info img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #fff; }
 
-        h1 { font-family: 'Anek Malayalam', sans-serif; font-size: 40px; color: #fff; margin: 0; }
-        .sub-name { font-family: 'Caveat', cursive; color: #aaa; font-size: 28px; margin-bottom: 30px; display: block; }
-
-        .discord-btn {
-            display: inline-block; padding: 18px 60px; background: #fff; color: #000;
-            text-decoration: none; font-weight: 900; border-radius: 100px;
-            font-size: 18px; transition: 0.4s; box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+        /* القائمة الجانبية للتنقل */
+        .content-body { display: flex; flex: 1; overflow: hidden; }
+        nav {
+            width: 220px; border-left: 1px solid var(--border);
+            padding: 20px; display: flex; flex-direction: column; gap: 10px;
         }
-        .discord-btn:hover { transform: scale(1.05); box-shadow: 0 0 50px #fff; }
-
-        .social-links {
-            display: flex; justify-content: center; gap: 40px; margin-top: 40px;
-            padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.05);
+        .nav-btn {
+            padding: 15px; border-radius: 12px; cursor: pointer;
+            transition: 0.3s; display: flex; align-items: center; gap: 12px;
+            background: transparent; color: rgba(255,255,255,0.6);
         }
-        .social-links a { color: #fff; font-size: 32px; opacity: 0.6; transition: 0.3s; }
-        .social-links a:hover { opacity: 1; transform: translateY(-5px); filter: drop-shadow(0 0 10px #fff); }
-
-        .pulse-effect {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 50px; z-index: -1; opacity: 0;
-            animation: pulseAnim 0.5s infinite alternate;
+        .nav-btn.active, .nav-btn:hover {
+            background: rgba(255,255,255,0.1); color: #fff;
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
         }
-        @keyframes pulseAnim { to { box-shadow: 0 0 120px rgba(255,255,255,0.25); } }
+
+        /* ساحة العرض */
+        main { flex: 1; padding: 30px; overflow-y: auto; scroll-behavior: smooth; }
+        .page { display: none; animation: fadeIn 0.5s ease forwards; }
+        .page.active { display: block; }
+
+        /* كروت السكربتات */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .item-card {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            border-radius: 20px; padding: 20px; transition: 0.4s;
+        }
+        .item-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.08); border-color: #fff; }
+        .item-card h3 { margin: 0 0 10px 0; color: #00d2ff; }
+        .item-card p { font-size: 14px; color: #ccc; line-height: 1.6; }
+        .copy-btn {
+            width: 100%; padding: 10px; margin-top: 15px; background: #fff;
+            color: #000; border: none; border-radius: 8px; cursor: pointer;
+            font-weight: bold; transition: 0.3s;
+        }
+        .copy-btn:hover { background: #00d2ff; color: #fff; }
+
+        /* قوانين المتجر */
+        .rules-box {
+            background: rgba(255,0,0,0.05); border: 1px dashed rgba(255,255,255,0.2);
+            padding: 25px; border-radius: 20px; line-height: 2;
+        }
+
+        /* الخلفية والنجوم */
+        #canvas-bg { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        #video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.2; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* شريط التمرير */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
     </style>
 </head>
 <body style="display:flex; align-items:center; justify-content:center;">
 
-    <div id="auto-welcome">
-        <div class="loading-text" id="t1">مرحباً بك..</div>
-        <div class="loading-text" id="t2" style="margin-top:15px; font-size:40px;">في مملكة حسن علي</div>
-    </div>
-
-    <div id="geo-welcome">
-        <i class="fas fa-heart"></i> <span id="welcome-msg">أهلاً بك يا غالي..</span>
+    <div id="welcome-gate">
+        <div class="intro-text" id="t1">نظام حسن علي الشمري</div>
+        <div class="intro-text" id="t2" style="font-size: 25px; color: #aaa;">جاري تحميل الأدوات والسكربتات...</div>
     </div>
 
     <div id="video-bg"><div id="player"></div></div>
     <canvas id="canvas-bg"></canvas>
 
-    <div class="royal-card" id="main-card" data-tilt data-tilt-max="10">
-        <div class="pulse-effect" id="aura"></div>
-        <div class="avatar-frame">
-            <img src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" alt="Hassan">
-        </div>
-        <h1>حسن علي الشمري</h1>
-        <span class="sub-name"># ابن ساير</span>
-        <a href="https://discord.gg/CTwKRt7u" class="discord-btn" target="_blank">انضم لسيرفري</a>
-        <div class="social-links">
-            <a href="https://www.instagram.com/76h16/?hl=ar" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@6r09" target="_blank"><i class="fab fa-tiktok"></i></a>
+    <div id="main-app">
+        <header>
+            <div class="user-info">
+                <img src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" alt="Admin">
+                <div>
+                    <div style="font-weight: 900; font-size: 18px;">HASSAN ALI AL-SHAMMARI</div>
+                    <div style="font-size: 12px; color: #0f0;">● متصل الآن (المطور الرسمي)</div>
+                </div>
+            </div>
+            <div style="font-size: 20px; font-weight: 900; letter-spacing: 2px;">ELITE HUB</div>
+        </header>
+
+        <div class="content-body">
+            <nav>
+                <div class="nav-btn active" onclick="openPage('home', this)"><i class="fas fa-home"></i> الرئيسية</div>
+                <div class="nav-btn" onclick="openPage('scripts', this)"><i class="fas fa-code"></i> السكربتات</div>
+                <div class="nav-btn" onclick="openPage('apps', this)"><i class="fas fa-mobile-alt"></i> التطبيقات</div>
+                <div class="nav-btn" onclick="openPage('rules', this)"><i class="fas fa-gavel"></i> القوانين</div>
+                <div style="margin-top: auto;">
+                    <a href="https://discord.gg/CTwKRt7u" target="_blank" style="text-decoration:none; color:#fff; font-size:14px;">
+                        <i class="fab fa-discord"></i> الدعم الفني
+                    </a>
+                </div>
+            </nav>
+
+            <main>
+                <div id="home" class="page active">
+                    <h2 style="color: #fff;">أهلاً بك يا بطل في متجري المتواضع 💎</h2>
+                    <p>هذا المكان مخصص للمبرمجين واللاعبين المحترفين. ستجد هنا أقوى الأدوات التي أطورها بنفسي. تذكر دائماً أننا هنا لنستمتع ونطور من مهاراتنا، لا لتخريب تجربة الآخرين بشكل عدواني.</p>
+                    <div class="rules-box" style="background: rgba(0,210,255,0.05); border-color: #00d2ff;">
+                        📢 <b>رسالة المطور:</b> "لا تنسَ مشاركة الموقع مع أصدقائك لدعمي في الاستمرار بتحديث السكربتات!"
+                    </div>
+                </div>
+
+                <div id="scripts" class="page">
+                    <div class="grid">
+                        <div class="item-card">
+                            <h3>Roblox Admin Script</h3>
+                            <p>سكربت التحكم الكامل، طيران، سرعة، وكشف أماكن اللاعبين (ESP) متوافق مع كافة التحديثات.</p>
+                            <button class="copy-btn">نسخ السكربت</button>
+                        </div>
+                        <div class="item-card">
+                            <h3>Auto Farm Pro</h3>
+                            <p>أفضل سكربت تجميع تلقائي للألعاب القتالية، حماية عالية من الباند (Anti-Ban).</p>
+                            <button class="copy-btn">نسخ السكربت</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="apps" class="page">
+                    <div class="grid">
+                        <div class="item-card">
+                            <h3>Elite Injector V2</h3>
+                            <p>تطبيق حاقن السكربتات الأسرع والأخف على المعالج، يدعم كافة أنواع الـ DLLs.</p>
+                            <button class="copy-btn">تحميل التطبيق</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rules" class="page">
+                    <h2>⚖️ قوانين المملكة</h2>
+                    <div class="rules-box">
+                        1. 🚫 <b>يمنع منعاً باتاً:</b> استخدام السكربتات لتخريب السيرفرات العربية أو الهجوم عليها.<br>
+                        2. 🎮 <b>الهدف:</b> السكربتات برمجت للمتعة الشخصية وتجربة الثغرات البرمجية فقط.<br>
+                        3. 🤝 <b>المشاركة:</b> يحق لك مشاركة الموقع مع أصدقائك، لكن لا تنسب العمل لنفسك.<br>
+                        4. ⚠️ <b>إخلاء مسؤولية:</b> المطور حسن غير مسؤول عن أي سوء استخدام لهذه الأدوات.<br>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 
     <script>
-        // إعداد اليوتيوب
+        // نظام التنقل بين الصفحات
+        function openPage(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // يوتيوب خلفية
         var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -119,41 +207,29 @@
             });
         }
 
-        // الدخول التلقائي
+        // الدخول التلقائي الذكي
         window.addEventListener('load', () => {
             gsap.to("#t1", { opacity: 1, y: 0, duration: 1, delay: 0.5 });
-            gsap.to("#t2", { opacity: 1, y: 0, duration: 1, delay: 1.2 });
+            gsap.to("#t2", { opacity: 1, y: 0, duration: 1, delay: 1.5 });
 
-            // الترحيب الصوتي
             setTimeout(() => {
-                let speech = new SpeechSynthesisUtterance("أهلاً بك.. نورت عالم حسن علي الشمري، ابن ساير.");
-                speech.lang = 'ar-SA';
-                window.speechSynthesis.speak(speech);
-            }, 800);
+                let msg = new SpeechSynthesisUtterance("أهلاً بك في متجر حسن للسكربتات. يرجى الالتزام بالقوانين وعدم التخريب. استمتع بالأدوات.");
+                msg.lang = 'ar-SA';
+                window.speechSynthesis.speak(msg);
+            }, 1000);
 
-            // الانتقال بعد 5 ثواني
             setTimeout(() => {
-                const welcome = document.getElementById('auto-welcome');
-                welcome.style.opacity = '0';
+                const gate = document.getElementById('welcome-gate');
+                gate.style.opacity = '0';
                 setTimeout(() => {
-                    welcome.style.display = 'none';
-                    gsap.to("#main-card", { opacity: 1, scale: 1, duration: 1.5 });
-                    document.getElementById('video-bg').style.opacity = '0.35';
-                    if (player) { player.unMute(); player.setVolume(100); }
-                    document.getElementById('aura').style.opacity = '1';
-                    fetchLocation();
+                    gate.style.display = 'none';
+                    gsap.to("#main-app", { opacity: 1, scale: 1, duration: 1.5, ease: "back.out(1.7)" });
+                    if(player) { player.unMute(); player.setVolume(100); }
                 }, 1000);
-            }, 5000);
+            }, 6000);
         });
 
-        function fetchLocation() {
-            fetch('https://get.geojs.io/v1/ip/geo.json').then(res => res.json()).then(data => {
-                document.getElementById('welcome-msg').innerText = `أهلاً بك يا غالي من ${data.country}، نورتنا!`;
-                document.getElementById('geo-welcome').style.left = '0';
-            });
-        }
-
-        // النجوم
+        // النجوم الخلفية
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), alpha: true });
@@ -163,7 +239,7 @@
         geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
         const pts = new THREE.Points(geo, new THREE.PointsMaterial({color: 0xffffff, size: 2.5}));
         scene.add(pts); camera.position.z = 500;
-        function anim() { requestAnimationFrame(anim); pts.rotation.y += 0.0008; renderer.render(scene, camera); }
+        function anim() { requestAnimationFrame(anim); pts.rotation.y += 0.0005; renderer.render(scene, camera); }
         anim();
         window.onresize = () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); };
     </script>
