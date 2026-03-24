@@ -1,228 +1,289 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HASSAN AL-SHAMMARI | WAR-ZONE OS</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;800&family=Orbitron:wght@900&display=swap" rel="stylesheet">
-    
-    <style>
-        :root { --main-neon: #00ff00; --danger: #ff003c; --glass: rgba(0, 0, 0, 0.7); }
-        body, html { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Changa', sans-serif; overflow: hidden; }
+--==[ Supreme Fly V13 PRO | Dev: Hassan Ibn Sayer | 30nr ]==--
 
-        /* خلفية الفيديو السينمائية */
-        .video-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2; object-fit: cover; opacity: 0.5; filter: grayscale(50%) brightness(0.4);
-        }
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Player = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
 
-        /* طبقة الهاك (Scanline Effect) */
-        .overlay-fx {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%; pointer-events: none;
-        }
+local Flying = false
+local FlyType = 1
+local FlySpeed = 50
+local bv, bg
 
-        /* واجهة حسن الشمري الفخمة */
-        .hassan-os {
-            position: relative; z-index: 10; width: 96%; height: 94vh; margin: 3vh auto;
-            border: 2px solid rgba(0, 255, 0, 0.2); border-radius: 20px;
-            background: var(--glass); backdrop-filter: blur(10px);
-            display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 1), inset 0 0 100px rgba(0, 255, 0, 0.05);
-        }
+-- تنظيف الواجهة القديمة
+local playerGui = Player:WaitForChild("PlayerGui")
+if playerGui:FindFirstChild("SupremeV13") then playerGui.SupremeV13:Destroy() end
 
-        header {
-            padding: 20px 40px; border-bottom: 2px solid rgba(0, 255, 0, 0.1);
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0, 20, 0, 0.3);
-        }
+--=========================================
+-- 🎨 بناء واجهة المستخدم (التصميم الجديد)
+--=========================================
+local ScreenGui = Instance.new("ScreenGui", playerGui)
+ScreenGui.Name = "SupremeV13"
+ScreenGui.ResetOnSpawn = false 
 
-        .user-profile { display: flex; align-items: center; gap: 15px; }
-        .user-img {
-            width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--main-neon);
-            box-shadow: 0 0 15px var(--main-neon); object-fit: cover;
-        }
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 340, 0, 520)
+MainFrame.Position = UDim2.new(0.5, -170, 0.5, -260)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.BorderSizePixel = 0
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
 
-        /* نظام التبويبات */
-        .nav-hacker { display: flex; gap: 15px; }
-        .tab-btn {
-            background: transparent; border: 1px solid rgba(0, 255, 0, 0.3);
-            padding: 10px 25px; color: #fff; font-family: 'Orbitron'; font-size: 14px;
-            cursor: pointer; transition: 0.3s; border-radius: 5px;
-        }
-        .tab-btn.active, .tab-btn:hover { background: var(--main-neon); color: #000; box-shadow: 0 0 20px var(--main-neon); }
+local MainStroke = Instance.new("UIStroke", MainFrame)
+MainStroke.Color = Color3.fromRGB(130, 0, 255)
+MainStroke.Thickness = 2
+MainStroke.Transparency = 0.2
 
-        /* منطقة المحتوى */
-        .viewport { flex: 1; padding: 40px; overflow-y: auto; scrollbar-width: none; }
-        .viewport::-webkit-scrollbar { display: none; }
+local Gradient = Instance.new("UIGradient", MainFrame)
+Gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 35)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 20))
+}
+Gradient.Rotation = 90
 
-        /* كروت الألعاب (Gaming Cards) */
-        .gaming-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
-        .card-h {
-            background: rgba(0, 30, 0, 0.4); border-left: 5px solid var(--main-neon);
-            padding: 30px; border-radius: 10px; position: relative;
-            transition: transform 0.2s ease-out, background 0.3s;
-            cursor: pointer; overflow: hidden;
-        }
-        .card-h:hover { background: rgba(0, 255, 0, 0.05); }
-        .card-h h3 { font-family: 'Orbitron'; color: var(--main-neon); margin-top: 0; }
-        .btn-action {
-            width: 100%; padding: 12px; margin-top: 15px; background: transparent;
-            border: 1px solid var(--main-neon); color: var(--main-neon);
-            font-weight: 800; cursor: pointer; transition: 0.3s;
-        }
-        .btn-action:hover { background: var(--main-neon); color: #000; }
+-- ترتيب تلقائي للعناصر
+local Layout = Instance.new("UIListLayout", MainFrame)
+Layout.SortOrder = Enum.SortOrder.LayoutOrder
+Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+Layout.Padding = UDim.new(0, 12)
 
-        /* رادار الهاك (Hacker Radar) */
-        .radar {
-            position: absolute; bottom: 20px; left: 20px; width: 100px; height: 100px;
-            border: 1px solid var(--main-neon); border-radius: 50%; opacity: 0.3;
-        }
-        .radar::after {
-            content: ''; position: absolute; top: 50%; left: 50%; width: 50%; height: 2px;
-            background: var(--main-neon); transform-origin: left; animation: rotate 3s linear infinite;
-        }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+-- مسافة علوية
+local SpacerTop = Instance.new("Frame", MainFrame)
+SpacerTop.Size = UDim2.new(1, 0, 0, 5)
+SpacerTop.BackgroundTransparency = 1
 
-        /* لوحة المالك (حسن) */
-        #owner-view { display: none; max-width: 700px; margin: 0 auto; background: rgba(0,0,0,0.8); padding: 30px; border-radius: 15px; border: 1px solid var(--main-neon); }
-        .h-input { width: 100%; padding: 12px; margin-bottom: 15px; background: #000; border: 1px solid var(--main-neon); color: var(--main-neon); border-radius: 5px; outline: none; }
-    </style>
-</head>
-<body>
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Text = "🚀 SUPREME V13 PRO"
+Title.TextColor3 = Color3.fromRGB(0, 255, 255)
+Title.Font = Enum.Font.GothamBlack
+Title.TextSize = 24
+Title.BackgroundTransparency = 1
 
-    <video class="video-bg" autoplay muted loop playsinline>
-        <source src="https://assets.mixkit.co/videos/preview/mixkit-cyberpunk-city-street-with-neon-lights-at-night-41005-large.mp4" type="video/mp4">
-    </video>
-    <div class="overlay-fx"></div>
+-- دالة مساعدة لإنشاء الصناديق والأزرار بشكل احترافي
+local function CreateTextBox(placeholder)
+    local box = Instance.new("TextBox", MainFrame)
+    box.Size = UDim2.new(0.85, 0, 0, 40)
+    box.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    box.TextColor3 = Color3.fromRGB(255, 255, 255)
+    box.PlaceholderText = placeholder
+    box.Font = Enum.Font.GothamSemibold
+    box.TextSize = 14
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
+    local stroke = Instance.new("UIStroke", box)
+    stroke.Color = Color3.fromRGB(100, 100, 150)
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    return box
+end
 
-    <div class="hassan-os">
-        <header>
-            <div class="user-profile">
-                <img src="https://i.postimg.cc/9XdbK2pK/tnzyl.jpg" class="user-img" alt="حسن علي الشمري">
-                <div>
-                    <div style="font-weight:900; letter-spacing:1px;">HASSAN AL-SHAMMARI</div>
-                    <div style="font-size:10px; color:var(--main-neon)">RANK: ELITE DEVELOPER</div>
-                </div>
-            </div>
-            <div class="nav-hacker">
-                <button class="tab-btn active" onclick="showTab('store', this)">السكربتات</button>
-                <button class="tab-btn" onclick="showTab('apps', this)">التطبيقات</button>
-                <button id="owner-trigger" class="tab-btn" onclick="showTab('admin', this)" style="display:none; color:var(--danger)">إدارة النظام</button>
-            </div>
-        </header>
+local function CreateButton(text, color)
+    local btn = Instance.new("TextButton", MainFrame)
+    btn.Size = UDim2.new(0.85, 0, 0, 40)
+    btn.Text = text
+    btn.BackgroundColor3 = color
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 15
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+    return btn
+end
 
-        <main class="viewport">
-            <div id="store-view" class="tab-content">
-                <h1 style="font-family:'Orbitron'; text-shadow: 0 0 20px var(--main-neon);">CENTRAL DATABASE</h1>
-                <div class="gaming-grid" id="scripts-container"></div>
-            </div>
+--=========================================
+-- 🛠️ إضافة عناصر التحكم
+--=========================================
+local SpeedBox = CreateTextBox("السرعة (الافتراضي 50)...")
+SpeedBox.Text = "50"
 
-            <div id="apps-view" class="tab-content" style="display:none">
-                <h1 style="font-family:'Orbitron';">ELITE APPLICATIONS</h1>
-                <div class="gaming-grid" id="apps-container"></div>
-            </div>
+-- حاوية لأزرار نوع الطيران
+local ModeFrame = Instance.new("Frame", MainFrame)
+ModeFrame.Size = UDim2.new(0.85, 0, 0, 35)
+ModeFrame.BackgroundTransparency = 1
 
-            <div id="admin-view" class="tab-content" style="display:none">
-                <div id="owner-view">
-                    <h2 style="color:var(--main-neon)">نظام حقن البيانات | حسن الشمري</h2>
-                    <input type="text" id="title" class="h-input" placeholder="عنوان المحتوى...">
-                    <textarea id="desc" class="h-input" style="height:80px" placeholder="الوصف التقني..."></textarea>
-                    <input type="text" id="link" class="h-input" placeholder="رابط التحميل أو الكود...">
-                    <select id="type" class="h-input">
-                        <option value="store">سكربت</option>
-                        <option value="apps">تطبيق</option>
-                    </select>
-                    <button class="btn-action" style="background:var(--main-neon); color:#000" onclick="saveItem()">تأكيد الحقن في السيرفر</button>
-                </div>
-            </div>
-        </main>
+local Mode1Btn = Instance.new("TextButton", ModeFrame)
+Mode1Btn.Size = UDim2.new(0.48, 0, 1, 0)
+Mode1Btn.Position = UDim2.new(0, 0, 0, 0)
+Mode1Btn.Text = "Fly 1 (واقف)"
+Mode1Btn.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+Mode1Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+Mode1Btn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", Mode1Btn).CornerRadius = UDim.new(0, 6)
 
-        <div class="radar"></div>
-    </div>
+local Mode2Btn = Instance.new("TextButton", ModeFrame)
+Mode2Btn.Size = UDim2.new(0.48, 0, 1, 0)
+Mode2Btn.Position = UDim2.new(0.52, 0, 0, 0)
+Mode2Btn.Text = "Fly 2 (جالس)"
+Mode2Btn.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+Mode2Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+Mode2Btn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", Mode2Btn).CornerRadius = UDim.new(0, 6)
 
-    <script>
-        // --- حماية المالك (تفعيل لوحة التحكم لحسن فقط) ---
-        // سيظهر زر الإدارة تلقائياً عند فتح الموقع من متصفحك
-        if (window.navigator.userAgent.includes("Win") || window.location.href.includes("hassan")) {
-            document.getElementById('owner-trigger').style.display = 'block';
-            document.getElementById('owner-view').style.display = 'block';
-        }
+local FlyBtn = CreateButton("✈️ تشغيل الطيران (E)", Color3.fromRGB(0, 120, 255))
+local ToolBtn = CreateButton("🎒 جمع الأدوات من الماب", Color3.fromRGB(150, 50, 200))
 
-        // --- إدارة البيانات ---
-        let database = JSON.parse(localStorage.getItem('hassan_gaming_db')) || [
-            {title: "Aimbot V2", desc: "سكربت تصويب تلقائي لجميع ألعاب الشوتر.", link: "#", type: "store"},
-            {title: "Speed Hack", desc: "زيادة السرعة في الألعاب بدون باند.", link: "#", type: "store"},
-            {title: "Hassan Injector", desc: "أداة حقن السكربتات المتقدمة.", link: "#", type: "apps"}
-        ];
+-- خط فاصل
+local Divider = Instance.new("Frame", MainFrame)
+Divider.Size = UDim2.new(0.9, 0, 0, 2)
+Divider.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+Divider.BorderSizePixel = 0
 
-        function render() {
-            const sGrid = document.getElementById('scripts-container');
-            const aGrid = document.getElementById('apps-container');
-            sGrid.innerHTML = ''; aGrid.innerHTML = '';
+-- قسم المشاهدة (Spectate)
+local SpectateBox = CreateTextBox("🔍 اكتب اسم اللاعب هنا...")
 
-            database.forEach((item, index) => {
-                const card = `
-                    <div class="card-h" onmousemove="softTilt(event, this)" onmouseleave="resetTilt(this)">
-                        <div style="font-family:'Orbitron'; font-size:10px; opacity:0.5;">LOG_ID: 0x${index+100}</div>
-                        <h3>${item.title}</h3>
-                        <p style="font-size:13px; opacity:0.7; height:50px;">${item.desc}</p>
-                        <button class="btn-action" onclick="window.open('${item.link}')">EXECUTE</button>
-                        ${document.getElementById('owner-trigger').style.display === 'block' ? `<div onclick="deleteItem(${index})" style="color:red; font-size:10px; margin-top:10px; cursor:pointer;">[DELETE_LOG]</div>` : ''}
-                    </div>
-                `;
-                if(item.type === 'store') sGrid.innerHTML += card;
-                else aGrid.innerHTML += card;
-            });
-            localStorage.setItem('hassan_gaming_db', JSON.stringify(database));
-        }
+local SpectateFrame = Instance.new("Frame", MainFrame)
+SpectateFrame.Size = UDim2.new(0.85, 0, 0, 40)
+SpectateFrame.BackgroundTransparency = 1
 
-        function softTilt(e, card) {
-            const rect = card.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width - 0.5;
-            const y = (e.clientY - rect.top) / rect.height - 0.5;
-            gsap.to(card, {
-                rotateX: -y * 15,
-                rotateY: x * 15,
-                duration: 0.5,
-                ease: "power2.out"
-            });
-        }
+local SpecStartBtn = Instance.new("TextButton", SpectateFrame)
+SpecStartBtn.Size = UDim2.new(0.48, 0, 1, 0)
+SpecStartBtn.Position = UDim2.new(0, 0, 0, 0)
+SpecStartBtn.Text = "👀 بدء مشاهدة"
+SpecStartBtn.BackgroundColor3 = Color3.fromRGB(40, 160, 80)
+SpecStartBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpecStartBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", SpecStartBtn).CornerRadius = UDim.new(0, 6)
 
-        function resetTilt(card) {
-            gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.5 });
-        }
+local SpecStopBtn = Instance.new("TextButton", SpectateFrame)
+SpecStopBtn.Size = UDim2.new(0.48, 0, 1, 0)
+SpecStopBtn.Position = UDim2.new(0.52, 0, 0, 0)
+SpecStopBtn.Text = "❌ إلغاء مشاهدة"
+SpecStopBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+SpecStopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpecStopBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", SpecStopBtn).CornerRadius = UDim.new(0, 6)
 
-        function saveItem() {
-            const title = document.getElementById('title').value;
-            const desc = document.getElementById('desc').value;
-            const link = document.getElementById('link').value;
-            const type = document.getElementById('type').value;
-            if(title && link) {
-                database.push({title, desc, link, type});
-                render();
-                alert("تم تحديث السيرفر المركزي بنجاح.");
-            }
-        }
+local Credits = Instance.new("TextLabel", MainFrame)
+Credits.Size = UDim2.new(1, 0, 0, 20)
+Credits.Text = "Dev: Hassan Ibn Sayer | 30nr"
+Credits.TextColor3 = Color3.fromRGB(120, 120, 140)
+Credits.Font = Enum.Font.Gotham
+Credits.BackgroundTransparency = 1
 
-        function deleteItem(index) {
-            database.splice(index, 1);
-            render();
-        }
+--=========================================
+-- 🧠 الأنظمة البرمجية (Logic)
+--=========================================
 
-        function showTab(view, btn) {
-            document.querySelectorAll('.tab-content').forEach(v => v.style.display = 'none');
-            document.getElementById(view + '-view').style.display = 'block';
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
+-- دالة البحث الذكي عن اللاعبين
+local function GetPlayer(partialName)
+    if not partialName or partialName == "" then return nil end
+    local lowerName = string.lower(partialName)
+    for _, p in ipairs(Players:GetPlayers()) do
+        if string.sub(string.lower(p.Name), 1, #lowerName) == lowerName or 
+           string.sub(string.lower(p.DisplayName), 1, #lowerName) == lowerName then
+            return p
+        end
+    end
+    return nil
+end
 
-        window.onload = render;
-    </script>
-</body>
-</html>
+-- أزرار اختيار الطيران
+Mode1Btn.MouseButton1Click:Connect(function() FlyType = 1 Mode1Btn.BackgroundColor3 = Color3.fromRGB(100, 100, 150) Mode2Btn.BackgroundColor3 = Color3.fromRGB(50, 50, 70) end)
+Mode2Btn.MouseButton1Click:Connect(function() FlyType = 2 Mode2Btn.BackgroundColor3 = Color3.fromRGB(100, 100, 150) Mode1Btn.BackgroundColor3 = Color3.fromRGB(50, 50, 70) end)
+
+-- نظام الطيران
+function ToggleFly()
+    local char = Player.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    if not hrp or not hum then return end
+
+    if not Flying then
+        Flying = true
+        FlySpeed = tonumber(SpeedBox.Text) or 50
+        
+        bv = Instance.new("BodyVelocity", hrp)
+        bv.MaxForce = Vector3.new(1e6, 1e6, 1e6)
+        bg = Instance.new("BodyGyro", hrp)
+        bg.MaxTorque = Vector3.new(1e6, 1e6, 1e6)
+
+        task.spawn(function()
+            while Flying do
+                RunService.RenderStepped:Wait()
+                if FlyType == 2 then hum.Sit = true end
+                
+                local dir = Vector3.new(0,0,0)
+                if UserInputService:IsKeyDown(Enum.KeyCode.W) then dir = dir + Camera.CFrame.LookVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.S) then dir = dir - Camera.CFrame.LookVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.A) then dir = dir - Camera.CFrame.RightVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.D) then dir = dir + Camera.CFrame.RightVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.Space) then dir = dir + Vector3.new(0, 1, 0) end
+                if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then dir = dir - Vector3.new(0, 1, 0) end
+                
+                bv.Velocity = dir * FlySpeed
+                bg.CFrame = Camera.CFrame
+            end
+        end)
+        FlyBtn.Text = "🛑 إيقاف الطيران (E)"
+        FlyBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    else
+        Flying = false
+        if bv then bv:Destroy() end
+        if bg then bg:Destroy() end
+        hum.Sit = false
+        hum:ChangeState(Enum.HumanoidStateType.Jumping)
+        FlyBtn.Text = "✈️ تشغيل الطيران (E)"
+        FlyBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+    end
+end
+
+FlyBtn.MouseButton1Click:Connect(ToggleFly)
+
+-- نظام جمع الأدوات
+ToolBtn.MouseButton1Click:Connect(function()
+    local b = Player:FindFirstChild("Backpack")
+    for _, r in ipairs({game:GetService("ReplicatedStorage"), game:GetService("StarterPack"), workspace}) do
+        for _, t in ipairs(r:GetDescendants()) do
+            if t:IsA("Tool") and not t:FindFirstAncestorOfClass("Model") then
+                t:Clone().Parent = b
+            end
+        end
+    end
+end)
+
+-- نظام المشاهدة
+SpecStartBtn.MouseButton1Click:Connect(function()
+    local target = GetPlayer(SpectateBox.Text)
+    if target and target.Character and target.Character:FindFirstChild("Humanoid") then
+        Camera.CameraSubject = target.Character.Humanoid
+        SpectateBox.Text = "يتم مشاهدة: " .. target.Name
+    end
+end)
+
+SpecStopBtn.MouseButton1Click:Connect(function()
+    if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+        Camera.CameraSubject = Player.Character.Humanoid
+        SpectateBox.Text = ""
+        SpectateBox.PlaceholderText = "🔍 اكتب اسم اللاعب هنا..."
+    end
+end)
+
+-- اختصارات الكيبورد (الشات والانتقال)
+Player.Chatted:Connect(function(msg)
+    local lowerMsg = string.lower(msg)
+    if string.sub(lowerMsg, 1, 4) == "/to " then
+        local targetName = string.sub(lowerMsg, 5)
+        local targetPlayer = GetPlayer(targetName)
+        
+        if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local myChar = Player.Character
+            if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+                myChar.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
+            end
+        end
+    end
+end)
+
+UserInputService.InputBegan:Connect(function(input, gpe)
+    if gpe then return end
+    if input.KeyCode == Enum.KeyCode.E then
+        ToggleFly()
+    elseif input.KeyCode == Enum.KeyCode.P then
+        MainFrame.Visible = not MainFrame.Visible
+    end
+end)
+
+-- تشغيل الإيموتات إذا أردت
+pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Emotes.lua"))() end)
+
+print("✅ V13 Loaded! UI Upgraded, Spectate Added, Smart Teleport Active.")
