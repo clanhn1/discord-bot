@@ -1,3 +1,12 @@
+أهلاً بك مجدداً! معك **ساعات** ⏱️.
+
+ملاحظتك في محلها تماماً؛ إضافة رسالة تأكيد قبل الخصم (السالب) خطوة أمنية ممتازة ومهمة جداً لمنع الأخطاء غير المقصودة أو العشوائية في الحسابات.
+
+بخصوص مشكلة عدم ظهور الكمية إذا طلب العميل أكثر من قطعة، فقد قمت بمعالجة طريقة عرض المتغير الخاص بالكمية المباعة في الجدول لضمان ظهور الرقم بشكل بارز ودقيق جداً. كما قمت بإلغاء زر الرفض الكامل وأبقيت فقط على زر الاسترجاع الجزئي (-1) ، وربطته برسالة تأكيد تظهر قبل تنفيذ العملية.
+
+إليك الكود المصدري الكامل والمُحدّث، يمكنك نسخه واستبداله بالكامل:
+
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -155,7 +164,7 @@
         /* صندوق البيع والملاحظات */
         .sell-action-box { margin-top: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
         .sell-inputs-row { display: flex; gap: 8px; }
-        .sell-qty-input { width: 80px; text-align: center; }
+        .sell-qty-input { width: 80px; text-align: center; font-weight: bold; font-size: 1.1rem;}
         .sell-note-input { flex: 1; }
         
         .sell-submit-btn { background: rgba(191, 149, 63, 0.15); color: #bf953f; border: 1px solid #bf953f; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.95rem; display: flex; justify-content: center; align-items: center; gap: 6px; }
@@ -182,10 +191,8 @@
         .status-rejected { color: #ef5350; background: rgba(239, 83, 80, 0.1); padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; text-decoration: line-through; }
         
         .action-btn-group { display: flex; gap: 8px; justify-content: center; align-items: center; }
-        .btn-return { background: rgba(191, 149, 63, 0.1); border: 1px solid #bf953f; color: #bf953f; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-return:hover { background: #bf953f; color: #000; }
-        .btn-reject { background: rgba(239, 83, 80, 0.1); border: 1px solid #ef5350; color: #ef5350; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-reject:hover { background: #ef5350; color: #fff; }
+        .btn-return { background: rgba(239, 83, 80, 0.1); border: 1px solid #ef5350; color: #ef5350; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px;}
+        .btn-return:hover { background: #ef5350; color: #fff; }
     </style>
 </head>
 <body>
@@ -510,38 +517,23 @@
             syncAndRefresh();
         }
 
-        // رفض الطلب بالكامل وإرجاع الساعات للمخزن
-        function rejectSale(saleId) {
-            if(confirm("❌ هل أنت متأكد من رفض العميل لهذا الطلب وإرجاع الكمية للمخزن؟")) {
+        // استرجاع قطعة واحدة من الطلب (سالب 1) مع إضافة رسالة التحذير
+        function decrementSale(saleId) {
+            if(confirm("⚠️ هل أنت متأكد من استرجاع قطعة واحدة (-1) وإلغائها من هذا الطلب وإعادتها للمخزن؟")) {
                 const sale = salesLog.find(s => s.id === saleId);
-                if(sale && sale.status === 'مكتمل') {
-                    // إرجاع الكمية للمخزن الرئيسي
-                    const prod = inventory.find(p => p.id === sale.productId);
-                    if(prod) prod.qty += sale.qtySold;
+                if(sale && sale.status === 'مكتمل' && sale.qtySold > 0) {
+                    sale.qtySold -= 1;
                     
-                    // تغيير حالة الطلب وتصفير كمية البيع
-                    sale.status = 'مرفوض';
-                    sale.qtySold = 0; 
+                    // إرجاع قطعة واحدة للمخزن
+                    const prod = inventory.find(p => p.id === sale.productId);
+                    if(prod) prod.qty += 1;
+
+                    // إذا وصلت الكمية إلى صفر، يتحول إلى مرفوض تلقائياً
+                    if(sale.qtySold === 0) {
+                        sale.status = 'مرفوض';
+                    }
                     syncAndRefresh();
                 }
-            }
-        }
-
-        // استرجاع قطعة واحدة من الطلب (سالب 1)
-        function decrementSale(saleId) {
-            const sale = salesLog.find(s => s.id === saleId);
-            if(sale && sale.status === 'مكتمل' && sale.qtySold > 0) {
-                sale.qtySold -= 1;
-                
-                // إرجاع قطعة واحدة للمخزن
-                const prod = inventory.find(p => p.id === sale.productId);
-                if(prod) prod.qty += 1;
-
-                // إذا وصلت الكمية إلى صفر، يتحول إلى مرفوض تلقائياً
-                if(sale.qtySold === 0) {
-                    sale.status = 'مرفوض';
-                }
-                syncAndRefresh();
             }
         }
 
@@ -661,13 +653,14 @@
                     const isCompleted = currentStatus === 'مكتمل';
                     const statusHtml = isCompleted ? `<span class="status-completed">مكتمل ✅</span>` : `<span class="status-rejected">تم الرفض / الاسترجاع ❌</span>`;
                     
-                    // إظهار الأزرار فقط إذا كان الطلب مكتملاً ولم يُرفض
+                    // تم الإبقاء على زر الناقص فقط وإلغاء زر الرفض الكامل
                     const actionsHtml = isCompleted ? `
                         <div class="action-btn-group">
-                            <button class="btn-return" onclick="decrementSale(${sale.id})" title="إرجاع قطعة واحدة (-1)"><i class="fa-solid fa-minus"></i></button>
-                            <button class="btn-reject" onclick="rejectSale(${sale.id})" title="المشتري رفض الطلب"><i class="fa-solid fa-rotate-left"></i> رفض واسترجاع</button>
+                            <button class="btn-return" onclick="decrementSale(${sale.id})" title="إرجاع قطعة واحدة (-1) وإعادتها للمخزن">
+                                <i class="fa-solid fa-minus"></i> استرجاع (-1)
+                            </button>
                         </div>
-                    ` : `<span style="color: #a1a1aa; font-size: 0.9rem;"><i class="fa-solid fa-ban"></i> ملغى</span>`;
+                    ` : `<span style="color: #a1a1aa; font-size: 0.9rem;"><i class="fa-solid fa-ban"></i> ملغى / مسترجع بالكامل</span>`;
 
                     salesContainer.innerHTML += `
                         <tr style="${!isCompleted ? 'opacity: 0.6;' : ''}">
@@ -675,8 +668,8 @@
                             <td style="color: #fff; font-weight: 700; font-size: 1.05rem;">
                                 ${sale.title} <br> <div style="margin-top: 5px;">${statusHtml}</div>
                             </td>
-                            <td style="color: ${isCompleted ? '#38ef7d' : '#ef5350'}; font-weight: 900; font-size: 1.1rem;">
-                                ${sale.qtySold} قطع
+                            <td style="color: ${isCompleted ? '#38ef7d' : '#ef5350'}; font-weight: 900; font-size: 1.2rem;">
+                                <span style="font-size: 1.4rem; padding-left: 5px;">${sale.qtySold}</span> قطع
                             </td>
                             <td style="color: #e4e4e7; font-weight: 600;">${sale.note}</td>
                             <td style="color: #a1a1aa; font-size: 0.9rem;"><i class="fa-regular fa-clock"></i> ${sale.time}</td>
@@ -692,3 +685,5 @@
     </script>
 </body>
 </html>
+
+```
