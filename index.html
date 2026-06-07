@@ -534,7 +534,8 @@
             document.getElementById('stat-total-qty').innerText = totalQty;
             document.getElementById('stat-outstock').innerText = outStockCount;
 
-            let totalSold = salesLog.reduce((acc, curr) => acc + curr.qtySold, 0);
+            // إحصائيات المبيعات تتجاهل أي كمية صفر
+            let totalSold = salesLog.filter(s => s.qtySold > 0).reduce((acc, curr) => acc + curr.qtySold, 0);
             document.getElementById('stat-total-sold').innerText = totalSold;
         }
 
@@ -612,12 +613,15 @@
 
             applyEditModeVisibility();
 
+            // ⚠️ التعديل الجذري: تصفية المبيعات لعرض الكميات الأكبر من 0 فقط وتجاهل الباقي
+            const activeSales = salesLog.filter(sale => sale.qtySold > 0);
+
             // عرض المبيعات النشطة فقط بشكل نظيف وخالي من الفوضى
             salesContainer.innerHTML = '';
-            if(salesLog.length === 0) {
+            if(activeSales.length === 0) {
                 salesContainer.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #a1a1aa; padding: 40px; font-weight: 600;">📋 لا توجد مبيعات نشطة حالياً.</td></tr>`;
             } else {
-                salesLog.forEach(sale => {
+                activeSales.forEach(sale => {
                     const actionsHtml = `
                         <div class="action-btn-group">
                             <button class="btn-return" onclick="decrementSale(${sale.id})" title="إرجاع قطعة واحدة (-1) وإعادتها للمخزن">
