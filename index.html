@@ -1,22 +1,5 @@
-أهلاً بك يا غالي! معك **ساعات** ⏱️.
 
-الآن فهمت المشكلة تماماً! المشكلة ببساطة أن الساعات القديمة المخزنة في جهازك لم تكن تحتوي على متغيرات "السعر" و"الربح"، وعندما حاول النظام الجديد إضافة فواصل محاسبية (مثل 15,000) لقيم فارغة، توقف محرك العرض عن العمل فاختفت الساعات وبقيت الأرقام فقط.
 
-لقد قمت الآن بأخذ **النسخة التي أرسلتها أنت (والتي تعمل لديك بشكل ممتاز)**، وبنيت عليها كل الإضافات التي طلبناها بشكل "محمي" ومضاد للأخطاء، بحيث حتى لو كانت البيانات قديمة، النظام سيعتبرها (0) ويعرض الساعات بدون أي مشاكل!
-
-### 💡 ماذا أضفت وعدّلت على نسختك هذه المرة؟
-
-1. **حماية شاملة للعرض (ضد الاختفاء):** غلفت كل الأرقام بدوال حماية. لن تختفي الساعات أبداً بعد اليوم حتى لو أضفت بيانات فارغة.
-2. **الواجهة المالية العلوية (النيون):** أضفت كروت (إجمالي المبيعات) و (صافي الربح) مع تأثير النيون الذي يفتح سجل الأرشيف عند الضغط عليه.
-3. **تأمين السعر (مقفول):** لن يمكنك تعديل سعر البيع مباشرة. الحقل "مقفول" افتراضياً، ويُفتح فقط إذا قمت بتشغيل 🎚️ **وضع التحرير**.
-4. **رواجع ذكية مرتبطة بالمالية:** أي ساعة ترجعها من قسم الرواجع، سيتم خصم سعرها وربحها من "صافي الربح" و"إجمالي المبيعات" فوراً، وتُسجل باللون الأحمر في الأرشيف المخفي.
-5. **إخفاء زر الأرشيف:** حذفت زر "سجل الأرشيف" من القائمة العلوية ليكون مكاناً سرياً مخصصاً لك يُفتح من الرقم المضيء فقط.
-
----
-
-إليك الكود المصدري **النهائي والخالي من أي أخطاء**، مبني على نسختك المفضلة. انسخه واستبدله بالكامل:
-
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -38,42 +21,73 @@
         .container { max-width: 1550px; margin: 0 auto; width: 100%; }
 
         /* الهيدر الرئيسي */
-        .main-header { text-align: center; margin-bottom: 2.5rem; }
+        .main-header { text-align: center; margin-bottom: 2rem; }
         .main-header h1 { color: #bf953f; font-size: 2.6rem; font-weight: 900; text-shadow: 0 0 30px rgba(191, 149, 63, 0.3); }
         .main-header p { color: #a1a1aa; font-size: 1.15rem; margin-top: 5px; }
 
-        /* لوحة الإحصائيات */
-        .stats-bar {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;
-            margin-bottom: 2.5rem; background: rgba(15, 15, 20, 0.5); border: 1px solid rgba(191, 149, 63, 0.2);
-            border-radius: 15px; padding: 1.5rem; backdrop-filter: blur(10px);
+        /* لوحة الإحصائيات العلوية الجديدة (المالية يمين، المخزن يسار) */
+        .dashboard-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            background: rgba(15, 15, 20, 0.5);
+            border: 1px solid rgba(191, 149, 63, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            flex-wrap: wrap;
         }
-        .stat-card { text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;}
-        .stat-card h3 { color: #a1a1aa; font-size: 0.95rem; font-weight: 600; margin-bottom: 5px; }
-        .stat-card p { color: #bf953f; font-size: 2rem; font-weight: 900; }
 
-        /* 🚀 زر الإجمالي المضيء بالنيون */
-        .neon-stat-btn {
-            background: rgba(56, 239, 125, 0.05);
-            border: 1px solid rgba(56, 239, 125, 0.3);
-            color: #38ef7d;
-            font-size: 2rem;
-            font-weight: 900;
-            padding: 5px 30px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(56, 239, 125, 0.1);
-            margin-top: 5px;
-            display: inline-block;
+        /* القسم المالي (أيقونات بارزة على اليمين) */
+        .financial-side {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
         }
-        .neon-stat-btn:hover {
-            background: rgba(56, 239, 125, 0.15);
-            box-shadow: 0 0 20px rgba(56, 239, 125, 0.6), 0 0 40px rgba(56, 239, 125, 0.4);
-            transform: scale(1.05);
-            text-shadow: 0 0 10px #38ef7d;
+
+        .financial-badge {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(56, 239, 125, 0.3);
+            border-radius: 15px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(56, 239, 125, 0.05);
+        }
+
+        .financial-badge:hover {
+            background: rgba(56, 239, 125, 0.1);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(56, 239, 125, 0.3), 0 0 40px rgba(56, 239, 125, 0.2);
             border-color: #38ef7d;
         }
+
+        .financial-badge i { font-size: 2.5rem; color: #38ef7d; text-shadow: 0 0 15px rgba(56, 239, 125, 0.5); }
+        .financial-badge.profit-badge i { color: #bf953f; text-shadow: 0 0 15px rgba(191, 149, 63, 0.5); }
+        .financial-badge.profit-badge { border-color: rgba(191, 149, 63, 0.3); box-shadow: 0 0 15px rgba(191, 149, 63, 0.05); }
+        .financial-badge.profit-badge:hover { background: rgba(191, 149, 63, 0.1); border-color: #bf953f; box-shadow: 0 10px 25px rgba(191, 149, 63, 0.3); }
+
+        .badge-text { display: flex; flex-direction: column; }
+        .badge-text .label { font-size: 0.95rem; color: #a1a1aa; font-weight: 600; }
+        .badge-text .value { font-size: 2rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .financial-badge.profit-badge .value { color: #bf953f; }
+        .financial-badge:not(.profit-badge) .value { color: #38ef7d; }
+
+        /* قسم إحصائيات المخزن (على اليسار) */
+        .inventory-side {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .stat-card { text-align: center; border-right: 1px dashed rgba(255,255,255,0.1); padding-right: 2rem; }
+        .stat-card:first-child { border-right: none; padding-right: 0; }
+        .stat-card h3 { color: #a1a1aa; font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+        .stat-card p { color: #fff; font-size: 2.2rem; font-weight: 900; }
 
         /* أزرار التنقل الرئيسية بين الصفحات (Tabs) */
         .page-navigation {
@@ -140,7 +154,6 @@
         .product-details { flex: 1; }
         .type-badge { background: rgba(191, 149, 63, 0.15); color: #bf953f; font-size: 0.8rem; padding: 3px 10px; border-radius: 5px; font-weight: bold; display: inline-block; margin-bottom: 6px; }
         .product-title { color: #fff; font-weight: 700; font-size: 1.2rem; }
-        .product-desc { color: #a1a1aa; font-size: 0.9rem; margin-top: 4px; line-height: 1.4; }
         .stock-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: auto; }
         .status-tag { font-size: 0.85rem; font-weight: bold; padding: 4px 10px; border-radius: 5px; }
         .in-stock { background: rgba(56, 239, 125, 0.15); color: #38ef7d; }
@@ -153,6 +166,9 @@
         .qty-val { font-weight: 900; font-size: 1.2rem; min-width: 22px; text-align: center; color: #fff; }
         .delete-card-btn { display: none; position: absolute; top: 10px; left: 10px; color: #ef5350; background: none; border: none; cursor: pointer; font-size: 1rem; transition: 0.2s; }
         .delete-card-btn:hover { color: #fff; transform: scale(1.1); }
+        
+        /* أدوات تعديل التسعيرة في الكرت */
+        .price-edit-control { display: none; margin-top: 10px; background: rgba(191, 149, 63, 0.1); border: 1px dashed #bf953f; padding: 10px; border-radius: 10px; }
         
         .sell-action-box { margin-top: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
         .sell-inputs-row { display: flex; gap: 8px; }
@@ -199,23 +215,37 @@
     <div class="container">
         
         <header class="main-header">
-            <h1><i class="fa-solid fa-vault"></i> خزانة الساعات الذكية والنظام المالي</h1>
-            <p>إدارة مخزنية متكاملة ومؤرشفة بالكامل مع ميزة التصفية المتقدمة</p>
+            <h1><i class="fa-solid fa-vault"></i> خزانة الساعات الذكية</h1>
+            <p>نظام محاسبي وإداري متكامل مع تحكم حر بالأسعار والمبيعات</p>
         </header>
 
-        <div class="stats-bar">
-            <div class="stat-card">
-                <h3><i class="fa-solid fa-boxes-stacked"></i> إجمالي القطع</h3>
-                <p id="stat-total-qty">0</p>
+        <div class="dashboard-top">
+            <div class="financial-side">
+                <div class="financial-badge" onclick="switchPage('logs')" title="اضغط لفتح سجل الأرشيف">
+                    <i class="fa-solid fa-money-bill-trend-up"></i>
+                    <div class="badge-text">
+                        <span class="label">إجمالي المبيعات</span>
+                        <span class="value" id="stat-total-sales-money">0 د.ع</span>
+                    </div>
+                </div>
+                <div class="financial-badge profit-badge" onclick="switchPage('logs')" title="اضغط لفتح سجل الأرشيف">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <div class="badge-text">
+                        <span class="label">صافي الربح</span>
+                        <span class="value" id="stat-total-profit">0 د.ع</span>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card">
-                <h3><i class="fa-solid fa-money-bill-trend-up" style="color: #38ef7d;"></i> إجمالي المبيعات</h3>
-                <p id="stat-total-sales-money" style="color: #38ef7d;">0 د.ع</p>
-            </div>
-            <div class="stat-card">
-                <h3><i class="fa-solid fa-hand-holding-dollar" style="color: #bf953f;"></i> صافي الربح</h3>
-                <div id="stat-total-profit" class="neon-stat-btn" onclick="switchPage('logs')" title="اضغط لفتح السجل">0 د.ع</div>
-                <span style="font-size: 0.8rem; color: #a1a1aa; margin-top: 8px;">اضغط على الرقم لفتح السجل (Logs)</span>
+
+            <div class="inventory-side">
+                <div class="stat-card">
+                    <h3><i class="fa-solid fa-boxes-stacked"></i> إجمالي القطع</h3>
+                    <p id="stat-total-qty">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fa-solid fa-circle-xmark" style="color: #ef5350;"></i> موديلات نافذة</h3>
+                    <p id="stat-outstock" style="color: #ef5350;">0</p>
+                </div>
             </div>
         </div>
 
@@ -237,7 +267,7 @@
         <div id="page-inventory-view" class="page-content active-view" style="display: block;">
             <div class="layout-grid">
                 <div class="glass-box">
-                    <div class="section-title"><i class="fa-solid fa-square-plus"></i> إضافة ساعة جديدة للمخزن</div>
+                    <div class="section-title"><i class="fa-solid fa-square-plus"></i> إضافة ساعة جديدة</div>
                     
                     <div class="form-group">
                         <label>اسم موديل الساعة:</label>
@@ -267,11 +297,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>الوصف والمواصفات:</label>
-                        <textarea id="prod-desc" class="admin-input" rows="2" placeholder="اللون، تفاصيل إضافية..."></textarea>
-                    </div>
-
                     <div style="display: flex; gap: 15px;">
                         <div class="form-group" style="flex: 1;">
                             <label>الكمية المبدئية:</label>
@@ -298,13 +323,13 @@
                     <div class="filter-wrapper">
                         <div class="search-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="search-input" class="admin-input" placeholder="ابحث باسم الساعة، أو الوصف..." oninput="renderInventory()">
+                            <input type="text" id="search-input" class="admin-input" placeholder="ابحث باسم الساعة..." oninput="renderInventory()">
                         </div>
                         <div class="filter-box">
                             <select id="filter-stock-status" class="admin-input" onchange="renderInventory()">
                                 <option value="الكل">جميع الحالات 🔎</option>
-                                <option value="متوفر">المتوفر فقط (جاهز للبيع) ✅</option>
-                                <option value="غير_متوفر">الغير متوفر / النافذ 🚨</option>
+                                <option value="متوفر">المتوفر فقط ✅</option>
+                                <option value="غير_متوفر">النافذ 🚨</option>
                             </select>
                         </div>
                         <div class="filter-box">
@@ -331,7 +356,7 @@
         <div id="page-sales-view" class="page-content" style="display: none;">
             <div class="sales-page-container">
                 <div class="section-title" style="color: #38ef7d; border-color: rgba(56, 239, 125, 0.3);">
-                    <i class="fa-solid fa-file-invoice-dollar"></i> أرشيف المبيعات المفصل (العمليات النشطة فقط)
+                    <i class="fa-solid fa-file-invoice-dollar"></i> المبيعات النشطة (قيد التحضير)
                 </div>
                 
                 <div class="table-responsive">
@@ -353,7 +378,7 @@
                 </div>
 
                 <button class="btn-archive-all" onclick="archiveAllSales()">
-                    <i class="fa-solid fa-check-double"></i> إتمام وتصفير السجل
+                    <i class="fa-solid fa-check-double"></i> إتمام وتصفير السجل للترحيل
                 </button>
             </div>
         </div>
@@ -361,25 +386,13 @@
         <div id="page-returns-view" class="page-content" style="display: none;">
             <div class="returns-page-container">
                 <div class="section-title" style="color: #bf953f;">
-                    <i class="fa-solid fa-right-left"></i> قسم إرجاع الطلبات والرواجع العام (يعكس على الأرشيف والمخزن)
+                    <i class="fa-solid fa-right-left"></i> قسم إرجاع الطلبات (يعكس فوراً على الإيرادات والمخزن)
                 </div>
 
                 <div class="filter-wrapper">
                     <div class="search-box">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="text" id="returns-search-input" class="admin-input" placeholder="ابحث باسم الساعة لإرجاعها..." oninput="renderReturnsPage()">
-                    </div>
-                    
-                    <div class="filter-box">
-                        <select id="returns-filter-type" class="admin-input" onchange="renderReturnsPage()">
-                            <option value="الجميع">الخامات المضافة (الكل) 🏷️</option>
-                            <option value="كتان">كتان</option>
-                            <option value="ربر">ربر</option>
-                            <option value="حديد">حديد</option>
-                            <option value="حديد ملون">حديد ملون</option>
-                            <option value="جلد">جلد</option>
-                            <option value="أوتوماتيك">أوتوماتيك</option>
-                        </select>
                     </div>
                 </div>
 
@@ -390,19 +403,19 @@
         <div id="page-logs-view" class="page-content" style="display: none;">
             <div class="logs-page-container">
                 <div class="section-title" style="color: #e4e4e7; border-color: rgba(255,255,255,0.2);">
-                    <i class="fa-solid fa-clipboard-list"></i> السجل الشامل للطلبات المكتملة (Archived Logs)
+                    <i class="fa-solid fa-clipboard-list"></i> السجل الشامل للطلبات (الأرشيف المالي)
                 </div>
                 
                 <div class="table-responsive" style="margin-top: 0;">
                     <table class="orders-table logs-table">
                         <thead>
                             <tr>
-                                <th>صورة الساعة</th>
+                                <th>صورة</th>
                                 <th>اسم الموديل</th>
                                 <th>الكمية</th>
                                 <th>السعر والربح (دينار)</th>
-                                <th>التفاصيل والملاحظات</th>
-                                <th>وقت وتاريخ العملية</th>
+                                <th>الملاحظات</th>
+                                <th>التوقيت</th>
                             </tr>
                         </thead>
                         <tbody id="archived-logs-container">
@@ -411,7 +424,7 @@
                 </div>
 
                 <button class="reset-archived-btn" onclick="resetArchivedLogs()">
-                    <i class="fa-solid fa-triangle-exclamation"></i> تصفير السجل الكلي وإجمالي المبيعات (يتطلب صلاحيات)
+                    <i class="fa-solid fa-triangle-exclamation"></i> تصفير الأرشيف المالي الكلي (يتطلب صلاحيات)
                 </button>
             </div>
         </div>
@@ -455,11 +468,10 @@
             }, 50);
         }
 
-        // 💰 إضافة منتج مع السعر والربح
+        // 💰 إضافة منتج 
         function addNewProduct() {
             const title = document.getElementById('prod-title').value.trim();
             const type = document.getElementById('prod-type').value;
-            const desc = document.getElementById('prod-desc').value.trim();
             const qty = Number(document.getElementById('prod-qty').value) || 0;
             const price = Number(document.getElementById('prod-price').value) || 0;
             const profit = Number(document.getElementById('prod-profit').value) || 0;
@@ -471,25 +483,25 @@
 
             if(imgInput.files && imgInput.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) { executeAdd(title, type, desc, qty, price, profit, e.target.result); };
+                reader.onload = function(e) { executeAdd(title, type, qty, price, profit, e.target.result); };
                 reader.readAsDataURL(imgInput.files[0]);
             } else {
-                executeAdd(title, type, desc, qty, price, profit, defaultImg);
+                executeAdd(title, type, qty, price, profit, defaultImg);
             }
         }
 
-        function executeAdd(title, type, desc, qty, price, profit, imgUrl) {
-            const newWatch = { id: Date.now(), title, type, desc, qty, price, baseProfit: profit, image: imgUrl };
+        function executeAdd(title, type, qty, price, profit, imgUrl) {
+            const newWatch = { id: Date.now(), title, type, qty, price, baseProfit: profit, image: imgUrl };
             inventory.push(newWatch);
             syncAndRefresh();
 
-            document.getElementById('prod-title').value = ''; document.getElementById('prod-desc').value = '';
+            document.getElementById('prod-title').value = ''; 
             document.getElementById('prod-qty').value = '5'; document.getElementById('prod-price').value = ''; 
             document.getElementById('prod-profit').value = ''; document.getElementById('prod-img-file').value = '';
             document.getElementById('file-name').innerText = "لم يتم رفع صورة";
         }
 
-        // Edit Mode
+        // Edit Mode Functions
         function toggleEditMode() {
             isEditModeActive = !isEditModeActive;
             const btn = document.getElementById('edit-mode-toggle');
@@ -501,28 +513,27 @@
             const qtyControls = document.querySelectorAll('.qty-edit-control');
             const deleteBtns = document.querySelectorAll('.delete-card-btn');
             const sellBoxes = document.querySelectorAll('.sell-action-box');
+            const priceEditBoxes = document.querySelectorAll('.price-edit-control');
             
             qtyControls.forEach(el => el.style.display = isEditModeActive ? 'flex' : 'none');
             deleteBtns.forEach(el => el.style.display = isEditModeActive ? 'block' : 'none');
             sellBoxes.forEach(el => el.style.display = isEditModeActive ? 'none' : 'flex');
-
-            // التحكم بقفل السعر المباشر
-            document.querySelectorAll('.locked-price').forEach(el => {
-                if (isEditModeActive) {
-                    el.removeAttribute('readonly');
-                    el.style.borderColor = '#bf953f';
-                    el.style.color = '#fff';
-                } else {
-                    el.setAttribute('readonly', 'true');
-                    el.style.borderColor = '#333';
-                    el.style.color = '#38ef7d';
-                }
-            });
+            priceEditBoxes.forEach(el => el.style.display = isEditModeActive ? 'block' : 'none');
         }
 
         function changeQty(id, amount) {
             const prod = inventory.find(p => p.id === id);
             if(prod) { prod.qty = Math.max(0, (Number(prod.qty)||0) + amount); syncAndRefresh(); }
+        }
+
+        function updateBasePrice(id, newPrice) {
+            const prod = inventory.find(p => p.id === id);
+            if(prod) { prod.price = Number(newPrice) || 0; syncAndRefresh(); }
+        }
+
+        function updateBaseProfit(id, newProfit) {
+            const prod = inventory.find(p => p.id === id);
+            if(prod) { prod.baseProfit = Number(newProfit) || 0; syncAndRefresh(); }
         }
 
         function deleteProduct(id) {
@@ -531,7 +542,7 @@
             }
         }
 
-        // 💰 البيع مع حساب الربح الذكي
+        // 💰 البيع 
         function transferToSales(id) {
             const prod = inventory.find(p => p.id === id);
             if(!prod) return;
@@ -545,7 +556,7 @@
             const sellNote = sellNoteInput.value.trim();
 
             if(sellQty <= 0) { alert("⚠️ يرجى تحديد كمية صحيحة لبيعها!"); return; }
-            if(sellQty > (Number(prod.qty)||0)) { alert(`⚠️ لا تملك هذه الكمية، المتاح حالياً بالمخزن هو (${prod.qty} قطعة) فقط!`); return; }
+            if(sellQty > (Number(prod.qty)||0)) { alert(`⚠️ لا تملك هذه الكمية بالمخزن!`); return; }
 
             const basePrice = Number(prod.price) || 0;
             const baseProfit = Number(prod.baseProfit) || 0;
@@ -577,9 +588,9 @@
             if(saleIndex !== -1) {
                 const sale = salesLog[saleIndex];
                 if(returnAmount <= 0) { alert("⚠️ يرجى إدخال كمية صحيحة للاسترجاع!"); return; }
-                if(returnAmount > (Number(sale.qtySold)||0)) { alert(`⚠️ لا يمكنك استرجاع كمية أكبر من الكمية المباعة!`); return; }
+                if(returnAmount > (Number(sale.qtySold)||0)) { alert(`⚠️ كمية أكبر من الكمية المباعة!`); return; }
 
-                if(confirm(`⚠️ هل أنت متأكد من استرجاع عدد (${returnAmount}) قطعة وإعادتها للمخزن؟`)) {
+                if(confirm(`⚠️ هل أنت متأكد من استرجاع (${returnAmount}) وإعادتها للمخزن؟`)) {
                     sale.qtySold = (Number(sale.qtySold)||0) - returnAmount;
                     const prod = inventory.find(p => p.id === sale.productId);
                     if(prod) prod.qty = (Number(prod.qty)||0) + returnAmount;
@@ -590,7 +601,7 @@
             }
         }
 
-        // 🚀 إرجاع عام مع تسجيل في الـ Logs وحساب المالي
+        // 🚀 إرجاع عام من الأرشيف/الرواجع
         function processGeneralReturn(prodId) {
             const prod = inventory.find(p => p.id === prodId);
             if(!prod) return;
@@ -600,7 +611,7 @@
 
             if(qtyToReturn <= 0) { alert("⚠️ يرجى إدخال كمية صحيحة أكبر من صفر!"); return; }
 
-            if(confirm(`⚠️ هل أنت متأكد من استرجاع عدد (${qtyToReturn}) من ساعة "${prod.title}"؟\nسيتم إضافتها للمخزن وخصمها من الإجمالي، وتسجيلها في الأرشيف.`)) {
+            if(confirm(`⚠️ هل أنت متأكد من استرجاع (${qtyToReturn}) من ساعة "${prod.title}"؟\nسيتم إضافتها للمخزن وخصمها من الإجمالي، وتسجيلها في الأرشيف.`)) {
                 prod.qty = (Number(prod.qty)||0) + qtyToReturn;
                 
                 const now = new Date();
@@ -617,7 +628,7 @@
                 
                 returnInput.value = '1';
                 syncAndRefresh();
-                alert("تم الإرجاع بنجاح وتوثيقه في الأرشيف! ✅");
+                alert("تم الإرجاع بنجاح وتوثيقه مالياً! ✅");
             }
         }
 
@@ -626,7 +637,7 @@
             const activeSales = salesLog.filter(sale => (Number(sale.qtySold)||0) > 0);
             if(activeSales.length === 0) { alert("⚠️ لا توجد طلبات نشطة لإتمامها!"); return; }
 
-            if(confirm("✅ هل أنت متأكد من إتمام جميع الطلبات الحالية؟\nستنتقل إلى (سجل الأرشيف).")) {
+            if(confirm("✅ تأكيد إتمام جميع الطلبات الحالية وترحيلها للأرشيف المالي؟")) {
                 const now = new Date();
                 const archiveTimeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + " - " + now.toLocaleDateString('ar-EG');
 
@@ -642,11 +653,11 @@
         }
 
         function resetArchivedLogs() {
-            const pass = prompt("⚠️ هذا الإجراء سيقوم بمسح تاريخ الأرشيف بالكامل وتصفير المالية.\nالرجاء إدخال كلمة المرور:");
+            const pass = prompt("⚠️ سيتم تصفير الأرشيف المالي بالكامل.\nالرجاء إدخال كلمة المرور:");
             if (pass === "admin") {
                 archivedSalesLog = []; 
                 syncAndRefresh();
-                alert("✅ تمت العملية: تم تصفير الأرشيف بنجاح!");
+                alert("✅ تم تصفير الأرشيف بنجاح!");
             } else if (pass !== null) {
                 alert("❌ كلمة المرور خاطئة!");
             }
@@ -661,7 +672,6 @@
             if (document.getElementById('page-logs-view').classList.contains('active-view')) renderLogsPage();
         }
 
-        // نظام الحسابات المالي المضاد للأخطاء
         function calculateStats() {
             let totalQty = 0; let outStockCount = 0;
             inventory.forEach(p => { 
@@ -670,6 +680,7 @@
                 if(qty === 0) outStockCount++; 
             });
             document.getElementById('stat-total-qty').innerText = totalQty;
+            document.getElementById('stat-outstock').innerText = outStockCount;
 
             let totalSalesMoney = 0;
             let totalProfitMoney = 0;
@@ -721,7 +732,7 @@
                 if(filterStockStatus === 'الكل') matchesStock = true;
                 else if(filterStockStatus === 'متوفر') matchesStock = (qty > 0);
                 else if(filterStockStatus === 'غير_متوفر') matchesStock = (qty === 0);
-                const matchesSearch = prod.title.toLowerCase().includes(searchQuery) || (prod.desc && prod.desc.toLowerCase().includes(searchQuery));
+                const matchesSearch = prod.title.toLowerCase().includes(searchQuery);
                 return matchesType && matchesStock && matchesSearch;
             });
 
@@ -734,10 +745,11 @@
                     const statusClass = isAvailable ? 'in-stock' : 'out-of-stock';
                     const statusText = isAvailable ? `متوفر (${qty} قطعة)` : 'نافذ تماماً (0)';
                     const defaultPrice = Number(prod.price) || 0;
+                    const defaultProfit = Number(prod.baseProfit) || 0;
 
                     container.innerHTML += `
                         <div class="product-card">
-                            <button class="delete-card-btn" onclick="deleteProduct(${prod.id})"><i class="fa-solid fa-trash"></i></button>
+                            <button class="delete-card-btn" onclick="deleteProduct(${prod.id})" title="حذف الموديل"><i class="fa-solid fa-trash"></i></button>
                             <div class="card-top">
                                 <img src="${prod.image}" class="product-img">
                                 <div class="product-details">
@@ -754,12 +766,21 @@
                                     <button class="qty-btn" onclick="changeQty(${prod.id}, 1)">+</button>
                                 </div>
                             </div>
+
+                            <div class="price-edit-control">
+                                <div style="font-size: 0.85rem; color: #bf953f; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-pen-to-square"></i> تعديل التسعيرة:</div>
+                                <div style="display:flex; gap: 8px;">
+                                    <input type="number" class="admin-input" style="padding: 6px; font-size: 0.9rem;" value="${defaultPrice}" onchange="updateBasePrice(${prod.id}, this.value)" placeholder="السعر الجديد">
+                                    <input type="number" class="admin-input" style="padding: 6px; font-size: 0.9rem; border-color: #bf953f;" value="${defaultProfit}" onchange="updateBaseProfit(${prod.id}, this.value)" placeholder="الربح الجديد">
+                                </div>
+                            </div>
+
                             <div class="sell-action-box" id="sell-box-${prod.id}">
                                 <div class="sell-inputs-row">
                                     <input type="number" id="sell-qty-${prod.id}" class="admin-input sell-qty-input" value="1" min="1" title="الكمية المباعة">
-                                    <input type="number" id="sell-price-${prod.id}" class="admin-input sell-price-input locked-price" value="${defaultPrice}" title="التعديل متاح في وضع التحرير فقط" readonly>
+                                    <input type="number" id="sell-price-${prod.id}" class="admin-input sell-price-input locked-price" value="${defaultPrice}" readonly title="السعر (مقفول)">
                                 </div>
-                                <input type="text" id="sell-note-${prod.id}" class="admin-input sell-note-input" placeholder="اسم المشتري..." style="margin-top: 5px;">
+                                <input type="text" id="sell-note-${prod.id}" class="admin-input sell-note-input" placeholder="اسم المشتري/الملاحظة..." style="margin-top: 5px;">
                                 <button class="sell-submit-btn" style="margin-top: 5px;" onclick="transferToSales(${prod.id})">
                                     <i class="fa-solid fa-cart-arrow-down"></i> بيع وتحويل
                                 </button>
@@ -811,14 +832,9 @@
         function renderReturnsPage() {
             const container = document.getElementById('returns-container');
             const searchQuery = document.getElementById('returns-search-input').value.toLowerCase().trim();
-            const filterType = document.getElementById('returns-filter-type').value;
 
             container.innerHTML = '';
-            const filteredData = inventory.filter(prod => {
-                const matchesType = (filterType === 'الجميع' || prod.type === filterType);
-                const matchesSearch = prod.title.toLowerCase().includes(searchQuery);
-                return matchesType && matchesSearch;
-            });
+            const filteredData = inventory.filter(prod => prod.title.toLowerCase().includes(searchQuery));
 
             if(filteredData.length === 0) {
                 container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #a1a1aa; padding: 4rem;">لا توجد ساعات تطابق البحث.</div>`;
@@ -855,7 +871,7 @@
             container.innerHTML = '';
             
             if(archivedSalesLog.length === 0) {
-                container.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #a1a1aa; padding: 40px; font-weight: 600;">لا توجد سجلات مؤرشفة أو رواجع حتى الآن.</td></tr>`;
+                container.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #a1a1aa; padding: 40px; font-weight: 600;">لا توجد سجلات مؤرشفة أو رواجع.</td></tr>`;
             } else {
                 archivedSalesLog.forEach(log => {
                     let actualProfit = Number(log.actualProfit) || 0;
@@ -887,8 +903,7 @@
                                 </td>
                                 <td style="color: #e4e4e7; font-weight: 600;">${log.note}</td>
                                 <td style="color: #a1a1aa; font-size: 0.85rem;">
-                                    <div>طلب: ${log.time}</div>
-                                    <div style="color: #bf953f; margin-top: 4px;"><i class="fa-solid fa-check-double"></i> إتمام: ${log.archiveTime}</div>
+                                    <div>إتمام: ${log.archiveTime}</div>
                                 </td>
                             </tr>
                         `;
