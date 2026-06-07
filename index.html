@@ -1,3 +1,17 @@
+أهلاً بك يا غالي! معك **ساعات** ⏱️.
+
+فكرة ممتازة جداً وعملية للغاية! في المبيعات الكبيرة (الجملة)، من المتعب جداً الضغط على زر السالب (-1) عشرات المرات لاسترجاع كمية كبيرة.
+
+لقد قمت بتطوير زر الاسترجاع ليصبح أكثر ذكاءً:
+
+* أضفت **حقل إدخال صغير وأنيق** بجانب زر الاسترجاع في قائمة المبيعات.
+* يمكنك الآن كتابة الرقم الذي تريده (مثلاً 7 قطع من أصل 10)، وبضغطة زر واحدة سيتم خصمها من المبيعات وإرجاعها للمخزن فوراً.
+* النظام ذكي ولن يسمح لك بكتابة رقم أكبر من الكمية المباعة الفعلية لتجنب أي أخطاء حسابية.
+* كما يحافظ النظام على ميزة إخفاء الطلب تماماً إذا قمت باسترجاع الكمية بالكامل (وصولها إلى صفر).
+
+إليك الكود المصدري الكامل والمُحسّن، تفضل بنسخه واستبداله بالكامل:
+
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -176,9 +190,11 @@
         /* الصورة داخل جدول المبيعات */
         .table-product-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(56, 239, 125, 0.3); background: #000; }
         
-        /* أزرار الاسترجاع */
+        /* أزرار الاسترجاع بالكمية المحددة */
         .action-btn-group { display: flex; gap: 8px; justify-content: center; align-items: center; }
-        .btn-return { background: rgba(239, 83, 80, 0.1); border: 1px solid #ef5350; color: #ef5350; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px;}
+        .return-qty-input { width: 60px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #ef5350; background: rgba(0,0,0,0.5); color: #fff; font-weight: bold; font-family: 'Cairo'; outline: none;}
+        .return-qty-input:focus { border-color: #ff8a80; box-shadow: 0 0 10px rgba(239, 83, 80, 0.3); }
+        .btn-return { background: rgba(239, 83, 80, 0.1); border: 1px solid #ef5350; color: #ef5350; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px; font-family: 'Cairo';}
         .btn-return:hover { background: #ef5350; color: #fff; }
     </style>
 </head>
@@ -322,7 +338,7 @@
                                 <th>الكمية المباعة</th>
                                 <th>ملاحظة البيع المسجلة والعميل</th>
                                 <th>توقيت العملية</th>
-                                <th>إجراء</th>
+                                <th>إجراء الاسترجاع</th>
                             </tr>
                         </thead>
                         <tbody id="sales-container">
@@ -493,18 +509,33 @@
             syncAndRefresh();
         }
 
-        // استرجاع قطعة واحدة (-1) مع مسح الطلب نهائياً إذا وصل للصفر
-        function decrementSale(saleId) {
-            if(confirm("⚠️ هل أنت متأكد من استرجاع قطعة واحدة (-1) وإعادتها للمخزن؟")) {
-                const saleIndex = salesLog.findIndex(s => s.id === saleId);
-                
-                if(saleIndex !== -1 && salesLog[saleIndex].qtySold > 0) {
-                    const sale = salesLog[saleIndex];
-                    sale.qtySold -= 1;
+        // 🔄 استرجاع كمية مخصصة يحددها المستخدم من الطلب
+        function returnCustomQty(saleId) {
+            const returnInput = document.getElementById(`return-qty-${saleId}`);
+            if(!returnInput) return;
+            
+            const returnAmount = parseInt(returnInput.value) || 0;
+            const saleIndex = salesLog.findIndex(s => s.id === saleId);
+            
+            if(saleIndex !== -1) {
+                const sale = salesLog[saleIndex];
+
+                // التحقق من صحة الرقم المُدخل
+                if(returnAmount <= 0) {
+                    alert("⚠️ يرجى إدخال كمية صحيحة للاسترجاع أكبر من صفر!");
+                    return;
+                }
+                if(returnAmount > sale.qtySold) {
+                    alert(`⚠️ لا يمكنك استرجاع كمية أكبر من الكمية المباعة (${sale.qtySold} قطع)!`);
+                    return;
+                }
+
+                if(confirm(`⚠️ هل أنت متأكد من استرجاع عدد (${returnAmount}) قطعة وإعادتها للمخزن؟`)) {
+                    sale.qtySold -= returnAmount;
                     
-                    // إرجاع قطعة واحدة للمخزن
+                    // إرجاع الكمية للمخزن
                     const prod = inventory.find(p => p.id === sale.productId);
-                    if(prod) prod.qty += 1;
+                    if(prod) prod.qty += returnAmount;
 
                     // إذا وصلت الكمية إلى صفر، يتم مسح الطلب نهائياً من أرشيف المبيعات
                     if(sale.qtySold === 0) {
@@ -613,7 +644,7 @@
 
             applyEditModeVisibility();
 
-            // ⚠️ التعديل الجذري: تصفية المبيعات لعرض الكميات الأكبر من 0 فقط وتجاهل الباقي
+            // تصفية المبيعات لعرض الكميات الأكبر من 0 فقط
             const activeSales = salesLog.filter(sale => sale.qtySold > 0);
 
             // عرض المبيعات النشطة فقط بشكل نظيف وخالي من الفوضى
@@ -622,10 +653,12 @@
                 salesContainer.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #a1a1aa; padding: 40px; font-weight: 600;">📋 لا توجد مبيعات نشطة حالياً.</td></tr>`;
             } else {
                 activeSales.forEach(sale => {
+                    // حقل إدخال وزر الاسترجاع المخصص
                     const actionsHtml = `
                         <div class="action-btn-group">
-                            <button class="btn-return" onclick="decrementSale(${sale.id})" title="إرجاع قطعة واحدة (-1) وإعادتها للمخزن">
-                                <i class="fa-solid fa-minus"></i> استرجاع (-1)
+                            <input type="number" id="return-qty-${sale.id}" class="return-qty-input" value="1" min="1" max="${sale.qtySold}" title="الكمية المراد استرجاعها">
+                            <button class="btn-return" onclick="returnCustomQty(${sale.id})" title="إرجاع الكمية المحددة للمخزن">
+                                <i class="fa-solid fa-rotate-left"></i> إرجاع
                             </button>
                         </div>
                     `;
@@ -653,3 +686,5 @@
     </script>
 </body>
 </html>
+
+```
