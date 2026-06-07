@@ -1,17 +1,3 @@
-أهلاً بك يا غالي! معك **ساعات** ⏱️.
-
-فكرة ممتازة جداً وعملية للغاية! في المبيعات الكبيرة (الجملة)، من المتعب جداً الضغط على زر السالب (-1) عشرات المرات لاسترجاع كمية كبيرة.
-
-لقد قمت بتطوير زر الاسترجاع ليصبح أكثر ذكاءً:
-
-* أضفت **حقل إدخال صغير وأنيق** بجانب زر الاسترجاع في قائمة المبيعات.
-* يمكنك الآن كتابة الرقم الذي تريده (مثلاً 7 قطع من أصل 10)، وبضغطة زر واحدة سيتم خصمها من المبيعات وإرجاعها للمخزن فوراً.
-* النظام ذكي ولن يسمح لك بكتابة رقم أكبر من الكمية المباعة الفعلية لتجنب أي أخطاء حسابية.
-* كما يحافظ النظام على ميزة إخفاء الطلب تماماً إذا قمت باسترجاع الكمية بالكامل (وصولها إلى صفر).
-
-إليك الكود المصدري الكامل والمُحسّن، تفضل بنسخه واستبداله بالكامل:
-
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -196,6 +182,31 @@
         .return-qty-input:focus { border-color: #ff8a80; box-shadow: 0 0 10px rgba(239, 83, 80, 0.3); }
         .btn-return { background: rgba(239, 83, 80, 0.1); border: 1px solid #ef5350; color: #ef5350; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px; font-family: 'Cairo';}
         .btn-return:hover { background: #ef5350; color: #fff; }
+
+        /* زر الإتمام والتصفير */
+        .btn-archive-all {
+            margin-top: 25px;
+            background: linear-gradient(45deg, #38ef7d, #11998e);
+            color: #050508;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(56, 239, 125, 0.3);
+        }
+        .btn-archive-all:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(56, 239, 125, 0.5);
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -345,6 +356,10 @@
                             </tbody>
                     </table>
                 </div>
+
+                <button class="btn-archive-all" onclick="archiveAllSales()">
+                    <i class="fa-solid fa-check-double"></i> إتمام وتصفير جميع الطلبات بنجاح (مع حفظ إجمالي الساعات)
+                </button>
             </div>
         </div>
 
@@ -354,6 +369,8 @@
         // قواعد البيانات المحلية واسترجاعها تلقائياً
         let inventory = JSON.parse(localStorage.getItem('hassan_vault_main')) || [];
         let salesLog = JSON.parse(localStorage.getItem('hassan_vault_sales')) || [];
+        // المتغير الجديد لحفظ الإجمالي الدائم للساعات المباعة
+        let archivedSalesCount = parseInt(localStorage.getItem('hassan_vault_archived_count')) || 0;
         let isEditModeActive = false; 
 
         // التحكم في إظهار اسم الصورة بعد اختيارها
@@ -371,13 +388,11 @@
             const invTab = document.getElementById('tab-inventory');
             const salesTab = document.getElementById('tab-sales');
 
-            // إزالة الكلاسات النشطة لإعادة التشغيل بسلاسة
             invView.classList.remove('active-view');
             salesView.classList.remove('active-view');
             invTab.classList.remove('active-tab');
             salesTab.classList.remove('active-tab');
 
-            // تأخير خفيف جداً لتهيئة حركة الـ CSS السلو موشن
             setTimeout(() => {
                 if (pageName === 'inventory') {
                     invView.style.display = 'grid';
@@ -403,7 +418,6 @@
 
             if(!title) { alert("⚠️ أكتب اسم موديل الساعة أولاً!"); return; }
 
-            // أيقونة افتراضية كلاسيكية في حال عدم رفع صورة
             let defaultImg = "https://cdn-icons-png.flaticon.com/512/2888/2888636.png";
 
             if(imgInput.files && imgInput.files[0]) {
@@ -429,7 +443,6 @@
             inventory.push(newWatch);
             syncAndRefresh();
 
-            // تصغير وتصفير الحقول بعد الإضافة الناجحة
             document.getElementById('prod-title').value = '';
             document.getElementById('prod-desc').value = '';
             document.getElementById('prod-qty').value = '5';
@@ -471,7 +484,7 @@
             }
         }
 
-        // ترحيل الكميات وخصمها من المخزن الأصلي للمبيعات وحفظ الصورة معها
+        // ترحيل الكميات وخصمها من المخزن الأصلي للمبيعات
         function transferToSales(id) {
             const prod = inventory.find(p => p.id === id);
             if(!prod) return;
@@ -493,7 +506,7 @@
 
             const saleItem = {
                 id: Date.now(),
-                productId: prod.id, // ربط المبيعة بالمنتج لتمكين الاسترجاع
+                productId: prod.id,
                 title: prod.title,
                 image: prod.image,
                 qtySold: sellQty,
@@ -520,7 +533,6 @@
             if(saleIndex !== -1) {
                 const sale = salesLog[saleIndex];
 
-                // التحقق من صحة الرقم المُدخل
                 if(returnAmount <= 0) {
                     alert("⚠️ يرجى إدخال كمية صحيحة للاسترجاع أكبر من صفر!");
                     return;
@@ -533,11 +545,9 @@
                 if(confirm(`⚠️ هل أنت متأكد من استرجاع عدد (${returnAmount}) قطعة وإعادتها للمخزن؟`)) {
                     sale.qtySold -= returnAmount;
                     
-                    // إرجاع الكمية للمخزن
                     const prod = inventory.find(p => p.id === sale.productId);
                     if(prod) prod.qty += returnAmount;
 
-                    // إذا وصلت الكمية إلى صفر، يتم مسح الطلب نهائياً من أرشيف المبيعات
                     if(sale.qtySold === 0) {
                         salesLog.splice(saleIndex, 1);
                     }
@@ -547,12 +557,40 @@
             }
         }
 
+        // 🚀 وظيفة إتمام وتصفير جميع الطلبات النشطة
+        function archiveAllSales() {
+            const activeSales = salesLog.filter(sale => sale.qtySold > 0);
+            
+            if(activeSales.length === 0) {
+                alert("⚠️ لا توجد طلبات مبيعات نشطة حالياً لإتمامها!");
+                return;
+            }
+
+            if(confirm("✅ هل أنت متأكد من إتمام جميع الطلبات الحالية وتصفير القائمة؟\n\n(ملاحظة: لن تتمكن من استرجاع هذه الطلبات للمخزن بعد إتمامها، ولكن سيبقى عددها محفوظاً ومجموعاً في إحصائية 'إجمالي الساعات المباعة' دائماً).")) {
+                
+                // حساب مجموع كل الساعات المباعة في هذه القائمة
+                let currentTotal = activeSales.reduce((acc, curr) => acc + curr.qtySold, 0);
+                
+                // إضافتها للرقم الإجمالي الدائم المحفوظ في المتصفح
+                archivedSalesCount += currentTotal;
+                
+                // تفريغ سجل المبيعات بالكامل
+                salesLog = [];
+                
+                // الحفظ وإعادة تحميل الواجهة
+                syncAndRefresh();
+            }
+        }
+
+        // حفظ البيانات وجلبها
         function syncAndRefresh() {
             localStorage.setItem('hassan_vault_main', JSON.stringify(inventory));
             localStorage.setItem('hassan_vault_sales', JSON.stringify(salesLog));
+            localStorage.setItem('hassan_vault_archived_count', archivedSalesCount.toString());
             renderInventory();
         }
 
+        // حساب الإحصائيات مع دمج المبيعات المؤرشفة
         function calculateStats() {
             document.getElementById('stat-total-types').innerText = inventory.length;
             
@@ -565,9 +603,9 @@
             document.getElementById('stat-total-qty').innerText = totalQty;
             document.getElementById('stat-outstock').innerText = outStockCount;
 
-            // إحصائيات المبيعات تتجاهل أي كمية صفر
-            let totalSold = salesLog.filter(s => s.qtySold > 0).reduce((acc, curr) => acc + curr.qtySold, 0);
-            document.getElementById('stat-total-sold').innerText = totalSold;
+            // إجمالي الساعات المباعة = (المبيعات النشطة حالياً) + (المبيعات التي تم إتمامها وتصفيرها سابقاً)
+            let activeSold = salesLog.filter(s => s.qtySold > 0).reduce((acc, curr) => acc + curr.qtySold, 0);
+            document.getElementById('stat-total-sold').innerText = activeSold + archivedSalesCount;
         }
 
         // محرك الواجهات وصناعة الكروت والجداول تلقائياً
@@ -583,7 +621,6 @@
 
             container.innerHTML = '';
 
-            // تصفية الفلاتر المركبة والبحث الفوري
             const filteredData = inventory.filter(prod => {
                 const matchesType = (filterType === 'الجميع' || prod.type === filterType);
                 
@@ -644,16 +681,13 @@
 
             applyEditModeVisibility();
 
-            // تصفية المبيعات لعرض الكميات الأكبر من 0 فقط
             const activeSales = salesLog.filter(sale => sale.qtySold > 0);
 
-            // عرض المبيعات النشطة فقط بشكل نظيف وخالي من الفوضى
             salesContainer.innerHTML = '';
             if(activeSales.length === 0) {
-                salesContainer.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #a1a1aa; padding: 40px; font-weight: 600;">📋 لا توجد مبيعات نشطة حالياً.</td></tr>`;
+                salesContainer.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #a1a1aa; padding: 40px; font-weight: 600;">📋 لا توجد مبيعات نشطة حالياً، الصندوق جاهز للطلبات الجديدة.</td></tr>`;
             } else {
                 activeSales.forEach(sale => {
-                    // حقل إدخال وزر الاسترجاع المخصص
                     const actionsHtml = `
                         <div class="action-btn-group">
                             <input type="number" id="return-qty-${sale.id}" class="return-qty-input" value="1" min="1" max="${sale.qtySold}" title="الكمية المراد استرجاعها">
@@ -686,5 +720,3 @@
     </script>
 </body>
 </html>
-
-```
