@@ -242,12 +242,12 @@
                     <p id="stat-total-qty">0</p>
                 </div>
                 <div class="stat-card">
-                    <h3><i class="fa-solid fa-clock"></i> إجمالي الساعات المباعة</h3>
-                    <p id="stat-total-sold-count" style="color: #bf953f;">0</p>
-                </div>
-                <div class="stat-card" style="border-right: 1px dashed rgba(255,255,255,0.1); padding-right: 2rem;">
                     <h3><i class="fa-solid fa-circle-xmark" style="color: #ef5350;"></i> موديلات نافذة</h3>
                     <p id="stat-outstock" style="color: #ef5350;">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fa-solid fa-clock"></i> إجمالي الساعات المباعة</h3>
+                    <p id="stat-total-sold-count" style="color: #bf953f;">0</p>
                 </div>
             </div>
         </div>
@@ -292,11 +292,11 @@
                     <div style="display: flex; gap: 15px;">
                         <div class="form-group" style="flex: 1;">
                             <label>سعر الساعة (دينار):</label>
-                            <input type="number" id="prod-price" class="admin-input" placeholder="مثال: 35000">
+                            <input type="number" id="prod-price" class="admin-input" step="1000" placeholder="مثال: 35000">
                         </div>
                         <div class="form-group" style="flex: 1;">
                             <label>الربح المتوقع (دينار):</label>
-                            <input type="number" id="prod-profit" class="admin-input" placeholder="مثال: 15000">
+                            <input type="number" id="prod-profit" class="admin-input" step="1000" placeholder="مثال: 15000">
                         </div>
                     </div>
 
@@ -617,14 +617,14 @@
 
             if(qtyToReturn <= 0) { alert("⚠️ يرجى إدخال كمية صحيحة أكبر من صفر!"); return; }
 
-            if(confirm(`⚠️ هل أنت متأكد من استرجاع (${qtyToReturn}) قطعة بسعر مرتجع قدره (${priceReturned.toLocaleString('en-US')}) للقطعة؟\nسيتم تصحيح الأرباح وإجمالي المبيعات تلقائياً.`)) {
+            // حساب الربح العكسي قبل التأكيد للإشعار
+            const basePrice = Number(prod.price) || 0;
+            const baseProfit = Number(prod.baseProfit) || 0;
+            const actualProfitReversed = baseProfit - (basePrice - priceReturned);
+
+            if(confirm(`⚠️ تأكيد عملية الإرجاع:\nالكمية: (${qtyToReturn}) قطعة.\nسيتم خصم [${priceReturned.toLocaleString('en-US')} د.ع] من إجمالي المبيعات للقطعة الواحدة.\nوسيتم خصم [${actualProfitReversed.toLocaleString('en-US')} د.ع] من الأرباح.`)) {
                 prod.qty = (Number(prod.qty)||0) + qtyToReturn;
                 
-                // الحساب العكسي للربح المرتبط بالسعر المرتجع
-                const basePrice = Number(prod.price) || 0;
-                const baseProfit = Number(prod.baseProfit) || 0;
-                const actualProfitReversed = baseProfit - (basePrice - priceReturned);
-
                 const now = new Date();
                 const archiveTimeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + " - " + now.toLocaleDateString('ar-EG');
                 
@@ -787,15 +787,15 @@
                             <div class="price-edit-control">
                                 <div style="font-size: 0.85rem; color: #bf953f; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-pen-to-square"></i> تعديل التسعيرة:</div>
                                 <div style="display:flex; gap: 8px;">
-                                    <input type="number" class="admin-input" style="padding: 6px; font-size: 0.9rem;" value="${defaultPrice}" onchange="updateBasePrice(${prod.id}, this.value)" title="تعديل السعر الأساسي">
-                                    <input type="number" class="admin-input" style="padding: 6px; font-size: 0.9rem; border-color: #bf953f;" value="${defaultProfit}" onchange="updateBaseProfit(${prod.id}, this.value)" title="تعديل الربح المتوقع">
+                                    <input type="number" class="admin-input" step="1000" style="padding: 6px; font-size: 0.9rem;" value="${defaultPrice}" onchange="updateBasePrice(${prod.id}, this.value)" title="تعديل السعر الأساسي">
+                                    <input type="number" class="admin-input" step="1000" style="padding: 6px; font-size: 0.9rem; border-color: #bf953f;" value="${defaultProfit}" onchange="updateBaseProfit(${prod.id}, this.value)" title="تعديل الربح المتوقع">
                                 </div>
                             </div>
 
                             <div class="sell-action-box" id="sell-box-${prod.id}">
                                 <div class="sell-inputs-row">
                                     <input type="number" id="sell-qty-${prod.id}" class="admin-input sell-qty-input" value="1" min="1" title="الكمية المباعة">
-                                    <input type="number" id="sell-price-${prod.id}" class="admin-input sell-price-input locked-price" value="${defaultPrice}" readonly title="السعر (مقفول)">
+                                    <input type="number" id="sell-price-${prod.id}" class="admin-input sell-price-input locked-price" step="1000" value="${defaultPrice}" readonly title="السعر (مقفول)">
                                 </div>
                                 <input type="text" id="sell-note-${prod.id}" class="admin-input sell-note-input" placeholder="اسم المشتري/الملاحظة..." style="margin-top: 5px;">
                                 <button class="sell-submit-btn" style="margin-top: 5px;" onclick="transferToSales(${prod.id})">
@@ -845,7 +845,7 @@
             }
         }
 
-        // بناء الرواجع المطور
+        // بناء الرواجع المطور بتفصيل مالي
         function renderReturnsPage() {
             const container = document.getElementById('returns-container');
             const searchQuery = document.getElementById('returns-search-input').value.toLowerCase().trim();
@@ -859,6 +859,7 @@
                 filteredData.forEach(prod => {
                     let qty = Number(prod.qty) || 0;
                     let defaultPrice = Number(prod.price) || 0;
+                    let defaultProfit = Number(prod.baseProfit) || 0;
 
                     container.innerHTML += `
                         <div class="product-card" style="border-color: rgba(239, 83, 80, 0.3);">
@@ -868,13 +869,17 @@
                                     <span class="type-badge" style="color:#ef5350; background:rgba(239,83,80,0.1);"><i class="fa-solid fa-tags"></i> ${prod.type}</span>
                                     <div class="product-title">${prod.title}</div>
                                     <div class="product-desc" style="color: #38ef7d; font-weight:bold; margin-top: 6px;">بالمخزن: ${qty} قطعة</div>
+                                    <div style="font-size: 0.85rem; color: #a1a1aa; margin-top: 5px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 5px;">
+                                        السعر الأساسي: <span style="color:#fff; font-weight:bold;">${defaultPrice.toLocaleString('en-US')} د.ع</span><br>
+                                        الربح الأساسي: <span style="color:#bf953f; font-weight:bold;">${defaultProfit.toLocaleString('en-US')} د.ع</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="sell-action-box" style="display:flex; flex-direction:column; gap:8px;">
-                                <div style="font-size: 0.85rem; color: #ef5350; font-weight: bold;">تعديل تفاصيل الإرجاع:</div>
+                                <div style="font-size: 0.85rem; color: #ef5350; font-weight: bold;">تعديل تفاصيل الإرجاع (المبالغ التي ستُخصم):</div>
                                 <div class="sell-inputs-row" style="display:flex; gap:8px; width:100%;">
                                     <input type="number" id="gen-return-qty-${prod.id}" class="admin-input sell-qty-input" value="1" min="1" title="كمية الإرجاع" style="border-color: #ef5350; color:#fff;">
-                                    <input type="number" id="gen-return-price-${prod.id}" class="admin-input" value="${defaultPrice}" title="تعديل سعر المرتجع (إذا تم بيعه بسعر أقل)" style="border-color: #ef5350; color:#fff; text-align:center; flex:1;">
+                                    <input type="number" id="gen-return-price-${prod.id}" class="admin-input" step="1000" value="${defaultPrice}" title="سعر القطعة المرتجع" style="border-color: #ef5350; color:#fff; text-align:center; flex:1;">
                                 </div>
                                 <button class="sell-submit-btn" style="width:100%; background:rgba(239,83,80,0.1); color:#ef5350; border-color:#ef5350;" onclick="processGeneralReturn(${prod.id})">
                                     <i class="fa-solid fa-right-left"></i> تأكيد إرجاع وتوثيق مالي
