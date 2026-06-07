@@ -1,16 +1,3 @@
-أهلاً بك يا غالي! معك **ساعات** ⏱️.
-
-تدلل! ملاحظة دقيقة جداً ومهمة في التعاملات المالية. في العملة العراقية (الدينار العراقي)، قراءة الأرقام الكبيرة بدون فواصل (مثل 35000) تكون مزعجة وعرضة للخطأ، والأفضل دائماً عرضها بالشكل المحاسبي المعتمد لتسهيل القراءة وضمان الدقة.
-
-### 💡 التعديلات التي تمت في هذا التحديث:
-
-* **نظام الفواصل المحاسبية (Thousand Separator):** قمت بتحديث جميع الأرقام الخاصة بالأسعار والأرباح في (المخزن، المبيعات النشطة، وسجل الأرشيف) لتستخدم التنسيق المحاسبي (مثل **15,000**) تلقائياً بمجرد إدخالك للرقم.
-* **توحيد العملة:** تم التأكد من إظهار كلمة (**د.ع**) بشكل أنيق وواضح بجانب جميع الأسعار والأرباح ليكون التقرير المالي احترافياً ومكتملاً في كافة الواجهات.
-
----
-
-إليك الكود المصدري الكامل والمُحدّث بالترتيب الأنيق الذي طلبته، انسخه واستبدله بالكامل:
-
 ```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -42,8 +29,7 @@
             display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;
             margin-bottom: 2.5rem; background: rgba(15, 15, 20, 0.5); border: 1px solid rgba(191, 149, 63, 0.2);
             border-radius: 15px; padding: 1.5rem; backdrop-filter: blur(10px);
-        }
-        .stat-card { text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+        }        .stat-card { text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;}
         .stat-card h3 { color: #a1a1aa; font-size: 0.95rem; font-weight: 600; margin-bottom: 5px; }
         .stat-card p { color: #bf953f; font-size: 2rem; font-weight: 900; }
 
@@ -215,6 +201,15 @@
                 <h3><i class="fa-solid fa-money-bill-trend-up" style="color: #38ef7d;"></i> إجمالي الساعات المباعة</h3>
                 <div id="stat-total-sold" class="neon-stat-btn" onclick="switchPage('logs')" title="اضغط لفتح السجل الكامل">0</div>
                 <span style="font-size: 0.8rem; color: #a1a1aa; margin-top: 8px;">اضغط على الرقم لفتح السجل (Logs)</span>
+            </div>
+
+            <div class="stat-card">
+                <h3>إجمالي البيع</h3>
+                <p id="total-sales-value">0 د.ع</p>
+            </div>
+            <div class="stat-card">
+                <h3>صافي الربح</h3>
+                <p id="total-profit-value">0 د.ع</p>
             </div>
         </div>
 
@@ -585,7 +580,7 @@
 
             if(confirm(`⚠️ هل أنت متأكد من استرجاع عدد (${qtyToReturn}) من ساعة "${prod.title}"؟\nسيتم إضافتها للمخزن وخصمها من الإجمالي، وتسجيلها في الأرشيف.`)) {
                 prod.qty += qtyToReturn;
-                archivedSalesCount = Math.max(0, archivedSalesCount - qtyToReturn);
+                archivedSalesCount -= qtyToReturn;
                 
                 const now = new Date();
                 const archiveTimeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + " - " + now.toLocaleDateString('ar-EG');
@@ -655,9 +650,21 @@
 
             let activeSold = salesLog.filter(s => s.qtySold > 0).reduce((acc, curr) => acc + curr.qtySold, 0);
             document.getElementById('stat-total-sold').innerText = activeSold + archivedSalesCount;
+        
+            let totalSales = 0;
+            let totalProfit = 0;
+            archivedSalesLog.forEach(item => {
+                if(item.type !== 'return'){
+                    totalSales += (item.salePrice || 0) * (item.qtySold || 0);
+                    totalProfit += (item.actualProfit || 0) * (item.qtySold || 0);
+                }
+            });
+            const ts=document.getElementById('total-sales-value');
+            const tp=document.getElementById('total-profit-value');
+            if(ts) ts.innerText = totalSales.toLocaleString('en-US') + ' د.ع';
+            if(tp) tp.innerText = totalProfit.toLocaleString('en-US') + ' د.ع';
         }
-
-        // بناء المخزن
+// بناء المخزن
         function renderInventory() {
             calculateStats();
             const container = document.getElementById('inventory-container');
@@ -759,6 +766,26 @@
             const container = document.getElementById('returns-container');
             const searchQuery = document.getElementById('returns-search-input').value.toLowerCase().trim();
             const filterType = document.getElementById('returns-filter-type').value;
+const returnLogEntry = {
+    id: Date.now(),
+    title: prod.title,
+    image: prod.image,
+    qtyReturned: qtyToReturn,
+
+    returnPrice: returnPrice,
+    returnTotal: returnTotal,
+
+    note: 'عملية إرجاع من قسم الرواجع',
+    time: archiveTimeStr,
+    type: 'return'
+};
+
+const returnPrice =
+parseInt(document.getElementById(`return-price-${prodId}`).value) || prod.price;
+
+const returnTotal =
+parseInt(document.getElementById(`return-total-${prodId}`).value) ||
+(returnPrice * qtyToReturn);
 
             container.innerHTML = '';
             const filteredData = inventory.filter(prod => {
@@ -811,7 +838,15 @@
                                 <td><img src="${log.image}" class="table-product-img" style="border-color: #ef5350;"></td>
                                 <td style="color: #ef5350; font-weight: 700;">${log.title}</td>
                                 <td style="color: #ef5350; font-weight: 900; font-size: 1.1rem;">- ${log.qtyReturned} مرتجع</td>
-                                <td style="color: #a1a1aa;">-</td>
+                                <td>
+    <div style="color:#ef5350;">
+        سعر: ${(log.returnPrice || 0).toLocaleString()} د.ع
+    </div>
+
+    <div style="color:#ffd54f;">
+        إجمالي: ${(log.returnTotal || 0).toLocaleString()} د.ع
+    </div>
+</td>
                                 <td style="color: #ef5350; font-weight: 600;"><i class="fa-solid fa-rotate-left"></i> ${log.note}</td>
                                 <td style="color: #a1a1aa; font-size: 0.9rem;">${log.time}</td>
                             </tr>
