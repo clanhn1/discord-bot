@@ -1,14 +1,694 @@
---[[
-_      _____     _      _      _____ 
- | |    |_   _|   / \    | |    |_   _|
- | |      | |    / _ \   | |      | |  
- | |___  _| |_  / ___ \  | |___  _| |_ 
- |_____||_____|/_/   \_\ |_____||_____|
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خزانة الساعات الذكية | نظام إدارة المخزن والمبيعات المطور</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
 
-        A  R  A  B  I  A  N 
-          N  I  G  H  T  S               
-          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
+        body {
+            background-color: #050508; color: #fff; min-height: 100vh; padding: 2rem 1rem;
+            background-image: radial-gradient(circle at 50% 0%, #1a150b 0%, #050508 80%);
+        }
 
-]]--
+        .container { max-width: 1550px; margin: 0 auto; width: 100%; }
 
-local v0=game:GetService("Players");local v1=game:GetService("RunService");local v2=game:GetService("UserInputService");local v3=game:GetService("TweenService");local v4=game:GetService("TeleportService");local v5=game:GetService("TextChatService");local v6=game:GetService("ReplicatedStorage");local v7=game:GetService("CoreGui");local v8=game:GetService("Debris");local v9=v0.LocalPlayer;local v10=workspace.CurrentCamera;local v11={FlightEngineEnabled=true,Flying=false,FlyType=3 -2 ,FlySpeed=37 + 13 ,NoclipEnabled=false,GodEnabled=false,ESP_Enabled=false,ESP_Size=375 -(123 + 251) ,MenuKeybind=Enum.KeyCode.P,FlyKeybind=Enum.KeyCode.E,MaxNotifications=24 -19 };local v12;local v13;local v14;local v15={};local v16={};local v17={};local v18=nil;local v19=nil;local v20=nil;local v21=nil;local v22=false;local v23=nil;local v24=nil;local v25={Color3.fromRGB(22 + 233 ,29 + 36 ,921 -(660 + 176) ),Color3.fromRGB(119 -54 ,362 -(14 + 188) ,930 -(534 + 141) ),Color3.fromRGB(710 -530 ,67 + 8 ,246 + 9 ),Color3.fromRGB(105 -55 ,404 -149 ,364 -234 ),Color3.fromRGB(137 + 118 ,200,26 + 14 )};local v26=1;local v27=v25[v26];local v28={Backgrounds={},Texts={},Strokes={}};local v29={Hover="rbxassetid://8997388009",Click="rbxassetid://6042053626",Error="rbxassetid://6042042261"};local function v30(v295,v296) local v297=0 + 0 ;local v298;while true do if (v297==(396 -(115 + 281))) then v298=Instance.new("Sound");v298.SoundId=v295;v297=1454 -(28 + 1425) ;end if (v297==(2 -1)) then v298.Volume=v296 or (0.5 + 0) ;v298.Parent=v10;v297=2 + 0 ;end if (v297==(4 -2)) then v298:Play();v8:AddItem(v298,7 -5 );break;end end end local v31=v9:WaitForChild("PlayerGui");local function v32(v299) local v300=v31:FindFirstChild(v299);if v300 then v300:Destroy();end end v32("LayaliAlArab_Main");v32("LayaliAlArab_ESP");v32("LayaliAlArab_Spectate");v32("LayaliAlArab_Notifications");v32("LayaliAlArab_Mobile");local v33=Instance.new("ScreenGui",v31);v33.Name="LayaliAlArab_Main";v33.ResetOnSpawn=false;v33.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;local v38=Instance.new("ScreenGui",v31);v38.Name="LayaliAlArab_ESP";v38.ResetOnSpawn=false;local v41=Instance.new("ScreenGui",v31);v41.Name="LayaliAlArab_Spectate";v41.ResetOnSpawn=false;v41.IgnoreGuiInset=true;local v45=Instance.new("ScreenGui",v31);v45.Name="LayaliAlArab_Notifications";v45.ResetOnSpawn=false;v45.IgnoreGuiInset=true;local v49=Instance.new("ScreenGui",v31);v49.Name="LayaliAlArab_Mobile";v49.ResetOnSpawn=false;local v52=Instance.new("Frame",v45);v52.Size=UDim2.new(867 -(550 + 317) ,462 -142 ,1 -0 , -(111 -71));v52.Position=UDim2.new(286 -(134 + 151) , -(1685 -(970 + 695)),0 -0 ,7 + 13 );v52.AnchorPoint=Vector2.new(1991 -(582 + 1408) ,0 -0 );v52.BackgroundTransparency=1 -0 ;local v57=Instance.new("UIListLayout",v52);v57.SortOrder=Enum.SortOrder.LayoutOrder;v57.Padding=UDim.new(0 -0 ,443 -(114 + 319) );v57.VerticalAlignment=Enum.VerticalAlignment.Bottom;v57.HorizontalAlignment=Enum.HorizontalAlignment.Right;local function v65(v301,v302,v303) local v304=1824 -(1195 + 629) ;local v305;local v306;local v307;local v308;local v309;local v310;local v311;while true do if (v304==(2 -0)) then v306.Color=Color3.fromRGB(51 -11 ,26 + 14 ,66 -16 );v306.Thickness=242 -(187 + 54) ;v307=Instance.new("Frame",v305);v307.Size=UDim2.new(780 -(162 + 618) ,4,1 + 0 ,0 + 0 );v304=468 -(170 + 295) ;end if (v304==(10 -5)) then v308.Font=Enum.Font.GothamBold;v308.TextSize=23 -9 ;v308.BackgroundTransparency=1 + 0 ;v308.TextXAlignment=Enum.TextXAlignment.Left;v304=1642 -(1373 + 263) ;end if (v304==(5 + 1)) then if  not v303 then table.insert(v28.Texts,v308);end v309=Instance.new("TextLabel",v305);v309.Size=UDim2.new(1001 -(451 + 549) , -(7 + 13),0 -0 ,1260 -(957 + 273) );v309.Position=UDim2.new(0 -0 ,15,1384 -(746 + 638) ,32);v304=3 + 4 ;end if (v304==(1 -0)) then v305.BackgroundTransparency=341.15 -(218 + 123) ;v305.ClipsDescendants=true;Instance.new("UICorner",v305).CornerRadius=UDim.new(1581 -(1535 + 46) ,12 + 0 );v306=Instance.new("UIStroke",v305);v304=9 -7 ;end if (v304==(2 + 8)) then v311=0;for v670,v671 in ipairs(v310) do if v671:IsA("Frame") then v311=v311 + (561 -(306 + 254)) ;end end if (v311>v11.MaxNotifications) then for v742,v743 in ipairs(v310) do if v743:IsA("Frame") then v743:Destroy();break;end end end break;end if (9==v304) then v3:Create(v305,TweenInfo.new(0.5,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{Position=UDim2.new(0 + 0 ,0 -0 ,0 -0 ,1467 -(899 + 568) )}):Play();v30(v29.Click,0.4 + 0 );task.delay(4.5 + 0 ,function() if v305 then local v744=0;local v745;while true do if (v744==(0 -0)) then v745=v3:Create(v305,TweenInfo.new(603.4 -(268 + 335) ,Enum.EasingStyle.Quart,Enum.EasingDirection.In),{Position=UDim2.new(2 -1 ,1562 -(1090 + 122) ,290 -(60 + 230) ,572 -(426 + 146) ),BackgroundTransparency=1});v745:Play();v744=1 + 0 ;end if (v744==(1457 -(282 + 1174))) then v745.Completed:Connect(function() v305:Destroy();end);break;end end end end);v310=v52:GetChildren();v304=821 -(569 + 242) ;end if (v304==(1 + 3)) then v308.Size=UDim2.new(2 -1 , -(91 -71),0 + 0 ,1049 -(706 + 318) );v308.Position=UDim2.new(1251 -(721 + 530) ,1286 -(945 + 326) ,0 -0 ,8 + 0 );v308.Text=v301;v308.TextColor3=v303 or v27 ;v304=705 -(271 + 429) ;end if (v304==8) then v309.BackgroundTransparency=1 + 0 ;v309.TextXAlignment=Enum.TextXAlignment.Left;v309.TextWrapped=true;v305.Position=UDim2.new(1 + 0 ,1850 -(1408 + 92) ,15 -(6 + 9) ,1086 -(461 + 625) );v304=1297 -(993 + 295) ;end if (v304==(1 + 6)) then v309.Text=v302;v309.TextColor3=Color3.fromRGB(90 + 140 ,1401 -(418 + 753) ,88 + 142 );v309.Font=Enum.Font.Gotham;v309.TextSize=2 + 11 ;v304=3 + 5 ;end if (v304==(0 -0)) then v305=Instance.new("Frame",v52);v305.Size=UDim2.new(0 + 0 ,300,0 + 0 ,221 -151 );v305.BackgroundColor3=Color3.fromRGB(542 -(406 + 123) ,1276 -(668 + 595) ,17 + 1 );v305.BorderSizePixel=1769 -(1749 + 20) ;v304=1 + 0 ;end if (v304==(1325 -(1249 + 73))) then v307.BackgroundColor3=v303 or v27 ;v307.BorderSizePixel=0 + 0 ;if  not v303 then table.insert(v28.Backgrounds,v307);end v308=Instance.new("TextLabel",v305);v304=4;end end end local v66=Instance.new("Frame",v33);v66.Name="MainFrame";v66.Size=UDim2.new(290.85 -(23 + 267) ,1145 -(466 + 679) ,387.8 -(371 + 16) ,0 -0 );v66.Position=UDim2.new(1750.5 -(1326 + 424) ,0 -0 ,1900.5 -(106 + 1794) ,0 + 0 );v66.AnchorPoint=Vector2.new(0.5 -0 ,0.5 + 0 );v66.BackgroundColor3=Color3.fromRGB(32 -21 ,29 -18 ,130 -(4 + 110) );v66.Active=true;v66.Draggable=true;v66.BorderSizePixel=584 -(57 + 527) ;Instance.new("UICorner",v66).CornerRadius=UDim.new(1427 -(41 + 1386) ,14);local v76=Instance.new("UISizeConstraint",v66);v76.MaxSize=Vector2.new(413 + 427 ,663 -(17 + 86) );v76.MinSize=Vector2.new(306 + 144 ,892 -492 );local v79=Instance.new("UIStroke",v66);v79.Color=v27;v79.Thickness=2;table.insert(v28.Strokes,v79);local v82=Instance.new("Frame",v66);v82.Size=UDim2.new(1 -0 ,439 -(397 + 42) ,2 -1 ,800 -(24 + 776) );v82.BackgroundTransparency=167 -(122 + 44) ;v82.ClipsDescendants=true;local function v86() while true do local v417=Instance.new("Frame",v82);local v418=math.random(2 -0 ,12 -8 );v417.Size=UDim2.new(0 + 0 ,v418,0 -0 ,v418);v417.Position=UDim2.new(math.random(),0 + 0 , -(0.05 -0),65 -(30 + 35) );v417.BackgroundColor3=Color3.fromRGB(176 + 79 ,1512 -(1043 + 214) ,963 -708 );v417.BackgroundTransparency=math.random(1217 -(323 + 889) ,21 -13 )/(590 -(361 + 219)) ;v417.BorderSizePixel=320 -(53 + 267) ;Instance.new("UICorner",v417).CornerRadius=UDim.new(1 + 0 ,413 -(15 + 398) );local v425=UDim2.new(v417.Position.X.Scale + (math.random( -(992 -(18 + 964)),37 -27 )/(58 + 42)) ,0 -0 ,1.05 + 0 ,850 -(20 + 830) );local v426=math.random(6 + 1 ,7 + 5 );local v427=v3:Create(v417,TweenInfo.new(v426,Enum.EasingStyle.Linear),{Position=v425,BackgroundTransparency=1 + 0 });v427:Play();task.delay(138 -(116 + 10) ,function() if v417 then v417:Destroy();end end);task.wait(0.12 + 0 );end end task.spawn(v86);local v87=Instance.new("ImageButton",v49);v87.Size=UDim2.new(738 -(542 + 196) ,117 -62 ,0 + 0 ,28 + 27 );v87.Position=UDim2.new(1 + 0 , -(52 -32),0.5 -0 ,1551 -(1126 + 425) );v87.AnchorPoint=Vector2.new(1 + 0 ,405.5 -(118 + 287) );v87.BackgroundColor3=Color3.fromRGB(15,58 -43 ,1141 -(118 + 1003) );v87.Image="rbxassetid://104960072795401";v87.Active=true;v87.Draggable=true;Instance.new("UICorner",v87).CornerRadius=UDim.new(2 -1 ,0 + 0 );local v96=Instance.new("UIStroke",v87);v96.Color=v27;v96.Thickness=379 -(142 + 235) ;table.insert(v28.Strokes,v96);v87.MouseButton1Click:Connect(function() local v312=0 + 0 ;while true do if ((0 -0)==v312) then v30(v29.Click,0.6 -0 );v66.Visible= not v66.Visible;break;end end end);v87.MouseEnter:Connect(function() local v313=326 -(89 + 237) ;while true do if (v313==(0 + 0)) then v30(v29.Hover,977.3 -(553 + 424) );v3:Create(v87,TweenInfo.new(0.2 -0 ),{BackgroundColor3=Color3.fromRGB(27 + 3 ,1250 -(855 + 365) ,40 + 0 )}):Play();break;end end end);v87.MouseLeave:Connect(function() v3:Create(v87,TweenInfo.new(0.2 + 0 ),{BackgroundColor3=Color3.fromRGB(7 + 8 ,9 + 6 ,43 -23 )}):Play();end);local v99=Instance.new("Frame",v66);v99.Size=UDim2.new(1236 -(1030 + 205) ,0 + 0 ,0 + 0 ,336 -(156 + 130) );v99.BackgroundColor3=Color3.fromRGB(36 -20 ,44 -28 ,48 -26 );v99.BorderSizePixel=0 -0 ;Instance.new("UICorner",v99).CornerRadius=UDim.new(0 + 0 ,67 -53 );local v104=Instance.new("Frame",v99);v104.Size=UDim2.new(70 -(10 + 59) ,0 + 0 ,0,763 -(239 + 514) );v104.Position=UDim2.new(0 + 0 ,1329 -(797 + 532) ,1 + 0 , -(1225 -(369 + 846)));v104.BackgroundColor3=Color3.fromRGB(6 + 10 ,37 -21 ,1224 -(373 + 829) );v104.BorderSizePixel=731 -(476 + 255) ;local v109=Instance.new("TextLabel",v99);v109.Size=UDim2.new(1131 -(369 + 761) , -(145 + 105),1 -0 ,0 -0 );v109.Position=UDim2.new(0 -0 ,258 -(64 + 174) ,0,0 + 0 );v109.Text="ليالي العرب | Final Edition";v109.TextColor3=v27;v109.Font=Enum.Font.GothamBold;v109.TextSize=23 -7 ;v109.BackgroundTransparency=176 -(135 + 40) ;v109.TextXAlignment=Enum.TextXAlignment.Left;table.insert(v28.Texts,v109);local function v120(v314,v315) local v316=Instance.new("TextButton",v99);v316.Size=UDim2.new(336 -(144 + 192) ,261 -(42 + 174) ,0 + 0 ,98 -53 );v316.Position=UDim2.new(1 + 0 ,v315,0.5 + 0 , -(1526.5 -(363 + 1141)));v316.Text=v314;v316.BackgroundTransparency=2 -1 ;v316.Font=Enum.Font.GothamBold;v316.TextSize=4 + 14 ;v316.MouseEnter:Connect(function() v30(v29.Hover,1413.3 -(1233 + 180) );end);return v316;end local v121=v120("✕", -(1630 -(1183 + 397)));v121.TextColor3=Color3.fromRGB(255,258 -173 ,85);v121.MouseButton1Click:Connect(function() v30(v29.Click);v66.Visible=false;end);local v123=v120("🎨", -(70 + 25));v123.MouseButton1Click:Connect(function() v30(v29.Click);v26=v26 + 1 + 0 ;if (v26> #v25) then v26=1;end v27=v25[v26];local v326=TweenInfo.new(0.4 + 0 ,Enum.EasingStyle.Sine);for v428,v429 in pairs(v28.Backgrounds) do if v429 then v3:Create(v429,v326,{BackgroundColor3=v27}):Play();end end for v430,v431 in pairs(v28.Texts) do if v431 then v3:Create(v431,v326,{TextColor3=v27}):Play();end end for v432,v433 in pairs(v28.Strokes) do if v433 then v3:Create(v433,v326,{Color=v27}):Play();end end v65("الثيمات","تم تغيير لون الواجهة بنجاح.",v27);end);local v124=v120("👁️‍🗨️", -(2115 -(1913 + 62)));local v125={0,1933.3 -(565 + 1368) ,0.6 -0 };local v126=1662 -(1477 + 184) ;local v127;v124.MouseButton1Click:Connect(function() v30(v29.Click);v126=v126 + (1 -0) ;if (v126> #v125) then v126=1 + 0 ;end local v327=v125[v126];local v328=TweenInfo.new(0.3,Enum.EasingStyle.Sine);v3:Create(v66,v328,{BackgroundTransparency=v327}):Play();v3:Create(v99,v328,{BackgroundTransparency=v327}):Play();v3:Create(v104,v328,{BackgroundTransparency=v327}):Play();if v127 then v3:Create(v127,v328,{BackgroundTransparency=v327}):Play();end end);v127=Instance.new("Frame",v66);v127.Size=UDim2.new(856 -(564 + 292) ,693 -(74 + 429) ,1 -0 , -(150 -100));v127.Position=UDim2.new(0,304 -(244 + 60) ,0,39 + 11 );v127.BackgroundColor3=Color3.fromRGB(490 -(41 + 435) ,1015 -(938 + 63) ,14 + 4 );v127.BorderSizePixel=1125 -(936 + 189) ;Instance.new("UICorner",v127).CornerRadius=UDim.new(0 + 0 ,1625 -(1565 + 48) );local v133=Instance.new("Frame",v66);v133.Size=UDim2.new(1, -(124 + 76),1139 -(782 + 356) , -(337 -(176 + 91)));v133.Position=UDim2.new(778 -(454 + 324) ,508 -313 ,0 -0 ,60);v133.BackgroundTransparency=1 + 0 ;local v137={};local v138={};local v139=Instance.new("UIListLayout",v127);v139.SortOrder=Enum.SortOrder.LayoutOrder;v139.Padding=UDim.new(0,1100 -(975 + 117) );v139.HorizontalAlignment=Enum.HorizontalAlignment.Center;local function v144(v329,v330) local v331;if v330 then local v485=1875 -(157 + 1718) ;local v486;while true do if (v485==(1 + 0)) then v331.ScrollBarImageColor3=Color3.fromRGB(177 -127 ,170 -120 ,1078 -(697 + 321) );v486=Instance.new("UIListLayout",v331);v485=5 -3 ;end if (v485==(0 + 0)) then v331=Instance.new("ScrollingFrame",v133);v331.ScrollBarThickness=5 -2 ;v485=1;end if (v485==(4 -2)) then v486.SortOrder=Enum.SortOrder.LayoutOrder;v486.Padding=UDim.new(0 + 0 ,28 -16 );break;end end else v331=Instance.new("Frame",v133);end v331.Name=v329;v331.Size=UDim2.new(1 -0 ,0 -0 ,1228 -(322 + 905) ,0);v331.BackgroundTransparency=612 -(602 + 9) ;v331.BorderSizePixel=1893 -(1222 + 671) ;v331.Visible=false;v137[v329]=v331;return v331;end local function v145(v338) local v339=0;while true do if (v339==(1189 -(449 + 740))) then for v672,v673 in pairs(v137) do v673.Visible=v672==v338 ;end for v675,v676 in pairs(v138) do local v677=v676:FindFirstChild("UIStroke");if (v675==v338) then v3:Create(v676,TweenInfo.new(872.3 -(826 + 46) ),{BackgroundColor3=Color3.fromRGB(975 -(245 + 702) ,88 -60 ,12 + 23 )}):Play();if v677 then v3:Create(v677,TweenInfo.new(0.3),{Color=v27,Transparency=1898 -(260 + 1638) }):Play();end else local v746=1774 -(1111 + 663) ;while true do if (v746==(440 -(382 + 58))) then v3:Create(v676,TweenInfo.new(0.3 -0 ),{BackgroundColor3=Color3.fromRGB(14 + 2 ,32 -16 ,65 -43 )}):Play();if v677 then v3:Create(v677,TweenInfo.new(1205.3 -(902 + 303) ),{Color=Color3.fromRGB(93 -48 ,2 + 43 ,120 -65 ),Transparency=0.5 -0 }):Play();end break;end end end end break;end end end local function v146(v340,v341,v342) local v343=0;local v344;local v345;while true do if (v343==(0 + 0)) then v344=Instance.new("TextButton",v127);v344.Size=UDim2.new(1691 -(1121 + 569) , -16,0 + 0 ,259 -(22 + 192) );v344.BackgroundColor3=Color3.fromRGB(699 -(483 + 200) ,16,476 -(233 + 221) );v344.TextColor3=Color3.fromRGB(1693 -(1404 + 59) ,531 -301 ,629 -399 );v343=1;end if (v343==(2 -0)) then Instance.new("UICorner",v344).CornerRadius=UDim.new(765 -(468 + 297) ,8);v345=Instance.new("UIStroke",v344);v345.Color=Color3.fromRGB(29 + 16 ,607 -(334 + 228) ,185 -130 );v345.Transparency=0.5 -0 ;v343=1228 -(636 + 589) ;end if (v343==(6 -3)) then v344.MouseEnter:Connect(function() v30(v29.Hover,0.3 -0 );end);v344.MouseButton1Click:Connect(function() local v678=0 -0 ;while true do if (v678==(0 -0)) then v30(v29.Click,0.4 + 0 );v145(v342);break;end end end);v138[v342]=v344;break;end if (v343==(237 -(141 + 95))) then v344.Font=Enum.Font.GothamBold;v344.TextSize=14 + 0 ;v344.Text=" "   .. v341   .. "  "   .. v340 ;v344.TextXAlignment=Enum.TextXAlignment.Left;v343=4 -2 ;end end end local v147=v144("Home",false);local v148=v144("Target",false);local v149=v144("Fly",true);local v150=v144("ESP",true);local v151=v144("Players",true);v146("القائمة الرئيسية","🚀","Home");v146("الاستهداف والمراقبة","🎯","Target");v146("نظام الطيران","✈️","Fly");v146("كشف اللاعبين","👁️","ESP");v146("قائمة السيرفر","👥","Players");local function v152(v346,v347,v348) local v349=0;while true do if (v349==(2 -1)) then v346.MouseButton1Click:Connect(function() v30(v29.Click,0.4 -0 );end);break;end if (v349==(0 + 0)) then v346.MouseEnter:Connect(function() v30(v29.Hover,0.2 -0 );v3:Create(v346,TweenInfo.new(0.2 + 0 ),{BackgroundColor3=v348}):Play();end);v346.MouseLeave:Connect(function() v3:Create(v346,TweenInfo.new(0.2 + 0 ),{BackgroundColor3=v347}):Play();end);v349=1 -0 ;end end end local function v153(v350,v351,v352) local v353=0 + 0 ;local v354;local v355;while true do if (v353==1) then v354.Font=Enum.Font.GothamBold;v354.TextSize=848 -(64 + 770) ;v354.Text=v350;Instance.new("UICorner",v354).CornerRadius=UDim.new(0 + 0 ,18 -10 );v353=165 -(92 + 71) ;end if (v353==(1 + 1)) then v355=Instance.new("UIStroke",v354);v355.Color=Color3.fromRGB(100 -50 ,84 -34 ,825 -(574 + 191) );v152(v354,v352 or Color3.fromRGB(19 + 3 ,29 -7 ,69 -41 ) ,Color3.fromRGB(18 + 17 ,884 -(254 + 595) ,1976 -(1813 + 118) ));return v354;end if (v353==(126 -(55 + 71))) then v354=Instance.new("TextButton",v351);v354.Size=UDim2.new(1 -0 , -10,1790 -(573 + 1217) ,45);v354.BackgroundColor3=v352 or Color3.fromRGB(22,60 -38 ,3 + 25 ) ;v354.TextColor3=Color3.fromRGB(336 -96 ,56 + 184 ,386 -146 );v353=940 -(714 + 225) ;end end end local function v154(v356,v357) local v358=Instance.new("TextLabel",v357);v358.Size=UDim2.new(2 -1 ,0 -0 ,0,3 + 22 );v358.BackgroundTransparency=1 -0 ;v358.Text="  "   .. v356 ;v358.TextColor3=Color3.fromRGB(976 -(118 + 688) ,218 -(25 + 23) ,37 + 153 );v358.Font=Enum.Font.GothamBold;v358.TextSize=1899 -(927 + 959) ;v358.TextXAlignment=Enum.TextXAlignment.Left;return v358;end local function v155(v368,v369) local v370=0 -0 ;local v371;local v372;while true do if (v370==(0 + 0)) then v371=Instance.new("TextBox",v369);v371.Size=UDim2.new(1, -(742 -(16 + 716)),0 -0 ,142 -(11 + 86) );v371.BackgroundColor3=Color3.fromRGB(43 -25 ,303 -(175 + 110) ,60 -36 );v371.TextColor3=Color3.fromRGB(1257 -1002 ,1209 -954 ,2051 -(503 + 1293) );v370=2 -1 ;end if (v370==(392 -(14 + 376))) then Instance.new("UICorner",v371).CornerRadius=UDim.new(0,6 + 2 );v372=Instance.new("UIStroke",v371);v372.Color=Color3.fromRGB(45,1106 -(810 + 251) ,39 + 16 );v371.Focused:Connect(function() v30(v29.Hover,0.4 + 0 );end);v370=1 + 2 ;end if ((3 + 0)==v370) then return v371;end if (v370==(534 -(43 + 490))) then v371.PlaceholderText=v368;v371.Text="";v371.Font=Enum.Font.GothamSemibold;v371.TextSize=746 -(711 + 22) ;v370=7 -5 ;end end end local function v156(v373) local v374,v375=pcall(function() return v0:GetUserThumbnailAsync(v373.UserId,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size150x150);end);return (v374 and v375) or "rbxassetid://0" ;end local v157=Instance.new("Frame",v147);v157.Size=UDim2.new(1 + 0 , -(869 -(240 + 619)),0 + 0 ,254 -94 );v157.BackgroundColor3=Color3.fromRGB(42 -24 ,13 + 5 ,24);Instance.new("UICorner",v157).CornerRadius=UDim.new(0 + 0 ,1756 -(1344 + 400) );local v161=Instance.new("UIStroke",v157);v161.Color=v27;table.insert(v28.Strokes,v161);local v163=Instance.new("ImageLabel",v157);v163.Size=UDim2.new(405 -(255 + 150) ,80,0 + 0 ,43 + 37 );v163.Position=UDim2.new(901.5 -(652 + 249) , -(170 -130),1868 -(708 + 1160) ,48 -33 );v163.BackgroundTransparency=1740 -(404 + 1335) ;v163.Image="rbxassetid://104960072795401";local v168=Instance.new("TextLabel",v157);v168.Size=UDim2.new(407 -(183 + 223) ,27 -(10 + 17) ,0 -0 ,20 + 10 );v168.Position=UDim2.new(0,0,0 + 0 ,2008 -(242 + 1666) );v168.Text="ليالي العرب";v168.TextColor3=v27;v168.Font=Enum.Font.GothamBlack;v168.TextSize=24;v168.BackgroundTransparency=1;table.insert(v28.Texts,v168);local v177=Instance.new("TextLabel",v157);v177.Size=UDim2.new(338 -(10 + 327) ,0 + 0 ,0 + 0 ,960 -(850 + 90) );v177.Position=UDim2.new(0 -0 ,0 + 0 ,338 -(118 + 220) ,44 + 86 );v177.Text="استعمله بدون تخريب رجاء";v177.TextColor3=Color3.fromRGB(704 -(108 + 341) ,225 -145 ,36 + 44 );v177.Font=Enum.Font.GothamBold;v177.TextSize=17 -4 ;v177.BackgroundTransparency=1662 -(909 + 752) ;local v185=Instance.new("Frame",v147);v185.Size=UDim2.new(4 -3 , -(1503 -(711 + 782)),1 -0 , -(329 -149));v185.Position=UDim2.new(0 + 0 ,0,242 -(6 + 236) ,649 -(270 + 199) );v185.BackgroundTransparency=1 + 0 ;local v189=Instance.new("UIGridLayout",v185);v189.CellSize=UDim2.new(1819.48 -(580 + 1239) ,0 -0 ,0 + 0 ,2 + 48 );v189.CellPadding=UDim2.new(0.04,0,0 + 0 ,39 -24 );v189.SortOrder=Enum.SortOrder.LayoutOrder;local v193=v153("👻 اختراق الجدران (Noclip)",v185);local v194=v153("🛡️ الحماية المطلقة (God Mode)",v185);local v195=v153("🎒 سحب جميع الأدوات",v185);local function v196() if v18 then v18=nil;if (v9.Character and v9.Character:FindFirstChild("Humanoid")) then v10.CameraSubject=v9.Character.Humanoid;end if v19 then local v681=0 + 0 ;while true do if (v681==0) then v19:Destroy();v19=nil;break;end end end v65("المشاهدة","تم إرجاع الكاميرا الخاصة بك.",Color3.fromRGB(1267 -(645 + 522) ,2045 -(1010 + 780) ,100 + 0 ));end end local function v197(v376) local v377=0 -0 ;local v378;while true do if ((2 -1)==v377) then if (v378 and v378:FindFirstChild("Humanoid")) then v18=v376;v10.CameraSubject=v378.Humanoid;if v19 then v19:Destroy();end v19=Instance.new("Frame",v41);v19.Size=UDim2.new(1836 -(1045 + 791) ,759 -459 ,0 + 0 ,15 + 50 );v19.Position=UDim2.new(0.5 -0 , -(91 + 59),0.85 -0 ,505 -(351 + 154) );v19.BackgroundColor3=Color3.fromRGB(1589 -(1281 + 293) ,281 -(28 + 238) ,38 -18 );Instance.new("UICorner",v19).CornerRadius=UDim.new(0 + 0 ,2 + 13 );local v707=Instance.new("UIStroke",v19);v707.Color=v27;v707.Thickness=4 -2 ;table.insert(v28.Strokes,v707);local v710=Instance.new("TextButton",v19);v710.Size=UDim2.new(518 -(440 + 77) ,0,1560 -(1381 + 178) ,0 + 0 );v710.BackgroundTransparency=1 + 0 ;v710.Text="🛑 إيقاف مشاهدة ("   .. v376.Name   .. ")" ;v710.TextColor3=Color3.fromRGB(109 + 146 ,293 -208 ,45 + 40 );v710.Font=Enum.Font.GothamBold;v710.TextSize=487 -(381 + 89) ;spawn(function() while v19 and v19.Parent  do v3:Create(v707,TweenInfo.new(1 + 0 ,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{Transparency=0.8 + 0 }):Play();task.wait(1 + 0 );v3:Create(v707,TweenInfo.new(1 + 0 ,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{Transparency=0 + 0 }):Play();task.wait(1 -0 );end end);v152(v710,Color3.fromRGB(1171 -(1074 + 82) ,15,1465 -(695 + 750) ),Color3.fromRGB(119 -84 ,30 -10 ,54 -29 ));v710.MouseButton1Click:Connect(v196);v65("المراقبة","أنت تشاهد: "   .. v376.Name ,Color3.fromRGB(451 -(285 + 66) ,150,594 -339 ));end break;end if (v377==(1784 -(214 + 1570))) then if  not v376 then local v718=0 + 0 ;while true do if ((299 -(176 + 123))==v718) then v30(v29.Error);v65("خطأ","اختر لاعب أولاً.",Color3.fromRGB(1710 -(990 + 465) ,42 + 58 ,100));v718=1 + 0 ;end if ((270 -(239 + 30))==v718) then return;end end end v378=v376.Character;v377=1 + 0 ;end end end local function v198(v379) if  not v379 then local v487=0 + 0 ;while true do if (v487==(0 -0)) then v30(v29.Error);return;end end end local v380=v379.Character;local v381=v9.Character;if (v380 and v380:FindFirstChild("HumanoidRootPart") and v381 and v381:FindFirstChild("HumanoidRootPart")) then local v488=pcall(function() v381.HumanoidRootPart.CFrame=v380.HumanoidRootPart.CFrame * CFrame.new(1726 -(1668 + 58) ,315 -(306 + 9) ,630 -(512 + 114) ) ;end);if v488 then v65("انتقال سريع","تم الانتقال إلى: "   .. v379.Name ,Color3.fromRGB(260 -160 ,45 + 210 ,62 + 38 ));end end end local function v199(v382) local v383=0;while true do if (v383==(0 -0)) then if  not v382 then local v719=0 -0 ;while true do if (v719==(0 + 0)) then v30(v29.Error);return;end end end pcall(function() v9:Chat("/char me "   .. v382.Name );end);v383=2 -1 ;end if (v383==1) then pcall(function() if v5 then local v747=0 + 0 ;local v748;while true do if (v747==(0 + 0)) then v748=v5:FindFirstChild("TextChannels");if v748 then for v798,v799 in pairs(v748:GetChildren()) do if v799:IsA("TextChannel") then v799:SendAsync("/char me "   .. v382.Name );end end end break;end end end end);v65("الملابس","جاري استنساخ ملابس: "   .. v382.Name ,Color3.fromRGB(255,674 -474 ,2094 -(109 + 1885) ));break;end end end local function v200() v22=false;if v23 then v23:Disconnect();v23=nil;end local v384=v9.Character;local v385=v384 and v384:FindFirstChild("HumanoidRootPart") ;if v385 then v385.Anchored=false;if v21 then v385.CFrame=v21;end end if (v384 and v384:FindFirstChild("Humanoid")) then v10.CameraSubject=v384.Humanoid;end if v24 then v24.Text="🎧 استماع للهدف";v24.BackgroundColor3=Color3.fromRGB(1491 -(1269 + 200) ,41 -19 ,843 -(98 + 717) );end v65("الاستماع","تم إيقاف الاستماع والعودة لمكانك الأصلي.",Color3.fromRGB(255,926 -(802 + 24) ,172 -72 ));end local function v201(v386) if  not v386 then local v494=0 -0 ;while true do if (v494==(0 + 0)) then v30(v29.Error);v65("خطأ","اختر هدفاً أولاً",Color3.fromRGB(240 + 15 ,769 -(586 + 103) ,62 + 18 ));v494=1 + 0 ;end if (v494==(1489 -(1309 + 179))) then return;end end end if v22 then v200();else local v495=v9.Character;local v496=v386.Character;if ( not v495 or  not v496) then return;end local v497=v495:FindFirstChild("HumanoidRootPart");local v498=v496:FindFirstChild("HumanoidRootPart");if ( not v497 or  not v498) then return;end v21=v497.CFrame;v22=true;if v24 then local v683=0 + 0 ;while true do if (v683==(0 -0)) then v24.Text="🛑 إيقاف الاستماع";v24.BackgroundColor3=Color3.fromRGB(214 -134 ,100 -70 ,23 + 7 );break;end end end if v496:FindFirstChild("Humanoid") then v10.CameraSubject=v496.Humanoid;end v497.Anchored=true;v23=v1.Heartbeat:Connect(function() if ( not v22 or  not v386.Character or  not v9.Character) then v200();return;end local v603=v386.Character:FindFirstChild("HumanoidRootPart");local v604=v9.Character:FindFirstChild("HumanoidRootPart");if (v603 and v604) then v604.CFrame=v603.CFrame * CFrame.new(0 + 0 , -(4.5 + 4),0 + 0 ) * CFrame.Angles(math.pi,0,0 -0 ) ;end end);v65("الاستماع","أنت الآن تستمع للهدف ومخفي تحته تماماً (وضع Voice Chat).",Color3.fromRGB(73 + 27 ,120 + 135 ,100));end end local v202=v155("🎯 ابحث عن اسم اللاعب للاستهداف...",v148);local v203=Instance.new("Frame",v148);v203.Size=UDim2.new(1434 -(797 + 636) , -(619 -(295 + 314)),0 -0 ,1759 -(1427 + 192) );v203.Position=UDim2.new(0 + 0 ,0 -0 ,0 + 0 ,28 + 32 );v203.BackgroundColor3=Color3.fromRGB(344 -(192 + 134) ,1294 -(316 + 960) ,13 + 9 );Instance.new("UICorner",v203).CornerRadius=UDim.new(0 -0 ,10 + 2 );local v208=Instance.new("UIStroke",v203);v208.Color=v27;table.insert(v28.Strokes,v208);local v210=Instance.new("ImageLabel",v203);v210.Size=UDim2.new(0 + 0 ,382 -282 ,551 -(83 + 468) ,402 -(115 + 187) );v210.Position=UDim2.new(1806 -(1202 + 604) ,70 -55 ,0.5 -0 , -(138 -88));v210.BackgroundColor3=Color3.fromRGB(335 -(45 + 280) ,10 + 0 ,9 + 1 );v210.Image="rbxassetid://0";Instance.new("UICorner",v210).CornerRadius=UDim.new(1,0 + 0 );local v216=Instance.new("TextLabel",v203);v216.Size=UDim2.new(0 + 0 ,658 -(237 + 121) ,0 + 0 ,56 -26 );v216.Position=UDim2.new(0 -0 ,272 -(96 + 46) ,777 -(643 + 134) ,37 -17 );v216.Text="لم يتم تحديد هدف";v216.TextColor3=Color3.fromRGB(2166 -(340 + 1571) ,101 + 154 ,2027 -(1733 + 39) );v216.Font=Enum.Font.GothamBold;v216.TextSize=60 -38 ;v216.BackgroundTransparency=1035 -(125 + 909) ;v216.TextXAlignment=Enum.TextXAlignment.Left;local v225=Instance.new("TextLabel",v203);v225.Size=UDim2.new(1948 -(1096 + 852) ,1019 -(316 + 403) ,0 + 0 ,28 -8 );v225.Position=UDim2.new(0 + 0 ,642 -(409 + 103) ,236 -(46 + 190) ,150 -(51 + 44) );v225.Text="يرجى كتابة الاسم في المربع أعلاه";v225.TextColor3=Color3.fromRGB(43 + 107 ,49 + 101 ,1487 -(1114 + 203) );v225.Font=Enum.Font.Gotham;v225.TextSize=740 -(228 + 498) ;v225.BackgroundTransparency=1 + 0 ;v225.TextXAlignment=Enum.TextXAlignment.Left;local v235=Instance.new("Frame",v148);v235.Size=UDim2.new(1, -(6 + 4),664 -(174 + 489) , -(573 -353));v235.Position=UDim2.new(0 -0 ,0 + 0 ,1905 -(830 + 1075) ,11 + 209 );v235.BackgroundTransparency=525 -(303 + 221) ;local v239=Instance.new("UIGridLayout",v235);v239.CellSize=UDim2.new(0.48,1269 -(231 + 1038) ,0 + 0 ,72 -(12 + 5) );v239.CellPadding=UDim2.new(1162.04 -(171 + 991) ,0 -0 ,0 -0 ,40 -25 );v239.SortOrder=Enum.SortOrder.LayoutOrder;local v243=v153("👁️ مشاهدة الهدف",v235);local v244=v153("🚀 انتقال سريع للهدف",v235);local v245=v153("👕 استنساخ الملابس",v235);v24=v153("🎧 استماع للهدف",v235);v202:GetPropertyChangedSignal("Text"):Connect(function() local v387=string.lower(v202.Text);if (v387=="") then local v501=0 -0 ;while true do if (v501==(2 + 0)) then return;end if (v501==(0 -0)) then v20=nil;v216.Text="لم يتم تحديد هدف";v501=1;end if ((3 -2)==v501) then v225.Text="يرجى كتابة الاسم في المربع أعلاه";v210.Image="rbxassetid://0";v501=2;end end end for v434,v435 in ipairs(v0:GetPlayers()) do if ((v435~=v9) and (string.find(string.lower(v435.Name),v387) or string.find(string.lower(v435.DisplayName),v387))) then local v605=1973 -(1656 + 317) ;while true do if (v605==1) then v225.Text="@"   .. v435.Name   .. " | ID: "   .. v435.UserId ;v210.Image=v156(v435);v605=2;end if ((5 -3)==v605) then return;end if ((0 -0)==v605) then v20=v435;v216.Text=v435.DisplayName;v605=3 -2 ;end end end end end);v243.MouseButton1Click:Connect(function() v197(v20);end);v244.MouseButton1Click:Connect(function() v198(v20);end);v245.MouseButton1Click:Connect(function() v199(v20);end);v24.MouseButton1Click:Connect(function() v201(v20);end);v154("إعدادات المحرك",v149);local v246=v155("⚡ سرعة الطيران (الرقم المفضل: 50)",v149);v246.Text=tostring(v11.FlySpeed);local v248=Instance.new("Frame",v149);v248.Size=UDim2.new(1249 -(111 + 1137) , -(49 -39),354 -(5 + 349) ,203 -(91 + 67) );v248.BackgroundTransparency=2 -1 ;local v251=Instance.new("TextButton",v248);v251.Size=UDim2.new(0.48 + 0 ,0 + 0 ,524 -(423 + 100) ,0 + 0 );v251.Text="🧍 طيران عادي";v251.BackgroundColor3=Color3.fromRGB(96 -61 ,19 + 16 ,816 -(326 + 445) );v251.TextColor3=Color3.fromRGB(838 -583 ,1112 -857 ,255);v251.Font=Enum.Font.GothamBold;v251.TextSize=28 -15 ;Instance.new("UICorner",v251).CornerRadius=UDim.new(0 -0 ,8);v152(v251,Color3.fromRGB(108 -73 ,423 -(212 + 176) ,756 -(530 + 181) ),Color3.fromRGB(45,926 -(614 + 267) ,87 -(19 + 13) ));local v259=Instance.new("TextButton",v248);v259.Size=UDim2.new(0.48,0 -0 ,1,0);v259.Position=UDim2.new(0.52 -0 ,0 -0 ,0 + 0 ,0 -0 );v259.Text="🪑 طيران بالجلوس";v259.BackgroundColor3=Color3.fromRGB(41 -21 ,1832 -(1293 + 519) ,41 -16 );v259.TextColor3=Color3.fromRGB(367 -187 ,469 -289 ,382 -182 );v259.Font=Enum.Font.GothamBold;v259.TextSize=56 -43 ;Instance.new("UICorner",v259).CornerRadius=UDim.new(0 -0 ,5 + 3 );v152(v259,Color3.fromRGB(11 + 9 ,5 + 15 ,25),Color3.fromRGB(35,10 + 25 ,14 + 31 ));v251.MouseButton1Click:Connect(function() v11.FlyType=2 -1 ;v251.BackgroundColor3=Color3.fromRGB(888 -(152 + 701) ,1346 -(430 + 881) ,11 + 34 );v251.TextColor3=Color3.fromRGB(85 + 170 ,160 + 95 ,1351 -(709 + 387) );v259.BackgroundColor3=Color3.fromRGB(1878 -(673 + 1185) ,58 -38 ,25);v259.TextColor3=Color3.fromRGB(180,578 -398 ,329 -129 );end);v259.MouseButton1Click:Connect(function() local v393=0 + 0 ;while true do if (v393==(2 + 0)) then v251.TextColor3=Color3.fromRGB(243 -63 ,981 -(499 + 302) ,50 + 150 );break;end if (v393==(0 -0)) then v11.FlyType=3 -1 ;v259.BackgroundColor3=Color3.fromRGB(1915 -(446 + 1434) ,139 -104 ,1328 -(1040 + 243) );v393=2 -1 ;end if (v393==(1848 -(559 + 1288))) then v259.TextColor3=Color3.fromRGB(41 + 214 ,403 -148 ,2186 -(609 + 1322) );v251.BackgroundColor3=Color3.fromRGB(574 -(475 + 79) ,43 -23 ,479 -(13 + 441) );v393=6 -4 ;end end end);v154("التحكم بالمحرك",v149);local v268=v153("🟢 محرك الطيران: مفعل",v149,Color3.fromRGB(4 + 21 ,224 -164 ,91 -56 ));local v269=v153("✈️ تشغيل/إيقاف الطيران (زر E)",v149);v268.MouseButton1Click:Connect(function() v11.FlightEngineEnabled= not v11.FlightEngineEnabled;if v11.FlightEngineEnabled then v268.Text="🟢 محرك الطيران: مفعل";v268.BackgroundColor3=Color3.fromRGB(124 -99 ,174 -114 ,2 + 33 );else local v504=0;while true do if (v504==(1205 -(7 + 1197))) then if v11.Flying then local v763=0 + 0 ;local v764;local v765;while true do if (v763==(0 -0)) then v11.Flying=false;if v12 then v12:Destroy();end v763=1 + 0 ;end if (v763==(1 + 0)) then if v13 then v13:Destroy();end v764=v9.Character;v763=5 -3 ;end if (v763==(8 -6)) then v765=v764 and v764:FindFirstChildOfClass("Humanoid") ;if v765 then v765.Sit=false;v765:ChangeState(Enum.HumanoidStateType.Jumping);end v763=3;end if ((2 + 1)==v763) then v269.Text="✈️ تشغيل/إيقاف الطيران (زر E)";v269.BackgroundColor3=Color3.fromRGB(40 -18 ,41 -19 ,19 + 9 );break;end end end break;end if (v504==(0 -0)) then v268.Text="🔴 محرك الطيران: معطل نهائياً";v268.BackgroundColor3=Color3.fromRGB(70,14 + 11 ,18 + 7 );v504=1 + 0 ;end end end end);local function v270() if  not v11.FlightEngineEnabled then v30(v29.Error);v65("تنبيه الحماية","محرك الطيران معطل! فعله أولاً.",Color3.fromRGB(215 + 40 ,23 + 57 ,79 + 1 ));return;end local v395=v9.Character;local v396=v395 and v395:FindFirstChild("HumanoidRootPart") ;local v397=v395 and v395:FindFirstChildOfClass("Humanoid") ;if ( not v396 or  not v397) then return;end if  not v11.Flying then v11.Flying=true;v11.FlySpeed=tonumber(v246.Text) or (483 -(153 + 280)) ;v12=Instance.new("BodyVelocity",v396);v12.MaxForce=Vector3.new(2887601 -1887601 ,897799 + 102201 ,383257 + 616743 );v13=Instance.new("BodyGyro",v396);v13.MaxTorque=Vector3.new(394842 + 605158 ,314821 + 685179 ,1000000);task.spawn(function() while v11.Flying do v1.RenderStepped:Wait();if (v11.FlyType==2) then v397.Sit=true;end local v686=Vector3.new(0 + 0 ,0 + 0 ,0 + 0 );if v2:IsKeyDown(Enum.KeyCode.W) then v686=v686 + v10.CFrame.LookVector ;end if v2:IsKeyDown(Enum.KeyCode.S) then v686=v686-v10.CFrame.LookVector ;end if v2:IsKeyDown(Enum.KeyCode.A) then v686=v686-v10.CFrame.RightVector ;end if v2:IsKeyDown(Enum.KeyCode.D) then v686=v686 + v10.CFrame.RightVector ;end if v2:IsKeyDown(Enum.KeyCode.Space) then v686=v686 + Vector3.new(0 -0 ,2 -1 ,0) ;end if v2:IsKeyDown(Enum.KeyCode.LeftControl) then v686=v686-Vector3.new(0,1 -0 ,0 + 0 ) ;end if v12 then v12.Velocity=v686 * v11.FlySpeed ;end if v13 then v13.CFrame=v10.CFrame;end end end);v269.Text="🛑 إيقاف الطيران (E)";v269.BackgroundColor3=Color3.fromRGB(732 -(89 + 578) ,18 + 7 ,51 -26 );else local v511=972 -(357 + 615) ;while true do if (v511==(0 + 0)) then v11.Flying=false;if v12 then v12:Destroy();end v511=1050 -(572 + 477) ;end if ((1 + 2)==v511) then v269.BackgroundColor3=Color3.fromRGB(14 + 8 ,46 -24 ,23 + 5 );break;end if (v511==(1 + 0)) then if v13 then v13:Destroy();end v397.Sit=false;v511=88 -(84 + 2) ;end if (v511==2) then v397:ChangeState(Enum.HumanoidStateType.Jumping);v269.Text="✈️ تشغيل/إيقاف الطيران (زر E)";v511=4 -1 ;end end end end v269.MouseButton1Click:Connect(v270);v154("التحكم بحجم العين",v150);local v271=Instance.new("Frame",v150);v271.Size=UDim2.new(1 + 0 , -10,1543 -(1407 + 136) ,887 -(497 + 345) );v271.BackgroundTransparency=1;local v274=Instance.new("TextButton",v271);v274.Size=UDim2.new(0.48 + 0 ,0 + 0 ,1334 -(605 + 728) ,95 -(9 + 86) );v274.Text="🔹 عين صغيرة";v274.BackgroundColor3=Color3.fromRGB(443 -(275 + 146) ,16 + 6 ,62 -34 );v274.TextColor3=Color3.fromRGB(12 + 243 ,319 -(29 + 35) ,942 -687 );v274.Font=Enum.Font.GothamBold;v274.TextSize=13;Instance.new("UICorner",v274).CornerRadius=UDim.new(0 + 0 ,21 -13 );v152(v274,Color3.fromRGB(65 -43 ,22,22 + 6 ),Color3.fromRGB(23 + 12 ,1047 -(53 + 959) ,45));local v282=Instance.new("TextButton",v271);v282.Size=UDim2.new(489.48 -(457 + 32) ,0 + 0 ,1403 -(832 + 570) ,285 -(147 + 138) );v282.Position=UDim2.new(0.52 + 0 ,899 -(813 + 86) ,0 + 0 ,0 -0 );v282.Text="🔸 عين كبيرة";v282.BackgroundColor3=Color3.fromRGB(17 + 18 ,12 + 23 ,146 -101 );v282.TextColor3=Color3.fromRGB(1341 -(860 + 226) ,1051 -(588 + 208) ,687 -432 );v282.Font=Enum.Font.GothamBold;v282.TextSize=1253 -(988 + 252) ;Instance.new("UICorner",v282).CornerRadius=UDim.new(1800 -(884 + 916) ,16 -8 );v152(v282,Color3.fromRGB(2005 -(49 + 1921) ,21 + 14 ,698 -(232 + 421) ),Color3.fromRGB(1934 -(1569 + 320) ,97 -(51 + 1) ,94 -39 ));v274.MouseButton1Click:Connect(function() local v398=0 + 0 ;while true do if (v398==(0 + 0)) then v11.ESP_Size=0.8 -0 ;v274.BackgroundColor3=Color3.fromRGB(10 + 25 ,640 -(316 + 289) ,117 -72 );v398=2 -1 ;end if (v398==(1 + 0)) then v282.BackgroundColor3=Color3.fromRGB(2 + 20 ,1475 -(666 + 787) ,453 -(360 + 65) );break;end end end);v282.MouseButton1Click:Connect(function() local v399=1443 -(496 + 947) ;while true do if (v399==1) then v274.BackgroundColor3=Color3.fromRGB(21 + 1 ,276 -(79 + 175) ,43 -15 );break;end if (v399==(0 + 0)) then v11.ESP_Size=1.3 + 0 ;v282.BackgroundColor3=Color3.fromRGB(107 -72 ,67 -32 ,944 -(503 + 396) );v399=182 -(92 + 89) ;end end end);v154("التفعيل السريع",v150);local v291=v153("🎯 تفعيل كشف اللاعبين (العين)",v150);local function v292(v400) if (v400==v9) then return;end local function v401(v436) if v15[v400] then v15[v400]:Destroy();end local v437=v436:WaitForChild("HumanoidRootPart",5);local v438=v436:WaitForChild("Humanoid",5);if ( not v437 or  not v438) then return;end local v439=Instance.new("Frame",v38);v439.Name=v400.Name   .. "_ESP" ;v439.Size=UDim2.new(0,290 -140 ,0 + 0 ,150);v439.BackgroundTransparency=1 -0 ;v439.Visible=false;v15[v400]=v439;local v445=Instance.new("TextButton",v439);v445.Size=UDim2.new(0,43 + 7 ,0 + 0 ,30 + 20 );v445.Position=UDim2.new(0.5 -0 , -(4 + 21),0.5 -0 , -(35 + 5));v445.Text="👁️";v445.TextSize=(199 -(149 + 15)) * v11.ESP_Size ;v445.BackgroundTransparency=1;v445.Font=Enum.Font.GothamBold;local v453=Instance.new("TextLabel",v439);v453.Size=UDim2.new(1 + 0 ,0,0 -0 ,3 + 17 );v453.Position=UDim2.new(117 -(39 + 78) ,0 -0 ,1244.5 -(485 + 759) ,27 -17 );v453.Text="@"   .. v400.Name ;v453.TextColor3=v27;table.insert(v28.Texts,v453);v453.TextStrokeTransparency=0 -0 ;v453.TextStrokeColor3=Color3.fromRGB(1189 -(442 + 747) ,1135 -(832 + 303) ,946 -(88 + 858) );v453.BackgroundTransparency=1 + 0 ;v453.Font=Enum.Font.GothamBold;v453.TextSize=(11 + 2) * v11.ESP_Size ;local v463=Instance.new("Frame",v439);v463.Size=UDim2.new(0 + 0 ,267 -127 ,789 -(766 + 23) ,197 -157 );v463.Position=UDim2.new(0.5 -0 , -(184 -114),0.5 -0 , -(141 -(12 + 39)));v463.BackgroundColor3=Color3.fromRGB(14 + 1 ,1088 -(1036 + 37) ,15 + 5 );v463.Visible=false;Instance.new("UICorner",v463).CornerRadius=UDim.new(0 -0 ,5 + 3 );local v469=Instance.new("UIStroke",v463);v469.Color=v27;table.insert(v28.Strokes,v469);local v471=Instance.new("UIListLayout",v463);v471.FillDirection=Enum.FillDirection.Horizontal;v471.SortOrder=Enum.SortOrder.LayoutOrder;local function v476(v512) local v513=Instance.new("TextButton",v463);v513.Size=UDim2.new(0.33 + 0 ,0,1481 -(641 + 839) ,913 -(910 + 3) );v513.Text=v512;v513.BackgroundTransparency=2 -1 ;v513.TextSize=18;v152(v513,Color3.fromRGB(1699 -(1466 + 218) ,38 -23 ,10 + 10 ),Color3.fromRGB(1183 -(556 + 592) ,13 + 22 ,24 + 21 ));return v513;end local v477=v476("👁️");local v478=v476("🚀");local v479=v476("👕");v445.MouseButton1Click:Connect(function() v30(v29.Click);v463.Visible= not v463.Visible;end);v477.MouseButton1Click:Connect(function() v197(v400);v463.Visible=false;end);v478.MouseButton1Click:Connect(function() local v520=808 -(329 + 479) ;while true do if ((854 -(174 + 680))==v520) then v198(v400);v463.Visible=false;break;end end end);v479.MouseButton1Click:Connect(function() local v521=0 -0 ;while true do if (v521==(0 -0)) then v199(v400);v463.Visible=false;break;end end end);local v480;v480=v1.RenderStepped:Connect(function() if ( not v11.ESP_Enabled or  not v436 or  not v437.Parent) then local v687=0 + 0 ;while true do if (v687==0) then v439.Visible=false;if ( not v436 or  not v437.Parent) then v480:Disconnect();end v687=1;end if ((740 -(396 + 343))==v687) then return;end end end v445.TextSize=35 * v11.ESP_Size ;v453.TextSize=(38 -25) * v11.ESP_Size ;local v524=v9.Character and v9.Character:FindFirstChild("HumanoidRootPart") ;if v524 then local v688=0;local v689;while true do if (v688==0) then v689=math.floor((v437.Position-v524.Position).Magnitude);v453.Text="@"   .. v400.Name   .. "\n["   .. v689   .. "m]" ;break;end end end local v525,v526=v10:WorldToViewportPoint(v437.Position);if v526 then local v690=0 + 0 ;while true do if (v690==0) then v439.Visible=true;v439.Position=UDim2.new(1477 -(29 + 1448) ,v525.X-(1464 -(135 + 1254)) ,0 -0 ,v525.Y-(466 -366) );break;end end else v439.Visible=false;v463.Visible=false;end end);table.insert(v16,v480);end if v400.Character then v401(v400.Character);end v400.CharacterAdded:Connect(v401);end v291.MouseButton1Click:Connect(function() v11.ESP_Enabled= not v11.ESP_Enabled;if v11.ESP_Enabled then local v527=720 -(254 + 466) ;while true do if (v527==(561 -(544 + 16))) then for v757,v758 in ipairs(v0:GetPlayers()) do v292(v758);end v65("الرادار","تم تفعيل كشف اللاعبين.",Color3.fromRGB(317 -217 ,170 + 85 ,100));break;end if (v527==(1527 -(389 + 1138))) then v291.Text="✅ العين الذكية مفعلة";v291.BackgroundColor3=Color3.fromRGB(13 + 17 ,634 -(102 + 472) ,38 + 2 );v527=3 -2 ;end end else v291.Text="🎯 تفعيل كشف اللاعبين (العين)";v291.BackgroundColor3=Color3.fromRGB(104 -82 ,13 + 9 ,15 + 13 );for v617,v618 in pairs(v15) do if v618 then v618:Destroy();end end v15={};v65("الرادار","تم إيقاف كشف اللاعبين.",Color3.fromRGB(255,94 + 6 ,1645 -(320 + 1225) ));end end);local v293=v155("🔍 ابحث عن اسم اللاعب هنا...",v151);local function v294(v403) for v481,v482 in pairs(v17) do if v482 then v482:Destroy();end end v17={};for v483,v484 in ipairs(v0:GetPlayers()) do if (v484~=v9) then if (v403 and (v403~="")) then local v734=0 + 0 ;local v735;while true do if (v734==(0 -0)) then v735=string.lower(v403);if  not (string.find(string.lower(v484.Name),v735) or string.find(string.lower(v484.DisplayName),v735)) then continue;end break;end end end local v619=Instance.new("Frame",v151);v619.Size=UDim2.new(2 -1 , -(7 + 3),0 -0 ,1539 -(157 + 1307) );v619.BackgroundColor3=Color3.fromRGB(1879 -(821 + 1038) ,49 -29 ,3 + 22 );Instance.new("UICorner",v619).CornerRadius=UDim.new(0 -0 ,12);local v623=Instance.new("UIStroke",v619);v623.Color=Color3.fromRGB(15 + 25 ,99 -59 ,1076 -(834 + 192) );v619.MouseEnter:Connect(function() v3:Create(v623,TweenInfo.new(0.3 + 0 ),{Color=v27}):Play();end);v619.MouseLeave:Connect(function() v3:Create(v623,TweenInfo.new(0.3 + 0 ),{Color=Color3.fromRGB(1 + 39 ,40,81 -31 )}):Play();end);local v625=Instance.new("ImageLabel",v619);v625.Size=UDim2.new(0,85 -30 ,1664 -(1269 + 395) ,359 -(300 + 4) );v625.Position=UDim2.new(0 + 0 ,10,0.5 -0 , -(1034.5 -(564 + 443)));v625.BackgroundColor3=Color3.fromRGB(377 -(112 + 250) ,6 + 9 ,20);v625.Image=v156(v484);Instance.new("UICorner",v625).CornerRadius=UDim.new(2 -1 ,0);local v631=Instance.new("TextLabel",v619);v631.Size=UDim2.new(458 -(337 + 121) ,115 + 85 ,0 + 0 ,25);v631.Position=UDim2.new(0 -0 ,60 + 20 ,0 + 0 ,12 + 3 );v631.Text=v484.DisplayName;v631.TextColor3=Color3.fromRGB(2166 -(1261 + 650) ,1669 -(1001 + 413) ,255);v631.Font=Enum.Font.GothamBold;v631.TextSize=30 -16 ;v631.BackgroundTransparency=1 -0 ;v631.TextXAlignment=Enum.TextXAlignment.Left;local v643=Instance.new("TextLabel",v619);v643.Size=UDim2.new(1817 -(772 + 1045) ,1082 -(244 + 638) ,144 -(102 + 42) ,1864 -(1524 + 320) );v643.Position=UDim2.new(693 -(627 + 66) ,238 -158 ,602 -(512 + 90) ,1946 -(1665 + 241) );v643.Text="@"   .. v484.Name   .. " | ID: "   .. v484.UserId ;v643.TextColor3=Color3.fromRGB(391 -231 ,877 -(373 + 344) ,82 + 98 );v643.Font=Enum.Font.Gotham;v643.TextSize=360 -(136 + 212) ;v643.BackgroundTransparency=1 + 0 ;v643.TextXAlignment=Enum.TextXAlignment.Left;local v653=Instance.new("Frame",v619);v653.Size=UDim2.new(0 -0 ,121 + 29 ,1 -0 ,1604 -(240 + 1364) );v653.Position=UDim2.new(1100 -(35 + 1064) , -(117 + 43),0 -0 ,0 + 0 );v653.BackgroundTransparency=1237 -(298 + 938) ;local v657=Instance.new("UIListLayout",v653);v657.FillDirection=Enum.FillDirection.Horizontal;v657.HorizontalAlignment=Enum.HorizontalAlignment.Right;v657.VerticalAlignment=Enum.VerticalAlignment.Center;v657.Padding=UDim.new(0,1267 -(233 + 1026) );local function v665(v693) local v694=1666 -(636 + 1030) ;local v695;while true do if (v694==(3 + 1)) then return v695;end if (v694==1) then v695.Text=v693;v695.BackgroundColor3=Color3.fromRGB(28 + 0 ,9 + 19 ,67 -32 );v694=820 -(667 + 151) ;end if (v694==(1 + 1)) then v695.TextColor3=Color3.fromRGB(2152 -(1504 + 393) ,476 -(55 + 166) ,50 + 205 );v695.TextSize=2 + 16 ;v694=3;end if (v694==0) then v695=Instance.new("TextButton",v653);v695.Size=UDim2.new(0 -0 ,342 -(36 + 261) ,1761 -(1730 + 31) ,45);v694=1;end if (v694==(4 -1)) then Instance.new("UICorner",v695).CornerRadius=UDim.new(1368 -(34 + 1334) ,4 + 6 );v152(v695,Color3.fromRGB(22 + 6 ,63 -35 ,1318 -(1035 + 248) ),Color3.fromRGB(45,42 + 3 ,76 -(20 + 1) ));v694=3 + 1 ;end end end local v666=v665("👕");local v667=v665("🚀");local v668=v665("👁️");v666.MouseButton1Click:Connect(function() v199(v484);end);v667.MouseButton1Click:Connect(function() v198(v484);end);v668.MouseButton1Click:Connect(function() v197(v484);end);table.insert(v17,v619);end end v151.CanvasSize=UDim2.new(319 -(134 + 185) ,1133 -(549 + 584) ,685 -(314 + 371) ,(205 -145) + ( #v17 * (1053 -(478 + 490))) );end v293:GetPropertyChangedSignal("Text"):Connect(function() v294(v293.Text);end);v193.MouseButton1Click:Connect(function() v11.NoclipEnabled= not v11.NoclipEnabled;if v11.NoclipEnabled then local v530=0 + 0 ;while true do if (v530==(0 + 0)) then v193.Text="✅ Noclip مفعل";v193.BackgroundColor3=Color3.fromRGB(1202 -(786 + 386) ,194 -134 ,6 + 34 );v530=1380 -(1055 + 324) ;end if (v530==(1341 -(1093 + 247))) then v14=v1.Stepped:Connect(function() if v9.Character then for v781,v782 in ipairs(v9.Character:GetDescendants()) do if v782:IsA("BasePart") then v782.CanCollide=false;end end end end);break;end end else local v531=0 + 0 ;while true do if (v531==1) then if v14 then v14:Disconnect();end break;end if (v531==(0 + 0)) then v193.Text="👻 اختراق الجدران (Noclip)";v193.BackgroundColor3=Color3.fromRGB(1441 -(374 + 1045) ,22,3 + 25 );v531=1 + 0 ;end end end end);v194.MouseButton1Click:Connect(function() local v406=0 -0 ;local v407;while true do if ((0 -0)==v406) then v11.GodEnabled= not v11.GodEnabled;v407=v9.Character and v9.Character:FindFirstChildOfClass("Humanoid") ;v406=2 -1 ;end if (v406==(1 + 0)) then if v407 then if v11.GodEnabled then local v776=0 -0 ;while true do if (v776==1) then v407.MaxHealth=math.huge;v407.Health=math.huge;break;end if (v776==(0 + 0)) then v194.Text="✅ God Mode مفعل";v194.BackgroundColor3=Color3.fromRGB(115 -85 ,206 -146 ,31 + 9 );v776=1495 -(1307 + 187) ;end end else local v777=0 -0 ;while true do if (v777==(688 -(364 + 324))) then v194.Text="🛡️ الحماية المطلقة (God Mode)";v194.BackgroundColor3=Color3.fromRGB(60 -38 ,52 -30 ,10 + 18 );v777=684 -(232 + 451) ;end if (v777==(1 + 0)) then v407.MaxHealth=418 -318 ;v407.Health=160 -60 ;break;end end end end break;end end end);v195.MouseButton1Click:Connect(function() local v408=0 -0 ;local v409;local v410;while true do if (v408==(1268 -(1249 + 19))) then v409=v9:FindFirstChild("Backpack");v410=0 + 0 ;v408=3 -2 ;end if (v408==(1087 -(686 + 400))) then if v409 then for v759,v760 in ipairs({v6,workspace}) do for v778,v779 in ipairs(v760:GetDescendants()) do if (v779:IsA("Tool") and  not v779:FindFirstAncestorOfClass("Model")) then pcall(function() local v796=0 + 0 ;while true do if (v796==(0 -0)) then v779:Clone().Parent=v409;v410=v410 + (1089 -(830 + 258)) ;break;end end end);end end end v65("المستودع","تم سحب "   .. v410   .. " أداة." ,Color3.fromRGB(352 -252 ,160 + 95 ,217 + 38 ));end break;end end end);v2.InputBegan:Connect(function(v411,v412) local v413=811 -(721 + 90) ;while true do if (v413==(1441 -(860 + 581))) then if v412 then return;end if (v411.KeyCode==v11.MenuKeybind) then v30(v29.Click);v66.Visible= not v66.Visible;end v413=1 + 0 ;end if (v413==(3 -2)) then if (v411.KeyCode==v11.FlyKeybind) then v270();end break;end end end);v0.PlayerAdded:Connect(function(v414) v294();if v11.ESP_Enabled then v292(v414);end end);v0.PlayerRemoving:Connect(function(v415) local v416=470 -(224 + 246) ;while true do if (v416==0) then v294();if v15[v415] then local v741=0 -0 ;while true do if (v741==(0 -0)) then v15[v415]:Destroy();v15[v415]=nil;break;end end end v416=1 + 0 ;end if ((1 + 0)==v416) then if (v18==v415) then v196();end if (v20==v415) then v20=nil;v65("الاستهداف","الهدف غادر السيرفر.",Color3.fromRGB(147 + 108 ,377 -277 ,43 + 57 ));end break;end end end);v9.CharacterAdded:Connect(function() if v22 then v200();end end);v145("Home");v294();v30(v29.Hover,0.8);v65("نظام الحماية","اكتمل التشغيل | ليالي العرب.",v27);
+        /* الهيدر الرئيسي */
+        .main-header { text-align: center; margin-bottom: 2.5rem; }
+        .main-header h1 { color: #bf953f; font-size: 2.6rem; font-weight: 900; text-shadow: 0 0 30px rgba(191, 149, 63, 0.3); }
+        .main-header p { color: #a1a1aa; font-size: 1.15rem; margin-top: 5px; }
+
+        /* لوحة الإحصائيات */
+        .stats-bar {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;
+            margin-bottom: 2.5rem; background: rgba(15, 15, 20, 0.5); border: 1px solid rgba(191, 149, 63, 0.2);
+            border-radius: 15px; padding: 1.5rem; backdrop-filter: blur(10px);
+        }
+        .stat-card { text-align: center; }
+        .stat-card h3 { color: #a1a1aa; font-size: 0.95rem; font-weight: 600; margin-bottom: 5px; }
+        .stat-card p { color: #bf953f; font-size: 2rem; font-weight: 900; }
+
+        /* أزرار التنقل الرئيسية بين الصفحات (Tabs) */
+        .page-navigation {
+            display: flex; justify-content: center; gap: 15px; margin-bottom: 2rem;
+        }
+        .nav-tab-btn {
+            background: #0f0f14; border: 1px solid rgba(191, 149, 63, 0.4); color: #bf953f;
+            padding: 14px 28px; border-radius: 12px; font-weight: 900; font-size: 1.1rem;
+            cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .nav-tab-btn:hover { background: rgba(191, 149, 63, 0.1); transform: translateY(-2px); }
+        .nav-tab-btn.active-tab {
+            background: linear-gradient(45deg, #bf953f, #b38728); color: #050508;
+            border-color: #bf953f; box-shadow: 0 0 25px rgba(191, 149, 63, 0.35);
+        }
+
+        /* الصفحات والتأثير السلس والجذاب (Slow Motion Effect) */
+        .page-content {
+            display: none; opacity: 0; transform: translateY(15px);
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .page-content.active-view { display: grid; opacity: 1; transform: translateY(0); }
+
+        /* التوزيع الرئيسي لواجهة المخزن */
+        .layout-grid { grid-template-columns: 400px 1fr; gap: 2rem; }
+        @media (max-width: 1024px) { .layout-grid { grid-template-columns: 1fr; } }
+
+        /* الكتل الزجاجية الفخمة */
+        .glass-box {
+            background: rgba(15, 15, 20, 0.7); border: 1px solid #bf953f;
+            border-radius: 20px; padding: 2rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(191, 149, 63, 0.1);
+            backdrop-filter: blur(20px); height: fit-content;
+        }
+
+        .section-title { color: #bf953f; font-size: 1.3rem; font-weight: 700; border-bottom: 1px dashed rgba(191, 149, 63, 0.3); padding-bottom: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+
+        /* استايلات المدخلات */
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; color: #e2e8f0; margin-bottom: 8px; font-weight: 600; font-size: 0.95rem; }
+        
+        .admin-input {
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.6);
+            border: 1px solid #333; color: #fff; border-radius: 10px;
+            font-family: 'Cairo'; outline: none; transition: 0.3s; font-size: 1rem;
+        }
+        .admin-input:focus { border-color: #bf953f; box-shadow: 0 0 15px rgba(191, 149, 63, 0.25); background: rgba(0,0,0,0.8); }
+
+        .file-upload-wrapper { position: relative; width: 100%; height: 48px; }
+        .file-upload-input { opacity: 0; position: absolute; width: 100%; height: 100%; cursor: pointer; z-index: 2; }
+        .file-upload-btn {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(191, 149, 63, 0.08); border: 2px dashed #bf953f;
+            color: #bf953f; border-radius: 10px; display: flex; justify-content: center; align-items: center;
+            font-weight: bold; transition: 0.3s; z-index: 1; gap: 10px;
+        }
+        .file-name-display { display: block; margin-top: 6px; font-size: 0.85rem; color: #38ef7d; text-align: center; }
+
+        .action-btn {
+            background: linear-gradient(45deg, #bf953f, #b38728); color: #050508;
+            width: 100%; padding: 14px; border: none; border-radius: 12px;
+            font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .action-btn:hover { box-shadow: 0 0 25px rgba(191, 149, 63, 0.4); transform: translateY(-2px); }
+
+        /* شريط الفلاتر والبحث المتطور والمجموعات */
+        .filter-wrapper {
+            background: rgba(20, 20, 25, 0.6); border: 1px solid rgba(191, 149, 63, 0.3);
+            padding: 1.2rem; border-radius: 15px; margin-bottom: 1.5rem;
+            display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+        }
+        .search-box { flex: 2; min-width: 250px; position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #bf953f; }
+        .search-box .admin-input { padding-left: 40px; }
+        .filter-box { flex: 1; min-width: 160px; }
+
+        /* أزرار الإعدادات العلوية */
+        .top-ctrl-btn {
+            background: #15151a; border: 1px solid #bf953f; color: #bf953f;
+            padding: 12px 18px; border-radius: 10px; font-weight: bold; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 0.95rem;
+        }
+        .top-ctrl-btn:hover { background: rgba(191, 149, 63, 0.1); }
+        .top-ctrl-btn.active { background: #bf953f; color: #000; box-shadow: 0 0 15px #bf953f; }
+
+        /* شبكة عرض كروت المخزن */
+        .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+        
+        .product-card {
+            background: rgba(20, 20, 25, 0.7); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px; padding: 1.2rem; display: flex; flex-direction: column;
+            position: relative; transition: all 0.4s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .product-card:hover { border-color: #bf953f; transform: translateY(-3px); }
+        
+        .card-top { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 1rem; }
+        .product-img { width: 90px; height: 90px; border-radius: 12px; object-fit: cover; border: 1px solid rgba(191, 149, 63, 0.3); background: #000; }
+        .product-details { flex: 1; }
+        
+        .type-badge { background: rgba(191, 149, 63, 0.15); color: #bf953f; font-size: 0.8rem; padding: 3px 10px; border-radius: 5px; font-weight: bold; display: inline-block; margin-bottom: 6px; }
+        .product-title { color: #fff; font-weight: 700; font-size: 1.2rem; }
+        .product-desc { color: #a1a1aa; font-size: 0.9rem; margin-top: 4px; line-height: 1.4; }
+
+        /* السطر المخصص بالكمية المتوفرة وتحديثها والتوفر */
+        .stock-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: auto; }
+        .status-tag { font-size: 0.85rem; font-weight: bold; padding: 4px 10px; border-radius: 5px; }
+        .in-stock { background: rgba(56, 239, 125, 0.15); color: #38ef7d; }
+        .out-of-stock { background: rgba(239, 83, 80, 0.15); color: #ef5350; }
+
+        /* أزرار التحرير المخفية والظاهرة */
+        .qty-edit-control { display: none; align-items: center; gap: 8px; background: rgba(191, 149, 63, 0.05); padding: 4px 8px; border-radius: 8px; border: 1px dashed #bf953f; }
+        .qty-btn { background: rgba(191, 149, 63, 0.1); border: 1px solid #bf953f; color: #bf953f; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
+        .qty-btn:hover { background: #bf953f; color: #000; }
+        .qty-val { font-weight: 900; font-size: 1.2rem; min-width: 22px; text-align: center; color: #fff; }
+
+        .delete-card-btn { display: none; position: absolute; top: 10px; left: 10px; color: #ef5350; background: none; border: none; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .delete-card-btn:hover { color: #fff; transform: scale(1.1); }
+
+        /* صندوق البيع والملاحظات */
+        .sell-action-box { margin-top: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .sell-inputs-row { display: flex; gap: 8px; }
+        .sell-qty-input { width: 80px; text-align: center; }
+        .sell-note-input { flex: 1; }
+        
+        .sell-submit-btn { background: rgba(191, 149, 63, 0.15); color: #bf953f; border: 1px solid #bf953f; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.95rem; display: flex; justify-content: center; align-items: center; gap: 6px; }
+        .sell-submit-btn:hover { background: #bf953f; color: #050508; box-shadow: 0 4px 12px rgba(191,149,63,0.2); }
+
+        /* 📋 استايلات صفحة المبيعات */
+        .sales-page-container {
+            width: 100%; background: rgba(15, 15, 20, 0.7); border: 1px solid #38ef7d;
+            border-radius: 20px; padding: 2rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+        }
+        .table-responsive { overflow-x: auto; margin-top: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        
+        .orders-table { width: 100%; border-collapse: collapse; font-size: 1rem; min-width: 800px; text-align: right; }
+        .orders-table th, .orders-table td { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+        .orders-table th { color: #38ef7d; font-weight: 700; background: rgba(56, 239, 125, 0.04); font-size: 1.05rem; }
+        .orders-table tr:hover { background: rgba(255, 255, 255, 0.02); }
+        
+        /* الصورة داخل جدول المبيعات */
+        .table-product-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(56, 239, 125, 0.3); background: #000; }
+        .table-flex-item { display: flex; align-items: center; gap: 12px; }
+
+        /* تنسيقات حالات الطلب والاسترجاع */
+        .status-completed { color: #38ef7d; background: rgba(56, 239, 125, 0.1); padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; }
+        .status-rejected { color: #ef5350; background: rgba(239, 83, 80, 0.1); padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; text-decoration: line-through; }
+        
+        .action-btn-group { display: flex; gap: 8px; justify-content: center; align-items: center; }
+        .btn-return { background: rgba(191, 149, 63, 0.1); border: 1px solid #bf953f; color: #bf953f; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-return:hover { background: #bf953f; color: #000; }
+        .btn-reject { background: rgba(239, 83, 80, 0.1); border: 1px solid #ef5350; color: #ef5350; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-reject:hover { background: #ef5350; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header class="main-header">
+            <h1><i class="fa-solid fa-vault"></i> خزانة الساعات الذكية والنظام المالي</h1>
+            <p>إدارة مخزنية متكاملة ومؤرشفة بالكامل مع ميزة التصفية المتقدمة</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <h3><i class="fa-solid fa-clock"></i> إجمالي موديلات الساعات</h3>
+                <p id="stat-total-types">0</p>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fa-solid fa-boxes-stacked"></i> إجمالي القطع المتوفرة</h3>
+                <p id="stat-total-qty">0</p>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fa-solid fa-circle-xmark" style="color: #ef5350;"></i> موديلات نافذة (0 قطع)</h3>
+                <p id="stat-outstock" style="color: #ef5350;">0</p>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fa-solid fa-money-bill-trend-up" style="color: #38ef7d;"></i> إجمالي الساعات المباعة</h3>
+                <p id="stat-total-sold" style="color: #38ef7d;">0</p>
+            </div>
+        </div>
+
+        <div class="page-navigation">
+            <button id="tab-inventory" class="nav-tab-btn active-tab" onclick="switchPage('inventory')">
+                <i class="fa-solid fa-boxes-padded"></i> مخزن الساعات الرئيسي
+            </button>
+            <button id="tab-sales" class="nav-tab-btn" onclick="switchPage('sales')">
+                <i class="fa-solid fa-receipt"></i> سجل المبيعات والكميات المحولة 📋
+            </button>
+        </div>
+
+        <div id="page-inventory-view" class="page-content layout-grid active-view">
+            
+            <div class="glass-box">
+                <div class="section-title"><i class="fa-solid fa-square-plus"></i> إضافة ساعة جديدة للمخزن</div>
+                
+                <div class="form-group">
+                    <label>اسم موديل الساعة:</label>
+                    <input type="text" id="prod-title" class="admin-input" placeholder="مثال: رولكس ديت جست 41">
+                </div>
+
+                <div class="form-group">
+                    <label>نوع وهيكل الساعة:</label>
+                    <select id="prod-type" class="admin-input">
+                        <option value="كتان">كتان</option>
+                        <option value="ربر">ربر</option>
+                        <option value="حديد">حديد</option>
+                        <option value="حديد ملون">حديد ملون</option>
+                        <option value="جلد">جلد</option>
+                        <option value="أوتوماتيك">أوتوماتيك</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>الوصف والمواصفات:</label>
+                    <textarea id="prod-desc" class="admin-input" rows="2" placeholder="اللون، تفاصيل إضافية..."></textarea>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>الكمية المبدئية:</label>
+                        <input type="number" id="prod-qty" class="admin-input" value="5" min="0">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>صورة الساعة:</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="prod-img-file" class="file-upload-input" accept="image/*" onchange="handleFileLabel()">
+                            <div class="file-upload-btn">
+                                <i class="fa-solid fa-camera"></i> رفع صورة
+                            </div>
+                        </div>
+                        <span id="file-name" class="file-name-display">لم يتم رفع صورة</span>
+                    </div>
+                </div>
+
+                <button class="action-btn" onclick="addNewProduct()">
+                    <i class="fa-solid fa-download"></i> حفظ في المخزن
+                </button>
+            </div>
+
+            <div>
+                <div class="filter-wrapper">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="search-input" class="admin-input" placeholder="ابحث باسم الساعة، أو الوصف..." oninput="renderInventory()">
+                    </div>
+                    
+                    <div class="filter-box">
+                        <select id="filter-stock-status" class="admin-input" onchange="renderInventory()">
+                            <option value="الكل">جميع الحالات 🔎</option>
+                            <option value="متوفر">المتوفر فقط (جاهز للبيع) ✅</option>
+                            <option value="غير_متوفر">الغير متوفر / النافذ 🚨</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-box">
+                        <select id="filter-type" class="admin-input" onchange="renderInventory()">
+                            <option value="الجميع">كل الخامات 🏷️</option>
+                            <option value="كتان">كتان</option>
+                            <option value="ربر">ربر</option>
+                            <option value="حديد">حديد</option>
+                            <option value="حديد ملون">حديد ملون</option>
+                            <option value="جلد">جلد</option>
+                            <option value="أوتوماتيك">أوتوماتيك</option>
+                        </select>
+                    </div>
+
+                    <button id="edit-mode-toggle" class="top-ctrl-btn" onclick="toggleEditMode()">
+                        <i class="fa-solid fa-sliders"></i> وضع التحرير
+                    </button>
+                </div>
+
+                <div class="inventory-grid" id="inventory-container">
+                    </div>
+            </div>
+
+        </div>
+
+
+        <div id="page-sales-view" class="page-content">
+            <div class="sales-page-container">
+                <div class="section-title" style="color: #38ef7d; border-color: rgba(56, 239, 125, 0.3);">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> أرشيف المبيعات المفصل والكميات المحولة
+                </div>
+                
+                <div class="filter-wrapper" style="margin-top: 15px; margin-bottom: 15px;">
+                    <div class="filter-box">
+                        <select id="filter-sales-status" class="admin-input" onchange="renderInventory()">
+                            <option value="الكل">جميع الطلبات 📋</option>
+                            <option value="مكتمل">الطلبات المكتملة ✅</option>
+                            <option value="مرفوض">الطلبات المرفوضة والمسترجعة ❌</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>صورة الساعة</th>
+                                <th>اسم موديل الساعة</th>
+                                <th>الكمية المباعة</th>
+                                <th>ملاحظة البيع المسجلة والعميل</th>
+                                <th>توقيت العملية</th>
+                                <th>إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-container">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // قواعد البيانات المحلية واسترجاعها تلقائياً
+        let inventory = JSON.parse(localStorage.getItem('hassan_vault_main')) || [];
+        let salesLog = JSON.parse(localStorage.getItem('hassan_vault_sales')) || [];
+        let isEditModeActive = false; 
+
+        // التحكم في إظهار اسم الصورة بعد اختيارها
+        function handleFileLabel() {
+            const input = document.getElementById('prod-img-file');
+            const display = document.getElementById('file-name');
+            if(input.files && input.files[0]) display.innerHTML = `<i class="fa-solid fa-check"></i> جاهز للحفظ`;
+            else display.innerText = "لم يتم رفع صورة";
+        }
+
+        // 🧭 التبديل بين الصفحات بإنيميشن سلو موشن
+        function switchPage(pageName) {
+            const invView = document.getElementById('page-inventory-view');
+            const salesView = document.getElementById('page-sales-view');
+            const invTab = document.getElementById('tab-inventory');
+            const salesTab = document.getElementById('tab-sales');
+
+            // إزالة الكلاسات النشطة لإعادة التشغيل بسلاسة
+            invView.classList.remove('active-view');
+            salesView.classList.remove('active-view');
+            invTab.classList.remove('active-tab');
+            salesTab.classList.remove('active-tab');
+
+            // تأخير خفيف جداً لتهيئة حركة الـ CSS السلو موشن
+            setTimeout(() => {
+                if (pageName === 'inventory') {
+                    invView.style.display = 'grid';
+                    salesView.style.display = 'none';
+                    invView.classList.add('active-view');
+                    invTab.classList.add('active-tab');
+                } else {
+                    invView.style.display = 'none';
+                    salesView.style.display = 'block';
+                    salesView.classList.add('active-view');
+                    salesTab.classList.add('active-tab');
+                }
+            }, 50);
+        }
+
+        // إضافة منتج جديد للمخزن الرئيسي
+        function addNewProduct() {
+            const title = document.getElementById('prod-title').value.trim();
+            const type = document.getElementById('prod-type').value;
+            const desc = document.getElementById('prod-desc').value.trim();
+            const qty = parseInt(document.getElementById('prod-qty').value) || 0;
+            const imgInput = document.getElementById('prod-img-file');
+
+            if(!title) { alert("⚠️ أكتب اسم موديل الساعة أولاً!"); return; }
+
+            // أيقونة افتراضية كلاسيكية في حال عدم رفع صورة
+            let defaultImg = "https://cdn-icons-png.flaticon.com/512/2888/2888636.png";
+
+            if(imgInput.files && imgInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    executeAdd(title, type, desc, qty, e.target.result);
+                };
+                reader.readAsDataURL(imgInput.files[0]);
+            } else {
+                executeAdd(title, type, desc, qty, defaultImg);
+            }
+        }
+
+        function executeAdd(title, type, desc, qty, imgUrl) {
+            const newWatch = {
+                id: Date.now(),
+                title: title,
+                type: type,
+                desc: desc,
+                qty: qty,
+                image: imgUrl
+            };
+            inventory.push(newWatch);
+            syncAndRefresh();
+
+            // تصغير وتصفير الحقول بعد الإضافة الناجحة
+            document.getElementById('prod-title').value = '';
+            document.getElementById('prod-desc').value = '';
+            document.getElementById('prod-qty').value = '5';
+            document.getElementById('prod-img-file').value = '';
+            document.getElementById('file-name').innerText = "لم يتم رفع صورة";
+        }
+
+        // تفعيل وإلغاء وضع التحرير
+        function toggleEditMode() {
+            isEditModeActive = !isEditModeActive;
+            const btn = document.getElementById('edit-mode-toggle');
+            if(isEditModeActive) btn.classList.add('active');
+            else btn.classList.remove('active');
+            applyEditModeVisibility();
+        }
+
+        function applyEditModeVisibility() {
+            const qtyControls = document.querySelectorAll('.qty-edit-control');
+            const deleteBtns = document.querySelectorAll('.delete-card-btn');
+            const sellBoxes = document.querySelectorAll('.sell-action-box');
+
+            qtyControls.forEach(el => el.style.display = isEditModeActive ? 'flex' : 'none');
+            deleteBtns.forEach(el => el.style.display = isEditModeActive ? 'block' : 'none');
+            sellBoxes.forEach(el => el.style.display = isEditModeActive ? 'none' : 'flex');
+        }
+
+        function changeQty(id, amount) {
+            const prod = inventory.find(p => p.id === id);
+            if(prod) {
+                prod.qty = Math.max(0, prod.qty + amount);
+                syncAndRefresh();
+            }
+        }
+
+        function deleteProduct(id) {
+            if(confirm("❌ هل أنت متأكد من مسح هذا الموديل نهائياً؟")) {
+                inventory = inventory.filter(p => p.id !== id);
+                syncAndRefresh();
+            }
+        }
+
+        // ترحيل الكميات وخصمها من المخزن الأصلي للمبيعات وحفظ الصورة معها
+        function transferToSales(id) {
+            const prod = inventory.find(p => p.id === id);
+            if(!prod) return;
+
+            const sellQtyInput = document.getElementById(`sell-qty-${id}`);
+            const sellNoteInput = document.getElementById(`sell-note-${id}`);
+            
+            const sellQty = parseInt(sellQtyInput.value) || 0;
+            const sellNote = sellNoteInput.value.trim();
+
+            if(sellQty <= 0) { alert("⚠️ يرجى تحديد كمية صحيحة لبيعها!"); return; }
+            if(sellQty > prod.qty) { alert(`⚠️ لا تملك هذه الكمية، المتاح حالياً بالمخزن هو (${prod.qty} قطعة) فقط!`); return; }
+            if(!sellNote) { alert("⚠️ يرجى إضافة ملاحظة على عملية البيع لتوثيقها بشكل سليم!"); return; }
+
+            prod.qty -= sellQty;
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + " - " + now.toLocaleDateString('ar-EG');
+
+            const saleItem = {
+                id: Date.now(),
+                productId: prod.id, // ربط المبيعة بالمنتج لتمكين الاسترجاع
+                title: prod.title,
+                image: prod.image,
+                qtySold: sellQty,
+                note: sellNote,
+                time: timeStr,
+                status: 'مكتمل' // الحالة الافتراضية
+            };
+
+            salesLog.unshift(saleItem);
+            
+            sellQtyInput.value = '1';
+            sellNoteInput.value = '';
+
+            syncAndRefresh();
+        }
+
+        // رفض الطلب بالكامل وإرجاع الساعات للمخزن
+        function rejectSale(saleId) {
+            if(confirm("❌ هل أنت متأكد من رفض العميل لهذا الطلب وإرجاع الكمية للمخزن؟")) {
+                const sale = salesLog.find(s => s.id === saleId);
+                if(sale && sale.status === 'مكتمل') {
+                    // إرجاع الكمية للمخزن الرئيسي
+                    const prod = inventory.find(p => p.id === sale.productId);
+                    if(prod) prod.qty += sale.qtySold;
+                    
+                    // تغيير حالة الطلب وتصفير كمية البيع
+                    sale.status = 'مرفوض';
+                    sale.qtySold = 0; 
+                    syncAndRefresh();
+                }
+            }
+        }
+
+        // استرجاع قطعة واحدة من الطلب (سالب 1)
+        function decrementSale(saleId) {
+            const sale = salesLog.find(s => s.id === saleId);
+            if(sale && sale.status === 'مكتمل' && sale.qtySold > 0) {
+                sale.qtySold -= 1;
+                
+                // إرجاع قطعة واحدة للمخزن
+                const prod = inventory.find(p => p.id === sale.productId);
+                if(prod) prod.qty += 1;
+
+                // إذا وصلت الكمية إلى صفر، يتحول إلى مرفوض تلقائياً
+                if(sale.qtySold === 0) {
+                    sale.status = 'مرفوض';
+                }
+                syncAndRefresh();
+            }
+        }
+
+        function syncAndRefresh() {
+            localStorage.setItem('hassan_vault_main', JSON.stringify(inventory));
+            localStorage.setItem('hassan_vault_sales', JSON.stringify(salesLog));
+            renderInventory();
+        }
+
+        function calculateStats() {
+            document.getElementById('stat-total-types').innerText = inventory.length;
+            
+            let totalQty = 0;
+            let outStockCount = 0;
+            inventory.forEach(p => {
+                totalQty += p.qty;
+                if(p.qty === 0) outStockCount++;
+            });
+            document.getElementById('stat-total-qty').innerText = totalQty;
+            document.getElementById('stat-outstock').innerText = outStockCount;
+
+            let totalSold = salesLog.reduce((acc, curr) => acc + curr.qtySold, 0);
+            document.getElementById('stat-total-sold').innerText = totalSold;
+        }
+
+        // محرك الواجهات وصناعة الكروت والجداول تلقائياً
+        function renderInventory() {
+            calculateStats();
+            
+            const container = document.getElementById('inventory-container');
+            const salesContainer = document.getElementById('sales-container');
+            const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            
+            const filterStockStatus = document.getElementById('filter-stock-status').value;
+            const filterType = document.getElementById('filter-type').value;
+
+            container.innerHTML = '';
+
+            // تصفية الفلاتر المركبة والبحث الفوري
+            const filteredData = inventory.filter(prod => {
+                const matchesType = (filterType === 'الجميع' || prod.type === filterType);
+                
+                let matchesStock = false;
+                if(filterStockStatus === 'الكل') matchesStock = true;
+                else if(filterStockStatus === 'metوفر' || filterStockStatus === 'متوفر') matchesStock = (prod.qty > 0);
+                else if(filterStockStatus === 'غير_متوفر') matchesStock = (prod.qty === 0);
+
+                const matchesSearch = prod.title.toLowerCase().includes(searchQuery) || prod.desc.toLowerCase().includes(searchQuery);
+                
+                return matchesType && matchesStock && matchesSearch;
+            });
+
+            if(filteredData.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #a1a1aa; padding: 4rem;"><i class="fa-solid fa-magnifying-glass" style="font-size: 2.5rem; margin-bottom: 12px; color: #bf953f;"></i><br>لا توجد ساعات تطابق خيارات البحث الحالية بالمخزن.</div>`;
+            } else {
+                filteredData.forEach(prod => {
+                    const isAvailable = prod.qty > 0;
+                    const statusClass = isAvailable ? 'in-stock' : 'out-of-stock';
+                    const statusText = isAvailable ? `متوفر (${prod.qty} قطعة)` : 'نافذ تماماً (0)';
+
+                    container.innerHTML += `
+                        <div class="product-card">
+                            <button class="delete-card-btn" onclick="deleteProduct(${prod.id})"><i class="fa-solid fa-trash"></i></button>
+                            
+                            <div class="card-top">
+                                <img src="${prod.image}" class="product-img">
+                                <div class="product-details">
+                                    <span class="type-badge"><i class="fa-solid fa-tags"></i> ${prod.type}</span>
+                                    <div class="product-title">${prod.title}</div>
+                                    <div class="product-desc">${prod.desc || 'لا يوجد وصف مضاف.'}</div>
+                                </div>
+                            </div>
+
+                            <div class="stock-row">
+                                <span class="status-tag ${statusClass}">${statusText}</span>
+                                
+                                <div class="qty-edit-control" id="qty-ctrl-${prod.id}">
+                                    <button class="qty-btn" onclick="changeQty(${prod.id}, -1)">-</button>
+                                    <span class="qty-val">${prod.qty}</span>
+                                    <button class="qty-btn" onclick="changeQty(${prod.id}, 1)">+</button>
+                                </div>
+                            </div>
+
+                            <div class="sell-action-box" id="sell-box-${prod.id}">
+                                <div class="sell-inputs-row">
+                                    <input type="number" id="sell-qty-${prod.id}" class="admin-input sell-qty-input" value="1" min="1">
+                                    <input type="text" id="sell-note-${prod.id}" class="admin-input sell-note-input" placeholder="اسم المشتري أو الملاحظة...">
+                                </div>
+                                <button class="sell-submit-btn" onclick="transferToSales(${prod.id})">
+                                    <i class="fa-solid fa-cart-arrow-down"></i> خصم وتحويل للمبيعات 💰
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            applyEditModeVisibility();
+
+            // تصفية المبيعات حسب الفلتر
+            const filterSalesStatusElement = document.getElementById('filter-sales-status');
+            const filterSalesStatus = filterSalesStatusElement ? filterSalesStatusElement.value : 'الكل';
+
+            const filteredSales = salesLog.filter(sale => {
+                // دعم التوافق مع السجلات القديمة التي لم يكن بها status
+                const currentStatus = sale.status || 'مكتمل'; 
+                if (filterSalesStatus === 'الكل') return true;
+                return currentStatus === filterSalesStatus;
+            });
+
+            salesContainer.innerHTML = '';
+            if(filteredSales.length === 0) {
+                salesContainer.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #a1a1aa; padding: 40px; font-weight: 600;">📋 لا توجد عمليات تطابق الفلتر الحالي.</td></tr>`;
+            } else {
+                filteredSales.forEach(sale => {
+                    const currentStatus = sale.status || 'مكتمل';
+                    const isCompleted = currentStatus === 'مكتمل';
+                    const statusHtml = isCompleted ? `<span class="status-completed">مكتمل ✅</span>` : `<span class="status-rejected">تم الرفض / الاسترجاع ❌</span>`;
+                    
+                    // إظهار الأزرار فقط إذا كان الطلب مكتملاً ولم يُرفض
+                    const actionsHtml = isCompleted ? `
+                        <div class="action-btn-group">
+                            <button class="btn-return" onclick="decrementSale(${sale.id})" title="إرجاع قطعة واحدة (-1)"><i class="fa-solid fa-minus"></i></button>
+                            <button class="btn-reject" onclick="rejectSale(${sale.id})" title="المشتري رفض الطلب"><i class="fa-solid fa-rotate-left"></i> رفض واسترجاع</button>
+                        </div>
+                    ` : `<span style="color: #a1a1aa; font-size: 0.9rem;"><i class="fa-solid fa-ban"></i> ملغى</span>`;
+
+                    salesContainer.innerHTML += `
+                        <tr style="${!isCompleted ? 'opacity: 0.6;' : ''}">
+                            <td><img src="${sale.image}" class="table-product-img"></td>
+                            <td style="color: #fff; font-weight: 700; font-size: 1.05rem;">
+                                ${sale.title} <br> <div style="margin-top: 5px;">${statusHtml}</div>
+                            </td>
+                            <td style="color: ${isCompleted ? '#38ef7d' : '#ef5350'}; font-weight: 900; font-size: 1.1rem;">
+                                ${sale.qtySold} قطع
+                            </td>
+                            <td style="color: #e4e4e7; font-weight: 600;">${sale.note}</td>
+                            <td style="color: #a1a1aa; font-size: 0.9rem;"><i class="fa-regular fa-clock"></i> ${sale.time}</td>
+                            <td>${actionsHtml}</td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        // تشغيل البناء الأولي للمخزن عند فتح النظام لأول مرة
+        renderInventory();
+    </script>
+</body>
+</html>
