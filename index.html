@@ -1,12 +1,3 @@
-أهلاً بك مجدداً! معك **ساعات** ⏱️.
-
-ملاحظتك في محلها تماماً؛ إضافة رسالة تأكيد قبل الخصم (السالب) خطوة أمنية ممتازة ومهمة جداً لمنع الأخطاء غير المقصودة أو العشوائية في الحسابات.
-
-بخصوص مشكلة عدم ظهور الكمية إذا طلب العميل أكثر من قطعة، فقد قمت بمعالجة طريقة عرض المتغير الخاص بالكمية المباعة في الجدول لضمان ظهور الرقم بشكل بارز ودقيق جداً. كما قمت بإلغاء زر الرفض الكامل وأبقيت فقط على زر الاسترجاع الجزئي (-1) ، وربطته برسالة تأكيد تظهر قبل تنفيذ العملية.
-
-إليك الكود المصدري الكامل والمُحدّث، يمكنك نسخه واستبداله بالكامل:
-
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -184,12 +175,8 @@
         
         /* الصورة داخل جدول المبيعات */
         .table-product-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(56, 239, 125, 0.3); background: #000; }
-        .table-flex-item { display: flex; align-items: center; gap: 12px; }
-
-        /* تنسيقات حالات الطلب والاسترجاع */
-        .status-completed { color: #38ef7d; background: rgba(56, 239, 125, 0.1); padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; }
-        .status-rejected { color: #ef5350; background: rgba(239, 83, 80, 0.1); padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; text-decoration: line-through; }
         
+        /* أزرار الاسترجاع */
         .action-btn-group { display: flex; gap: 8px; justify-content: center; align-items: center; }
         .btn-return { background: rgba(239, 83, 80, 0.1); border: 1px solid #ef5350; color: #ef5350; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px;}
         .btn-return:hover { background: #ef5350; color: #fff; }
@@ -323,17 +310,7 @@
         <div id="page-sales-view" class="page-content">
             <div class="sales-page-container">
                 <div class="section-title" style="color: #38ef7d; border-color: rgba(56, 239, 125, 0.3);">
-                    <i class="fa-solid fa-file-invoice-dollar"></i> أرشيف المبيعات المفصل والكميات المحولة
-                </div>
-                
-                <div class="filter-wrapper" style="margin-top: 15px; margin-bottom: 15px;">
-                    <div class="filter-box">
-                        <select id="filter-sales-status" class="admin-input" onchange="renderInventory()">
-                            <option value="الكل">جميع الطلبات 📋</option>
-                            <option value="مكتمل">الطلبات المكتملة ✅</option>
-                            <option value="مرفوض">الطلبات المرفوضة والمسترجعة ❌</option>
-                        </select>
-                    </div>
+                    <i class="fa-solid fa-file-invoice-dollar"></i> أرشيف المبيعات المفصل (العمليات النشطة فقط)
                 </div>
                 
                 <div class="table-responsive">
@@ -505,8 +482,7 @@
                 image: prod.image,
                 qtySold: sellQty,
                 note: sellNote,
-                time: timeStr,
-                status: 'مكتمل' // الحالة الافتراضية
+                time: timeStr
             };
 
             salesLog.unshift(saleItem);
@@ -517,21 +493,24 @@
             syncAndRefresh();
         }
 
-        // استرجاع قطعة واحدة من الطلب (سالب 1) مع إضافة رسالة التحذير
+        // استرجاع قطعة واحدة (-1) مع مسح الطلب نهائياً إذا وصل للصفر
         function decrementSale(saleId) {
-            if(confirm("⚠️ هل أنت متأكد من استرجاع قطعة واحدة (-1) وإلغائها من هذا الطلب وإعادتها للمخزن؟")) {
-                const sale = salesLog.find(s => s.id === saleId);
-                if(sale && sale.status === 'مكتمل' && sale.qtySold > 0) {
+            if(confirm("⚠️ هل أنت متأكد من استرجاع قطعة واحدة (-1) وإعادتها للمخزن؟")) {
+                const saleIndex = salesLog.findIndex(s => s.id === saleId);
+                
+                if(saleIndex !== -1 && salesLog[saleIndex].qtySold > 0) {
+                    const sale = salesLog[saleIndex];
                     sale.qtySold -= 1;
                     
                     // إرجاع قطعة واحدة للمخزن
                     const prod = inventory.find(p => p.id === sale.productId);
                     if(prod) prod.qty += 1;
 
-                    // إذا وصلت الكمية إلى صفر، يتحول إلى مرفوض تلقائياً
+                    // إذا وصلت الكمية إلى صفر، يتم مسح الطلب نهائياً من أرشيف المبيعات
                     if(sale.qtySold === 0) {
-                        sale.status = 'مرفوض';
+                        salesLog.splice(saleIndex, 1);
                     }
+                    
                     syncAndRefresh();
                 }
             }
@@ -633,42 +612,27 @@
 
             applyEditModeVisibility();
 
-            // تصفية المبيعات حسب الفلتر
-            const filterSalesStatusElement = document.getElementById('filter-sales-status');
-            const filterSalesStatus = filterSalesStatusElement ? filterSalesStatusElement.value : 'الكل';
-
-            const filteredSales = salesLog.filter(sale => {
-                // دعم التوافق مع السجلات القديمة التي لم يكن بها status
-                const currentStatus = sale.status || 'مكتمل'; 
-                if (filterSalesStatus === 'الكل') return true;
-                return currentStatus === filterSalesStatus;
-            });
-
+            // عرض المبيعات النشطة فقط بشكل نظيف وخالي من الفوضى
             salesContainer.innerHTML = '';
-            if(filteredSales.length === 0) {
-                salesContainer.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #a1a1aa; padding: 40px; font-weight: 600;">📋 لا توجد عمليات تطابق الفلتر الحالي.</td></tr>`;
+            if(salesLog.length === 0) {
+                salesContainer.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #a1a1aa; padding: 40px; font-weight: 600;">📋 لا توجد مبيعات نشطة حالياً.</td></tr>`;
             } else {
-                filteredSales.forEach(sale => {
-                    const currentStatus = sale.status || 'مكتمل';
-                    const isCompleted = currentStatus === 'مكتمل';
-                    const statusHtml = isCompleted ? `<span class="status-completed">مكتمل ✅</span>` : `<span class="status-rejected">تم الرفض / الاسترجاع ❌</span>`;
-                    
-                    // تم الإبقاء على زر الناقص فقط وإلغاء زر الرفض الكامل
-                    const actionsHtml = isCompleted ? `
+                salesLog.forEach(sale => {
+                    const actionsHtml = `
                         <div class="action-btn-group">
                             <button class="btn-return" onclick="decrementSale(${sale.id})" title="إرجاع قطعة واحدة (-1) وإعادتها للمخزن">
                                 <i class="fa-solid fa-minus"></i> استرجاع (-1)
                             </button>
                         </div>
-                    ` : `<span style="color: #a1a1aa; font-size: 0.9rem;"><i class="fa-solid fa-ban"></i> ملغى / مسترجع بالكامل</span>`;
+                    `;
 
                     salesContainer.innerHTML += `
-                        <tr style="${!isCompleted ? 'opacity: 0.6;' : ''}">
+                        <tr>
                             <td><img src="${sale.image}" class="table-product-img"></td>
                             <td style="color: #fff; font-weight: 700; font-size: 1.05rem;">
-                                ${sale.title} <br> <div style="margin-top: 5px;">${statusHtml}</div>
+                                ${sale.title}
                             </td>
-                            <td style="color: ${isCompleted ? '#38ef7d' : '#ef5350'}; font-weight: 900; font-size: 1.2rem;">
+                            <td style="color: #38ef7d; font-weight: 900; font-size: 1.2rem;">
                                 <span style="font-size: 1.4rem; padding-left: 5px;">${sale.qtySold}</span> قطع
                             </td>
                             <td style="color: #e4e4e7; font-weight: 600;">${sale.note}</td>
@@ -685,5 +649,3 @@
     </script>
 </body>
 </html>
-
-```
