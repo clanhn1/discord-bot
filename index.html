@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -25,7 +24,7 @@
         .main-header h1 { color: #bf953f; font-size: 2.6rem; font-weight: 900; text-shadow: 0 0 30px rgba(191, 149, 63, 0.3); }
         .main-header p { color: #a1a1aa; font-size: 1.15rem; margin-top: 5px; }
 
-        /* لوحة الإحصائيات العلوية الجديدة (المالية يمين، المخزن يسار) */
+        /* لوحة الإحصائيات العلوية الجديدة */
         .dashboard-top {
             display: flex;
             justify-content: space-between;
@@ -171,9 +170,9 @@
         .price-edit-control { display: none; margin-top: 10px; background: rgba(191, 149, 63, 0.1); border: 1px dashed #bf953f; padding: 10px; border-radius: 10px; }
         
         .sell-action-box { margin-top: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
-        .sell-inputs-row { display: flex; gap: 8px; }
+        .sell-inputs-row { display: flex; gap: 8px; width: 100%; }
         .sell-qty-input { width: 60px; text-align: center; font-weight: bold; font-size: 1.1rem;}
-        .sell-price-input { width: 100px; text-align: center; color: #38ef7d; font-weight: bold;}
+        .sell-price-input { flex: 1; text-align: center; color: #38ef7d; font-weight: bold;}
         .sell-note-input { flex: 1; }
         .sell-submit-btn { background: rgba(191, 149, 63, 0.15); color: #bf953f; border: 1px solid #bf953f; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.95rem; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .sell-submit-btn:hover { background: #bf953f; color: #050508; box-shadow: 0 4px 12px rgba(191,149,63,0.2); }
@@ -239,10 +238,14 @@
 
             <div class="inventory-side">
                 <div class="stat-card">
-                    <h3><i class="fa-solid fa-boxes-stacked"></i> إجمالي القطع</h3>
+                    <h3><i class="fa-solid fa-boxes-stacked"></i> إجمالي القطع المتوفرة</h3>
                     <p id="stat-total-qty">0</p>
                 </div>
                 <div class="stat-card">
+                    <h3><i class="fa-solid fa-clock"></i> إجمالي الساعات المباعة</h3>
+                    <p id="stat-total-sold-count" style="color: #bf953f;">0</p>
+                </div>
+                <div class="stat-card" style="border-right: 1px dashed rgba(255,255,255,0.1); padding-right: 2rem;">
                     <h3><i class="fa-solid fa-circle-xmark" style="color: #ef5350;"></i> موديلات نافذة</h3>
                     <p id="stat-outstock" style="color: #ef5350;">0</p>
                 </div>
@@ -386,7 +389,7 @@
         <div id="page-returns-view" class="page-content" style="display: none;">
             <div class="returns-page-container">
                 <div class="section-title" style="color: #bf953f;">
-                    <i class="fa-solid fa-right-left"></i> قسم إرجاع الطلبات (يعكس فوراً على الإيرادات والمخزن)
+                    <i class="fa-solid fa-right-left"></i> قسم إرجاع الطلبات (مرتبط بخصم الأرباح والمبالغ بشكل ذكي)
                 </div>
 
                 <div class="filter-wrapper">
@@ -601,32 +604,40 @@
             }
         }
 
-        // 🚀 إرجاع عام من الأرشيف/الرواجع
+        // 🚀 إرجاع عام من الأرشيف/الرواجع مع إمكانية تعديل السعر
         function processGeneralReturn(prodId) {
             const prod = inventory.find(p => p.id === prodId);
             if(!prod) return;
 
-            const returnInput = document.getElementById(`gen-return-qty-${prodId}`);
-            const qtyToReturn = Number(returnInput.value) || 0;
+            const returnQtyInput = document.getElementById(`gen-return-qty-${prodId}`);
+            const returnPriceInput = document.getElementById(`gen-return-price-${prodId}`);
+            
+            const qtyToReturn = Number(returnQtyInput.value) || 0;
+            const priceReturned = Number(returnPriceInput.value) || 0;
 
             if(qtyToReturn <= 0) { alert("⚠️ يرجى إدخال كمية صحيحة أكبر من صفر!"); return; }
 
-            if(confirm(`⚠️ هل أنت متأكد من استرجاع (${qtyToReturn}) من ساعة "${prod.title}"؟\nسيتم إضافتها للمخزن وخصمها من الإجمالي، وتسجيلها في الأرشيف.`)) {
+            if(confirm(`⚠️ هل أنت متأكد من استرجاع (${qtyToReturn}) قطعة بسعر مرتجع قدره (${priceReturned.toLocaleString('en-US')}) للقطعة؟\nسيتم تصحيح الأرباح وإجمالي المبيعات تلقائياً.`)) {
                 prod.qty = (Number(prod.qty)||0) + qtyToReturn;
                 
+                // الحساب العكسي للربح المرتبط بالسعر المرتجع
+                const basePrice = Number(prod.price) || 0;
+                const baseProfit = Number(prod.baseProfit) || 0;
+                const actualProfitReversed = baseProfit - (basePrice - priceReturned);
+
                 const now = new Date();
                 const archiveTimeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + " - " + now.toLocaleDateString('ar-EG');
                 
                 const returnLogEntry = {
                     id: Date.now(), title: prod.title, image: prod.image,
-                    qtyReturned: qtyToReturn, note: 'عملية إرجاع من قسم الرواجع', 
+                    qtyReturned: qtyToReturn, note: 'تم الإرجاع وتعديل السعر', 
                     time: archiveTimeStr, type: 'return',
-                    salePrice: Number(prod.price) || 0,
-                    actualProfit: Number(prod.baseProfit) || 0
+                    salePrice: priceReturned,
+                    actualProfit: actualProfitReversed
                 };
                 archivedSalesLog.unshift(returnLogEntry);
                 
-                returnInput.value = '1';
+                returnQtyInput.value = '1';
                 syncAndRefresh();
                 alert("تم الإرجاع بنجاح وتوثيقه مالياً! ✅");
             }
@@ -672,6 +683,7 @@
             if (document.getElementById('page-logs-view').classList.contains('active-view')) renderLogsPage();
         }
 
+        // النظام المحاسبي المتكامل
         function calculateStats() {
             let totalQty = 0; let outStockCount = 0;
             inventory.forEach(p => { 
@@ -684,6 +696,7 @@
 
             let totalSalesMoney = 0;
             let totalProfitMoney = 0;
+            let totalSoldCount = 0;
 
             // حساب المبيعات النشطة
             salesLog.forEach(s => {
@@ -692,6 +705,7 @@
                 let profit = Number(s.actualProfit) || 0;
                 totalSalesMoney += (qty * price);
                 totalProfitMoney += (qty * profit);
+                totalSoldCount += qty;
             });
 
             // حساب المبيعات المؤرشفة وخصم الرواجع
@@ -702,15 +716,18 @@
                     let profit = Number(log.actualProfit) || 0;
                     totalSalesMoney -= (qty * price);
                     totalProfitMoney -= (qty * profit);
+                    totalSoldCount -= Math.abs(qty); // خصم القطع المرتجعة من الإجمالي
                 } else {
                     let qty = Number(log.qtySold) || 0;
                     let price = Number(log.salePrice) || 0;
                     let profit = Number(log.actualProfit) || 0;
                     totalSalesMoney += (qty * price);
                     totalProfitMoney += (qty * profit);
+                    totalSoldCount += qty;
                 }
             });
 
+            document.getElementById('stat-total-sold-count').innerText = Math.max(0, totalSoldCount);
             document.getElementById('stat-total-sales-money').innerText = totalSalesMoney.toLocaleString('en-US') + " د.ع";
             document.getElementById('stat-total-profit').innerText = totalProfitMoney.toLocaleString('en-US') + " د.ع";
         }
@@ -770,8 +787,8 @@
                             <div class="price-edit-control">
                                 <div style="font-size: 0.85rem; color: #bf953f; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-pen-to-square"></i> تعديل التسعيرة:</div>
                                 <div style="display:flex; gap: 8px;">
-                                    <input type="number" class="admin-input" style="padding: 6px; font-size: 0.9rem;" value="${defaultPrice}" onchange="updateBasePrice(${prod.id}, this.value)" placeholder="السعر الجديد">
-                                    <input type="number" class="admin-input" style="padding: 6px; font-size: 0.9rem; border-color: #bf953f;" value="${defaultProfit}" onchange="updateBaseProfit(${prod.id}, this.value)" placeholder="الربح الجديد">
+                                    <input type="number" class="admin-input" style="padding: 6px; font-size: 0.9rem;" value="${defaultPrice}" onchange="updateBasePrice(${prod.id}, this.value)" title="تعديل السعر الأساسي">
+                                    <input type="number" class="admin-input" style="padding: 6px; font-size: 0.9rem; border-color: #bf953f;" value="${defaultProfit}" onchange="updateBaseProfit(${prod.id}, this.value)" title="تعديل الربح المتوقع">
                                 </div>
                             </div>
 
@@ -828,7 +845,7 @@
             }
         }
 
-        // بناء الرواجع
+        // بناء الرواجع المطور
         function renderReturnsPage() {
             const container = document.getElementById('returns-container');
             const searchQuery = document.getElementById('returns-search-input').value.toLowerCase().trim();
@@ -841,6 +858,8 @@
             } else {
                 filteredData.forEach(prod => {
                     let qty = Number(prod.qty) || 0;
+                    let defaultPrice = Number(prod.price) || 0;
+
                     container.innerHTML += `
                         <div class="product-card" style="border-color: rgba(239, 83, 80, 0.3);">
                             <div class="card-top">
@@ -851,13 +870,15 @@
                                     <div class="product-desc" style="color: #38ef7d; font-weight:bold; margin-top: 6px;">بالمخزن: ${qty} قطعة</div>
                                 </div>
                             </div>
-                            <div class="sell-action-box" style="display:flex;">
-                                <div class="sell-inputs-row">
-                                    <input type="number" id="gen-return-qty-${prod.id}" class="admin-input sell-qty-input" value="1" min="1" style="border-color: #ef5350; color:#fff;">
-                                    <button class="sell-submit-btn" style="flex:1; background:rgba(239,83,80,0.1); color:#ef5350; border-color:#ef5350;" onclick="processGeneralReturn(${prod.id})">
-                                        <i class="fa-solid fa-right-left"></i> تسجيل كـ راجع
-                                    </button>
+                            <div class="sell-action-box" style="display:flex; flex-direction:column; gap:8px;">
+                                <div style="font-size: 0.85rem; color: #ef5350; font-weight: bold;">تعديل تفاصيل الإرجاع:</div>
+                                <div class="sell-inputs-row" style="display:flex; gap:8px; width:100%;">
+                                    <input type="number" id="gen-return-qty-${prod.id}" class="admin-input sell-qty-input" value="1" min="1" title="كمية الإرجاع" style="border-color: #ef5350; color:#fff;">
+                                    <input type="number" id="gen-return-price-${prod.id}" class="admin-input" value="${defaultPrice}" title="تعديل سعر المرتجع (إذا تم بيعه بسعر أقل)" style="border-color: #ef5350; color:#fff; text-align:center; flex:1;">
                                 </div>
+                                <button class="sell-submit-btn" style="width:100%; background:rgba(239,83,80,0.1); color:#ef5350; border-color:#ef5350;" onclick="processGeneralReturn(${prod.id})">
+                                    <i class="fa-solid fa-right-left"></i> تأكيد إرجاع وتوثيق مالي
+                                </button>
                             </div>
                         </div>
                     `;
@@ -884,7 +905,10 @@
                                 <td><img src="${log.image}" class="table-product-img" style="border-color: #ef5350;"></td>
                                 <td style="color: #ef5350; font-weight: 700;">${log.title}</td>
                                 <td style="color: #ef5350; font-weight: 900; font-size: 1.1rem;">- ${qtyReturned} مرتجع</td>
-                                <td style="color: #ef5350;">- ${(salePrice * qtyReturned).toLocaleString('en-US')} د.ع (خصم)</td>
+                                <td style="color: #ef5350;">
+                                    <div>- ${(salePrice * qtyReturned).toLocaleString('en-US')} د.ع (خصم)</div>
+                                    <div style="font-size: 0.85rem; margin-top: 3px;">سعر القطعة المرتجع: ${salePrice.toLocaleString('en-US')}</div>
+                                </td>
                                 <td style="color: #ef5350; font-weight: 600;"><i class="fa-solid fa-rotate-left"></i> ${log.note}</td>
                                 <td style="color: #a1a1aa; font-size: 0.9rem;">${log.time}</td>
                             </tr>
