@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -151,6 +150,7 @@
         .product-img { width: 90px; height: 90px; border-radius: 12px; object-fit: cover; border: 1px solid rgba(191, 149, 63, 0.3); background: #000; }
         .product-details { flex: 1; }
         .type-badge { background: rgba(191, 149, 63, 0.15); color: #bf953f; font-size: 0.8rem; padding: 3px 10px; border-radius: 5px; font-weight: bold; display: inline-block; margin-bottom: 6px; }
+        .color-badge { background: rgba(56, 239, 125, 0.15); color: #38ef7d; font-size: 0.8rem; padding: 3px 10px; border-radius: 5px; font-weight: bold; display: inline-block; margin-bottom: 6px; margin-right: 5px; }
         .product-title { color: #fff; font-weight: 700; font-size: 1.2rem; }
         .product-desc { color: #a1a1aa; font-size: 0.85rem; margin-top: 5px; }
         .stock-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: auto; }
@@ -167,7 +167,7 @@
         .delete-card-btn:hover { color: #fff; transform: scale(1.1); }
         
         /* أدوات التعديل الشاملة في الكرت */
-        .full-edit-control { display: none; margin-top: 10px; background: rgba(191, 149, 63, 0.1); border: 1px dashed #bf953f; padding: 10px; border-radius: 10px; flex-direction: column; gap: 6px; }
+        .full-edit-control, .return-price-edit-control { display: none; margin-top: 10px; background: rgba(191, 149, 63, 0.1); border: 1px dashed #bf953f; padding: 10px; border-radius: 10px; flex-direction: column; gap: 6px; }
         
         .sell-action-box { margin-top: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
         .sell-inputs-row { display: flex; gap: 8px; width: 100%; }
@@ -279,19 +279,39 @@
 
                     <div class="form-group">
                         <label>نوع وهيكل الساعة:</label>
-                        <select id="prod-type" class="admin-input">
-                            <option value="كتان">كتان</option>
-                            <option value="ربر">ربر</option>
-                            <option value="حديد">حديد</option>
-                            <option value="حديد ملون">حديد ملون</option>
-                            <option value="جلد">جلد</option>
-                            <option value="أوتوماتيك">أوتوماتيك</option>
-                        </select>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="prod-type" class="admin-input">
+                                <option value="كتان">كتان</option>
+                                <option value="ربر">ربر</option>
+                                <option value="حديد">حديد</option>
+                                <option value="حديد ملون">حديد ملون</option>
+                                <option value="جلد">جلد</option>
+                                <option value="أوتوماتيك">أوتوماتيك</option>
+                            </select>
+                            <button class="top-ctrl-btn" style="padding: 0 15px;" onclick="promptNewType()" title="إضافة نوع جديد"><i class="fa-solid fa-wrench"></i></button>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label>الوصف والألوان:</label>
-                        <input type="text" id="prod-desc" class="admin-input" placeholder="مثال: لون ذهبي، مينا خضراء">
+                        <label>الوصف والمواصفات:</label>
+                        <input type="text" id="prod-desc" class="admin-input" placeholder="مثال: ضد الماء، زجاج زفير...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>لون الساعة:</label>
+                        <input list="color-options" id="prod-color" class="admin-input" placeholder="اختر لوناً أو اكتب لون جديد...">
+                        <datalist id="color-options">
+                            <option value="أسود">
+                            <option value="فضي">
+                            <option value="ذهبي">
+                            <option value="روز جولد">
+                            <option value="أزرق">
+                            <option value="أخضر">
+                            <option value="أحمر">
+                            <option value="بني">
+                            <option value="رصاصي">
+                            <option value="أبيض">
+                        </datalist>
                     </div>
                     
                     <div style="display: flex; gap: 15px;">
@@ -332,7 +352,7 @@
                         <div style="display: flex; gap: 12px; flex: 1;">
                             <div class="search-box">
                                 <i class="fa-solid fa-magnifying-glass"></i>
-                                <input type="text" id="search-input" class="admin-input" placeholder="ابحث باسم الساعة..." oninput="renderInventory()">
+                                <input type="text" id="search-input" class="admin-input" placeholder="ابحث باسم الساعة أو اللون..." oninput="renderInventory()">
                             </div>
                             <div class="filter-box">
                                 <select id="filter-stock-status" class="admin-input" onchange="renderInventory()">
@@ -343,14 +363,8 @@
                             </div>
                             <div class="filter-box">
                                 <select id="filter-type" class="admin-input" onchange="renderInventory()">
-                                    <option value="الجميع">كل الخامات 🏷️</option>
-                                    <option value="كتان">كتان</option>
-                                    <option value="ربر">ربر</option>
-                                    <option value="حديد">حديد</option>
-                                    <option value="حديد ملون">حديد ملون</option>
-                                    <option value="جلد">جلد</option>
-                                    <option value="أوتوماتيك">أوتوماتيك</option>
-                                </select>
+                                    <option value="الجميع">كل الخامات والأنواع 🏷️</option>
+                                    </select>
                             </div>
                         </div>
                         <button id="edit-mode-toggle" class="top-ctrl-btn" onclick="toggleEditMode()">
@@ -395,8 +409,8 @@
 
         <div id="page-returns-view" class="page-content" style="display: none;">
             <div class="returns-page-container">
-                <div class="section-title" style="color: #bf953f;">
-                    <i class="fa-solid fa-right-left"></i> قسم إرجاع الطلبات (مرتبط بخصم الأرباح والمبالغ بشكل ذكي)
+                <div class="section-title" style="color: #bf953f; display: flex; justify-content: space-between;">
+                    <span><i class="fa-solid fa-right-left"></i> قسم إرجاع الطلبات (حساب ذكي للخصومات)</span>
                 </div>
 
                 <div class="filter-wrapper">
@@ -404,6 +418,9 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="text" id="returns-search-input" class="admin-input" placeholder="ابحث باسم الساعة لإرجاعها..." oninput="renderReturnsPage()">
                     </div>
+                    <button id="returns-edit-mode-toggle" class="top-ctrl-btn" onclick="toggleEditMode()">
+                        <i class="fa-solid fa-sliders"></i> وضع التحرير
+                    </button>
                 </div>
 
                 <div class="inventory-grid" id="returns-container"></div>
@@ -478,10 +495,25 @@
             }, 50);
         }
 
+        // زر الاسبانة لإضافة نوع جديد
+        function promptNewType() {
+            let newT = prompt("أدخل نوع أو هيكل الساعة الجديد:");
+            if (newT && newT.trim() !== '') {
+                let sel = document.getElementById('prod-type');
+                let opt = document.createElement('option');
+                opt.value = newT.trim();
+                opt.innerText = newT.trim();
+                opt.selected = true;
+                sel.appendChild(opt);
+                updateDynamicFilters();
+            }
+        }
+
         // 💰 إضافة منتج 
         function addNewProduct() {
             const title = document.getElementById('prod-title').value.trim();
-            const type = document.getElementById('prod-type').value;
+            const type = document.getElementById('prod-type').value.trim();
+            const color = document.getElementById('prod-color').value.trim();
             const desc = document.getElementById('prod-desc').value.trim();
             const qty = Number(document.getElementById('prod-qty').value) || 0;
             const price = Number(document.getElementById('prod-price').value) || 0;
@@ -489,24 +521,27 @@
             const imgInput = document.getElementById('prod-img-file');
 
             if(!title) { alert("⚠️ أكتب اسم موديل الساعة أولاً!"); return; }
+            if(!type) { alert("⚠️ يرجى تحديد أو كتابة نوع الساعة!"); return; }
 
             let defaultImg = "https://cdn-icons-png.flaticon.com/512/2888/2888636.png";
 
             if(imgInput.files && imgInput.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) { executeAdd(title, type, desc, qty, price, profit, e.target.result); };
+                reader.onload = function(e) { executeAdd(title, type, color, desc, qty, price, profit, e.target.result); };
                 reader.readAsDataURL(imgInput.files[0]);
             } else {
-                executeAdd(title, type, desc, qty, price, profit, defaultImg);
+                executeAdd(title, type, color, desc, qty, price, profit, defaultImg);
             }
         }
 
-        function executeAdd(title, type, desc, qty, price, profit, imgUrl) {
-            const newWatch = { id: Date.now(), title, type, desc, qty, price, baseProfit: profit, image: imgUrl };
+        function executeAdd(title, type, color, desc, qty, price, profit, imgUrl) {
+            const newWatch = { id: Date.now(), title, type, color, desc, qty, price, baseProfit: profit, image: imgUrl };
             inventory.push(newWatch);
             syncAndRefresh();
 
             document.getElementById('prod-title').value = ''; 
+            document.getElementById('prod-type').value = 'كتان'; 
+            document.getElementById('prod-color').value = '';
             document.getElementById('prod-desc').value = '';
             document.getElementById('prod-qty').value = '5'; 
             document.getElementById('prod-price').value = ''; 
@@ -515,14 +550,17 @@
             document.getElementById('file-name').innerText = "لم يتم رفع صورة";
         }
 
-        // Edit Mode Functions
+        // وضع التحرير الشامل 
         function toggleEditMode() {
             isEditModeActive = !isEditModeActive;
             const btnMain = document.getElementById('edit-mode-toggle');
+            const btnReturns = document.getElementById('returns-edit-mode-toggle');
             if(isEditModeActive) {
                 if(btnMain) btnMain.classList.add('active');
+                if(btnReturns) btnReturns.classList.add('active');
             } else {
                 if(btnMain) btnMain.classList.remove('active');
+                if(btnReturns) btnReturns.classList.remove('active');
             }
             applyEditModeVisibility();
         }
@@ -532,38 +570,30 @@
             const deleteBtns = document.querySelectorAll('.delete-card-btn');
             const sellBoxes = document.querySelectorAll('.sell-action-box');
             const fullEditBoxes = document.querySelectorAll('.full-edit-control');
+            const returnPriceBoxes = document.querySelectorAll('.return-price-edit-control');
             
             qtyControls.forEach(el => el.style.display = isEditModeActive ? 'flex' : 'none');
             deleteBtns.forEach(el => el.style.display = isEditModeActive ? 'block' : 'none');
             sellBoxes.forEach(el => el.style.display = isEditModeActive ? 'none' : 'flex');
             fullEditBoxes.forEach(el => el.style.display = isEditModeActive ? 'flex' : 'none');
+            returnPriceBoxes.forEach(el => el.style.display = isEditModeActive ? 'block' : 'none');
         }
 
         // تحديثات التعديل الشامل
-        function updateProductTitle(id, val) {
+        function updateProductField(id, field, val) {
             const prod = inventory.find(p => p.id === id);
-            if(prod && val.trim() !== '') { prod.title = val.trim(); syncAndRefresh(); }
+            if(prod) { 
+                if(field === 'price' || field === 'baseProfit') prod[field] = Number(val) || 0;
+                else prod[field] = val.trim();
+                syncAndRefresh(); 
+            }
         }
-        function updateProductType(id, val) {
-            const prod = inventory.find(p => p.id === id);
-            if(prod) { prod.type = val; syncAndRefresh(); }
-        }
-        function updateProductDesc(id, val) {
-            const prod = inventory.find(p => p.id === id);
-            if(prod) { prod.desc = val.trim(); syncAndRefresh(); }
-        }
+        
         function changeQty(id, amount) {
             const prod = inventory.find(p => p.id === id);
             if(prod) { prod.qty = Math.max(0, (Number(prod.qty)||0) + amount); syncAndRefresh(); }
         }
-        function updateBasePrice(id, newPrice) {
-            const prod = inventory.find(p => p.id === id);
-            if(prod) { prod.price = Number(newPrice) || 0; syncAndRefresh(); }
-        }
-        function updateBaseProfit(id, newProfit) {
-            const prod = inventory.find(p => p.id === id);
-            if(prod) { prod.baseProfit = Number(newProfit) || 0; syncAndRefresh(); }
-        }
+
         function deleteProduct(id) {
             if(confirm("❌ هل أنت متأكد من مسح هذا الموديل نهائياً؟")) {
                 inventory = inventory.filter(p => p.id !== id); syncAndRefresh();
@@ -629,22 +659,27 @@
             }
         }
 
-        // 🚀 إرجاع عام من الأرشيف/الرواجع (دائماً قابل للتعديل المباشر بدون وضع تحرير)
+        // 🚀 إرجاع عام من الأرشيف/الرواجع 
         function processGeneralReturn(prodId) {
             const prod = inventory.find(p => p.id === prodId);
             if(!prod) return;
 
             const returnQtyInput = document.getElementById(`gen-return-qty-${prodId}`);
             const returnPriceInput = document.getElementById(`gen-return-price-${prodId}`);
-            const returnProfitInput = document.getElementById(`gen-return-profit-${prodId}`);
             
             const qtyToReturn = Number(returnQtyInput.value) || 0;
-            const priceReturned = Number(returnPriceInput.value) || 0;
-            const profitReturned = Number(returnProfitInput.value) || 0;
+            
+            // إذا كان وضع التحرير مفعل والحقل موجود، يأخذ السعر منه. وإلا يأخذ السعر الافتراضي
+            const priceReturned = (isEditModeActive && returnPriceInput) ? (Number(returnPriceInput.value) || 0) : (Number(prod.price) || 0);
+            
+            // الحساب التلقائي للربح الصافي
+            const basePrice = Number(prod.price) || 0;
+            const baseProfit = Number(prod.baseProfit) || 0;
+            const profitReturned = baseProfit - (basePrice - priceReturned);
 
             if(qtyToReturn <= 0) { alert("⚠️ يرجى إدخال كمية صحيحة أكبر من صفر!"); return; }
 
-            if(confirm(`⚠️ تأكيد عملية الإرجاع:\nالكمية: (${qtyToReturn}) قطعة.\nسيتم خصم [${priceReturned.toLocaleString('en-US')} د.ع] من إجمالي المبيعات للقطعة الواحدة.\nوسيتم خصم [${profitReturned.toLocaleString('en-US')} د.ع] من الأرباح.`)) {
+            if(confirm(`⚠️ تأكيد الإرجاع:\nالكمية: (${qtyToReturn}) قطعة.\nسعر الإرجاع للقطعة: [${priceReturned.toLocaleString('en-US')} د.ع].\nسيتم خصم الربح الصافي تلقائياً من الإحصائيات.`)) {
                 prod.qty = (Number(prod.qty)||0) + qtyToReturn;
                 
                 const now = new Date();
@@ -720,7 +755,6 @@
             let totalProfitMoney = 0;
             let totalSoldCount = 0;
 
-            // حساب المبيعات النشطة
             salesLog.forEach(s => {
                 let qty = Number(s.qtySold) || 0;
                 let price = Number(s.salePrice) || 0;
@@ -730,7 +764,6 @@
                 totalSoldCount += qty;
             });
 
-            // حساب المبيعات المؤرشفة وخصم الرواجع
             archivedSalesLog.forEach(log => {
                 if (log.type === 'return') {
                     let qty = Number(log.qtyReturned) || 0;
@@ -738,7 +771,7 @@
                     let profit = Number(log.actualProfit) || 0;
                     totalSalesMoney -= (qty * price);
                     totalProfitMoney -= (qty * profit);
-                    totalSoldCount -= Math.abs(qty); // خصم القطع المرتجعة من الإجمالي
+                    totalSoldCount -= Math.abs(qty); 
                 } else {
                     let qty = Number(log.qtySold) || 0;
                     let price = Number(log.salePrice) || 0;
@@ -749,15 +782,35 @@
                 }
             });
 
-            // تم إزالة قيد الصفر لتسمح بعرض الأرقام السالبة بكل شفافية ومصداقية محاسبية
             document.getElementById('stat-total-sold-count').innerText = totalSoldCount;
             document.getElementById('stat-total-sales-money').innerText = totalSalesMoney.toLocaleString('en-US') + " د.ع";
             document.getElementById('stat-total-profit').innerText = totalProfitMoney.toLocaleString('en-US') + " د.ع";
         }
 
+        // بناء وتحديث فلتر أنواع الساعات ليقبل أي نوع يتم إضافته
+        function updateDynamicFilters() {
+            const filterTypeSel = document.getElementById('filter-type');
+            if (filterTypeSel) {
+                const currentVal = filterTypeSel.value;
+                const uniqueTypes = [...new Set(inventory.map(p => p.type))].filter(Boolean);
+                const defaults = ["كتان", "ربر", "حديد", "حديد ملون", "جلد", "أوتوماتيك"];
+                const allTypes = [...new Set([...defaults, ...uniqueTypes])];
+
+                let html = `<option value="الجميع">كل الخامات والأنواع 🏷️</option>`;
+                allTypes.forEach(t => {
+                    html += `<option value="${t}">${t}</option>`;
+                });
+                
+                filterTypeSel.innerHTML = html;
+                filterTypeSel.value = currentVal && allTypes.includes(currentVal) ? currentVal : 'الجميع';
+            }
+        }
+
         // بناء المخزن
         function renderInventory() {
+            updateDynamicFilters();
             calculateStats();
+            
             const container = document.getElementById('inventory-container');
             const salesContainer = document.getElementById('sales-container');
             const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
@@ -772,7 +825,7 @@
                 if(filterStockStatus === 'الكل') matchesStock = true;
                 else if(filterStockStatus === 'متوفر') matchesStock = (qty > 0);
                 else if(filterStockStatus === 'غير_متوفر') matchesStock = (qty === 0);
-                const matchesSearch = prod.title.toLowerCase().includes(searchQuery) || (prod.desc && prod.desc.toLowerCase().includes(searchQuery));
+                const matchesSearch = prod.title.toLowerCase().includes(searchQuery) || (prod.desc && prod.desc.toLowerCase().includes(searchQuery)) || (prod.color && prod.color.toLowerCase().includes(searchQuery));
                 return matchesType && matchesStock && matchesSearch;
             });
 
@@ -786,6 +839,7 @@
                     const statusText = isAvailable ? `متوفر (${qty} قطعة)` : 'نافذ تماماً (0)';
                     const defaultPrice = Number(prod.price) || 0;
                     const defaultProfit = Number(prod.baseProfit) || 0;
+                    const colorHtml = prod.color ? `<span class="color-badge"><i class="fa-solid fa-palette"></i> ${prod.color}</span>` : '';
 
                     container.innerHTML += `
                         <div class="product-card">
@@ -794,8 +848,9 @@
                                 <img src="${prod.image}" class="product-img">
                                 <div class="product-details">
                                     <span class="type-badge"><i class="fa-solid fa-tags"></i> ${prod.type}</span>
+                                    ${colorHtml}
                                     <div class="product-title">${prod.title}</div>
-                                    <div class="product-desc">${prod.desc || 'بدون وصف'}</div>
+                                    <div class="product-desc">${prod.desc || 'بدون مواصفات'}</div>
                                     <div style="font-size: 0.85rem; color: #38ef7d; margin-top: 5px;">السعر الأساسي: ${defaultPrice.toLocaleString('en-US')} د.ع</div>
                                 </div>
                             </div>
@@ -810,19 +865,17 @@
 
                             <div class="full-edit-control">
                                 <div style="font-size: 0.85rem; color: #bf953f; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-pen-to-square"></i> تعديل تفاصيل الساعة:</div>
-                                <input type="text" class="admin-input" value="${prod.title}" onchange="updateProductTitle(${prod.id}, this.value)" title="تعديل الاسم" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
-                                <select class="admin-input" onchange="updateProductType(${prod.id}, this.value)" title="تعديل النوع" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
-                                    <option value="كتان" ${prod.type === 'كتان' ? 'selected' : ''}>كتان</option>
-                                    <option value="ربر" ${prod.type === 'ربر' ? 'selected' : ''}>ربر</option>
-                                    <option value="حديد" ${prod.type === 'حديد' ? 'selected' : ''}>حديد</option>
-                                    <option value="حديد ملون" ${prod.type === 'حديد ملون' ? 'selected' : ''}>حديد ملون</option>
-                                    <option value="جلد" ${prod.type === 'جلد' ? 'selected' : ''}>جلد</option>
-                                    <option value="أوتوماتيك" ${prod.type === 'أوتوماتيك' ? 'selected' : ''}>أوتوماتيك</option>
-                                </select>
-                                <input type="text" class="admin-input" value="${prod.desc || ''}" onchange="updateProductDesc(${prod.id}, this.value)" title="تعديل الألوان/الوصف" placeholder="الألوان والمواصفات" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
+                                <input type="text" class="admin-input" value="${prod.title}" onchange="updateProductField(${prod.id}, 'title', this.value)" title="تعديل الاسم" placeholder="اسم الموديل" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
+                                
+                                <input list="type-options" class="admin-input" value="${prod.type}" onchange="updateProductField(${prod.id}, 'type', this.value)" title="تعديل أو كتابة نوع جديد" placeholder="النوع/الخامة" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
+                                
+                                <input list="color-options" class="admin-input" value="${prod.color || ''}" onchange="updateProductField(${prod.id}, 'color', this.value)" title="تعديل اللون" placeholder="تعديل اللون" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
+                                
+                                <input type="text" class="admin-input" value="${prod.desc || ''}" onchange="updateProductField(${prod.id}, 'desc', this.value)" title="تعديل الوصف والمواصفات" placeholder="الوصف والمواصفات" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
+                                
                                 <div style="display:flex; gap: 8px;">
-                                    <input type="number" class="admin-input" step="1000" style="padding: 6px; font-size: 0.9rem;" value="${defaultPrice}" onchange="updateBasePrice(${prod.id}, this.value)" title="تعديل السعر الأساسي">
-                                    <input type="number" class="admin-input" step="1000" style="padding: 6px; font-size: 0.9rem; border-color: #bf953f;" value="${defaultProfit}" onchange="updateBaseProfit(${prod.id}, this.value)" title="تعديل الربح المتوقع">
+                                    <input type="number" class="admin-input" step="1000" style="padding: 6px; font-size: 0.9rem;" value="${defaultPrice}" onchange="updateProductField(${prod.id}, 'price', this.value)" title="تعديل السعر الأساسي">
+                                    <input type="number" class="admin-input" step="1000" style="padding: 6px; font-size: 0.9rem; border-color: #bf953f;" value="${defaultProfit}" onchange="updateProductField(${prod.id}, 'baseProfit', this.value)" title="تعديل الربح المتوقع">
                                 </div>
                             </div>
 
@@ -879,7 +932,7 @@
             }
         }
 
-        // بناء الرواجع المطور بتفصيل مالي دائم ومفتوح
+        // بناء الرواجع المطور
         function renderReturnsPage() {
             const container = document.getElementById('returns-container');
             const searchQuery = document.getElementById('returns-search-input').value.toLowerCase().trim();
@@ -893,7 +946,7 @@
                 filteredData.forEach(prod => {
                     let qty = Number(prod.qty) || 0;
                     let defaultPrice = Number(prod.price) || 0;
-                    let defaultProfit = Number(prod.baseProfit) || 0;
+                    const colorHtml = prod.color ? `<span class="color-badge"><i class="fa-solid fa-palette"></i> ${prod.color}</span>` : '';
 
                     container.innerHTML += `
                         <div class="product-card" style="border-color: rgba(239, 83, 80, 0.3);">
@@ -901,20 +954,23 @@
                                 <img src="${prod.image}" class="product-img">
                                 <div class="product-details">
                                     <span class="type-badge" style="color:#ef5350; background:rgba(239,83,80,0.1);"><i class="fa-solid fa-tags"></i> ${prod.type}</span>
+                                    ${colorHtml}
                                     <div class="product-title">${prod.title}</div>
                                     <div class="product-desc" style="color: #38ef7d; font-weight:bold; margin-top: 6px;">بالمخزن: ${qty} قطعة</div>
                                 </div>
                             </div>
+                            
                             <div style="display:flex; flex-direction:column; gap:8px; margin-top: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px;">
                                 <div style="font-size: 0.85rem; color: #ef5350; font-weight: bold;">الكمية المسترجعة:</div>
                                 <input type="number" id="gen-return-qty-${prod.id}" class="admin-input sell-qty-input" value="1" min="1" title="كمية الإرجاع" style="border-color: #ef5350; color:#fff; width: 100%; text-align: center; margin-bottom: 8px;">
                                 
-                                <div style="background: rgba(239, 83, 80, 0.05); padding: 10px; border-radius: 10px; border: 1px dashed #ef5350; margin-bottom: 8px;">
-                                    <div style="font-size: 0.85rem; color: #ef5350; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-pen-to-square"></i> المبالغ المخصومة (تعديل حر):</div>
-                                    <div style="display:flex; gap: 8px;">
-                                        <input type="number" id="gen-return-price-${prod.id}" class="admin-input" step="1000" value="${defaultPrice}" title="سعر القطعة المرتجع" style="border-color: #ef5350; color:#fff; text-align:center; padding: 6px; font-size: 0.9rem;">
-                                        <input type="number" id="gen-return-profit-${prod.id}" class="admin-input" step="1000" value="${defaultProfit}" title="الربح الصافي المخصوم" style="border-color: #bf953f; color:#fff; text-align:center; padding: 6px; font-size: 0.9rem;">
-                                    </div>
+                                <div style="font-size: 0.85rem; color: #a1a1aa; margin-top: 5px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; text-align: center;">
+                                    سعر الإرجاع المعتمد: <span style="color:#fff; font-weight:bold;">${defaultPrice.toLocaleString('en-US')} د.ع</span>
+                                </div>
+
+                                <div class="return-price-edit-control" style="background: rgba(239, 83, 80, 0.05); padding: 10px; border-radius: 10px; border: 1px dashed #ef5350; margin-bottom: 8px;">
+                                    <div style="font-size: 0.85rem; color: #ef5350; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-pen-to-square"></i> تعديل سعر الإرجاع فقط:</div>
+                                    <input type="number" id="gen-return-price-${prod.id}" class="admin-input" step="1000" value="${defaultPrice}" title="سعر القطعة المرتجع" style="border-color: #ef5350; color:#fff; text-align:center; padding: 6px; font-size: 0.9rem;">
                                 </div>
 
                                 <button class="sell-submit-btn" style="width:100%; background:rgba(239,83,80,0.1); color:#ef5350; border-color:#ef5350;" onclick="processGeneralReturn(${prod.id})">
@@ -925,6 +981,7 @@
                     `;
                 });
             }
+            applyEditModeVisibility();
         }
 
         // بناء الأرشيف (Logs)
@@ -982,5 +1039,3 @@
     </script>
 </body>
 </html>
-
-```
