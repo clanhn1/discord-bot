@@ -14,12 +14,36 @@
         body {
             background-color: #050508; color: #fff; min-height: 100vh; padding: 2rem 1rem;
             background-image: radial-gradient(circle at 50% 0%, #1a150b 0%, #050508 80%);
+            position: relative;
         }
 
-        .container { max-width: 1550px; margin: 0 auto; width: 100%; }
+        .container { max-width: 1550px; margin: 0 auto; width: 100%; position: relative; }
+
+        /* زر الإعدادات (أعلى اليمين) */
+        .settings-top-btn {
+            position: absolute;
+            top: -10px;
+            right: 0px;
+            background: rgba(20, 20, 25, 0.8);
+            border: 1px solid #bf953f;
+            color: #bf953f;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: 0.3s;
+            z-index: 100;
+            box-shadow: 0 0 15px rgba(191, 149, 63, 0.1);
+        }
+        .settings-top-btn:hover {
+            background: #bf953f;
+            color: #050508;
+            box-shadow: 0 0 20px rgba(191, 149, 63, 0.4);
+            transform: scale(1.05);
+        }
 
         /* الهيدر الرئيسي */
-        .main-header { text-align: center; margin-bottom: 2rem; }
+        .main-header { text-align: center; margin-bottom: 2rem; padding-top: 10px; }
         .main-header h1 { color: #bf953f; font-size: 2.6rem; font-weight: 900; text-shadow: 0 0 30px rgba(191, 149, 63, 0.3); }
         .main-header p { color: #a1a1aa; font-size: 1.15rem; margin-top: 5px; }
 
@@ -111,13 +135,13 @@
         .search-box { flex: 2; min-width: 250px; position: relative; }
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #bf953f; }
         .search-box .admin-input { padding-left: 40px; }
-        .filter-box { flex: 1; min-width: 140px; }
+        .filter-box { flex: 1; min-width: 160px; }
         .top-ctrl-btn { background: #15151a; border: 1px solid #bf953f; color: #bf953f; padding: 12px 18px; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 0.95rem; white-space: nowrap; }
         .top-ctrl-btn:hover { background: rgba(191, 149, 63, 0.1); }
         .top-ctrl-btn.active { background: #bf953f; color: #000; box-shadow: 0 0 15px #bf953f; }
 
         /* كروت المخزن */
-        .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
+        .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
         .product-card { background: rgba(20, 20, 25, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 18px; padding: 1.2rem; display: flex; flex-direction: column; position: relative; transition: all 0.4s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .product-card:hover { border-color: #bf953f; transform: translateY(-3px); }
         .card-top { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 1rem; }
@@ -143,6 +167,10 @@
         .full-edit-control { display: none; margin-top: 10px; background: rgba(191, 149, 63, 0.1); border: 1px dashed #bf953f; padding: 10px; border-radius: 10px; flex-direction: column; gap: 6px; }
         
         .sell-action-box { margin-top: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .sell-inputs-row { display: flex; gap: 8px; width: 100%; }
+        .sell-qty-input { width: 60px; text-align: center; font-weight: bold; font-size: 1.1rem;}
+        .sell-price-input { flex: 1; text-align: center; color: #38ef7d; font-weight: bold;}
+        .sell-note-input { flex: 1; }
         .sell-submit-btn { background: rgba(191, 149, 63, 0.15); color: #bf953f; border: 1px solid #bf953f; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.95rem; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .sell-submit-btn:hover { background: #bf953f; color: #050508; box-shadow: 0 4px 12px rgba(191,149,63,0.2); }
 
@@ -177,7 +205,7 @@
         .profit-positive { color: #bf953f; }
         .profit-negative { color: #ef5350; }
         .log-return-row { background: rgba(239, 83, 80, 0.05) !important; border-left: 4px solid #ef5350; }
-        
+
         .settings-input-group { margin-bottom: 15px; }
         .settings-input-group label { display: block; color: #a1a1aa; font-size: 0.85rem; margin-bottom: 5px; }
         .settings-input-group input { font-family: monospace; text-align: left; direction: ltr; }
@@ -185,65 +213,68 @@
 </head>
 <body>
 
-    <div id="type-manager-modal" class="custom-modal-overlay">
-        <div class="custom-modal-box">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-list"></i> إدارة الأنواع</h3>
-                <button class="close-modal-btn" onclick="closeTypeModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                <input type="text" id="new-type-input" class="admin-input" placeholder="اكتب نوع جديد..." style="flex: 1;">
-                <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addNewTypeFromModal()"><i class="fa-solid fa-plus"></i> إضافة</button>
-            </div>
-            <div id="types-list-container" style="max-height: 250px; overflow-y: auto; padding-right: 5px;"></div>
-        </div>
-    </div>
-
-    <div id="color-manager-modal" class="custom-modal-overlay">
-        <div class="custom-modal-box">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-palette"></i> إدارة الألوان</h3>
-                <button class="close-modal-btn" onclick="closeColorModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                <input type="text" id="new-color-input" class="admin-input" placeholder="اكتب لون جديد..." style="flex: 1;">
-                <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addNewColorFromModal()"><i class="fa-solid fa-plus"></i> إضافة</button>
-            </div>
-            <div id="colors-list-container" style="max-height: 250px; overflow-y: auto; padding-right: 5px;"></div>
-        </div>
-    </div>
-
-    <div id="settings-modal" class="custom-modal-overlay">
-        <div class="custom-modal-box">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-gear"></i> إعدادات الإشعارات (Discord)</h3>
-                <button class="close-modal-btn" onclick="closeSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p style="font-size: 0.85rem; color: #a1a1aa; margin-bottom: 15px;">أدخل روابط الـ Webhook الخاصة بك لربط النظام وتلقي الإشعارات التلقائية.</p>
-            
-            <div class="settings-input-group">
-                <label><i class="fa-solid fa-circle-xmark" style="color:#ef5350;"></i> إشعار نفاد الكمية للموديل:</label>
-                <input type="text" id="webhook-out" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
-            </div>
-            <div class="settings-input-group">
-                <label><i class="fa-solid fa-check-circle" style="color:#38ef7d;"></i> إشعار رجوع توفر الساعة بالمخزن:</label>
-                <input type="text" id="webhook-in" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
-            </div>
-            <div class="settings-input-group">
-                <label><i class="fa-solid fa-clipboard-list" style="color:#bf953f;"></i> إشعار تصفير السجل اليومي (الترحيل):</label>
-                <input type="text" id="webhook-daily" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
-            </div>
-            <div class="settings-input-group">
-                <label><i class="fa-solid fa-money-bill-transfer" style="color:#a1a1aa;"></i> إشعار سحب الأموال والإجمالي (تصفير الأرشيف):</label>
-                <input type="text" id="webhook-finance" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
-            </div>
-            
-            <button class="action-btn" style="margin-top: 20px;" onclick="saveWebhooks()"><i class="fa-solid fa-floppy-disk"></i> حفظ الإعدادات</button>
-        </div>
-    </div>
-
     <div class="container">
-        
+        <button class="settings-top-btn" onclick="openSettingsModal()" title="إعدادات النظام والإشعارات">
+            <i class="fa-solid fa-gear"></i>
+        </button>
+
+        <div id="settings-modal" class="custom-modal-overlay">
+            <div class="custom-modal-box">
+                <div class="modal-header">
+                    <h3><i class="fa-brands fa-discord"></i> إعدادات الإشعارات</h3>
+                    <button class="close-modal-btn" onclick="closeSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <p style="font-size: 0.85rem; color: #a1a1aa; margin-bottom: 15px;">أدخل روابط الـ Webhook لتلقي إشعارات تفصيلية وفورية (مع منشن للجميع).</p>
+                
+                <div class="settings-input-group">
+                    <label><i class="fa-solid fa-circle-xmark" style="color:#ef5350;"></i> إشعار نفاد الكمية:</label>
+                    <input type="text" id="webhook-out" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+                </div>
+                <div class="settings-input-group">
+                    <label><i class="fa-solid fa-check-circle" style="color:#38ef7d;"></i> إشعار توفر الساعة بالمخزن:</label>
+                    <input type="text" id="webhook-in" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+                </div>
+                <div class="settings-input-group">
+                    <label><i class="fa-solid fa-clipboard-list" style="color:#bf953f;"></i> إشعار تصفير السجل اليومي (الترحيل):</label>
+                    <input type="text" id="webhook-daily" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+                </div>
+                <div class="settings-input-group">
+                    <label><i class="fa-solid fa-money-bill-transfer" style="color:#a1a1aa;"></i> إشعار سحب الأموال والإجمالي:</label>
+                    <input type="text" id="webhook-finance" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+                </div>
+                
+                <button class="action-btn" style="margin-top: 20px;" onclick="saveWebhooks()"><i class="fa-solid fa-floppy-disk"></i> حفظ الإعدادات</button>
+            </div>
+        </div>
+
+        <div id="type-manager-modal" class="custom-modal-overlay">
+            <div class="custom-modal-box">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-list"></i> إدارة الأنواع</h3>
+                    <button class="close-modal-btn" onclick="closeTypeModal()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                    <input type="text" id="new-type-input" class="admin-input" placeholder="اكتب نوع جديد..." style="flex: 1;">
+                    <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addNewTypeFromModal()"><i class="fa-solid fa-plus"></i> إضافة</button>
+                </div>
+                <div id="types-list-container" style="max-height: 250px; overflow-y: auto; padding-right: 5px;"></div>
+            </div>
+        </div>
+
+        <div id="color-manager-modal" class="custom-modal-overlay">
+            <div class="custom-modal-box">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-palette"></i> إدارة الألوان</h3>
+                    <button class="close-modal-btn" onclick="closeColorModal()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                    <input type="text" id="new-color-input" class="admin-input" placeholder="اكتب لون جديد..." style="flex: 1;">
+                    <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addNewColorFromModal()"><i class="fa-solid fa-plus"></i> إضافة</button>
+                </div>
+                <div id="colors-list-container" style="max-height: 250px; overflow-y: auto; padding-right: 5px;"></div>
+            </div>
+        </div>
+
         <header class="main-header">
             <h1><i class="fa-solid fa-vault"></i> خزانة الساعات الذكية</h1>
             <p>نظام محاسبي وإداري متكامل مع تحكم شامل بكل التفاصيل</p>
@@ -295,9 +326,6 @@
             </button>
             <button id="tab-logs" class="nav-tab-btn" style="display: none;" onclick="switchPage('logs')">
                 سجل الأرشيف
-            </button>
-            <button class="nav-tab-btn" onclick="openSettingsModal()" style="border-color: #a1a1aa; color: #a1a1aa;">
-                <i class="fa-solid fa-gear"></i> الإعدادات
             </button>
         </div>
 
@@ -519,22 +547,36 @@
             closeSettingsModal();
         }
 
-        function sendDiscordWebhook(type, message) {
+        // إرسال الإشعارات مع منشن للجميع وإمكانية عرض الصور إن كانت روابط خارجية
+        function sendDiscordWebhook(type, message, imageUrl = null) {
             const url = webhooks[type];
             if (!url) return;
+
+            let payload = {
+                content: "@everyone\n\n" + message
+            };
+
+            // تضمين الصورة فقط إذا كانت رابط انترنت صالح (ديسكورد لا يقبل الصور المرفوعة محلياً كنص Base64)
+            if (imageUrl && imageUrl.startsWith('http')) {
+                payload.embeds = [{
+                    image: { url: imageUrl },
+                    color: 12555567 // لون ذهبي
+                }];
+            }
+
             fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: message })
+                body: JSON.stringify(payload)
             }).catch(e => console.error("Webhook Error:", e));
         }
 
-        // دالة فحص تغير الكمية لإرسال الإشعارات
+        // دالة فحص تغير الكمية لإرسال الإشعارات الخاصة بالموديلات
         function checkStockWebhooks(prod, oldQty, newQty) {
             if (oldQty > 0 && newQty === 0) {
-                sendDiscordWebhook('outOfStock', `🚨 **نفدت الكمية تماماً بالمخزن!**\n⌚ الموديل: **${prod.title}**\n🎨 اللون: ${prod.color || 'غير محدد'}\n🏷️ النوع: ${prod.type}`);
+                sendDiscordWebhook('outOfStock', `🚨 **نفدت الكمية تماماً بالمخزن!**\n⌚ الموديل: **${prod.title}**\n🎨 اللون: ${prod.color || 'غير محدد'}\n🏷️ النوع: ${prod.type}`, prod.image);
             } else if (oldQty === 0 && newQty > 0) {
-                sendDiscordWebhook('backInStock', `✅ **توفرت الساعة من جديد!**\n⌚ الموديل: **${prod.title}**\n🎨 اللون: ${prod.color || 'غير محدد'}\n📦 الكمية المتاحة الآن: **${newQty} قطعة**`);
+                sendDiscordWebhook('backInStock', `✅ **توفرت الساعة من جديد!**\n⌚ الموديل: **${prod.title}**\n🎨 اللون: ${prod.color || 'غير محدد'}\n📦 الكمية المتاحة الآن: **${newQty} قطعة**`, prod.image);
             }
         }
 
@@ -744,7 +786,6 @@
             const newQty = oldQty - sellQty;
             prod.qty = newQty;
             
-            // فحص إرسال الإشعار بنفاد الكمية
             checkStockWebhooks(prod, oldQty, newQty);
 
             const now = new Date();
@@ -843,16 +884,23 @@
                 const now = new Date();
                 const archiveTimeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + " - " + now.toLocaleDateString('ar-EG');
 
+                let totalQty = 0; let totalMoney = 0; let totalProfit = 0;
+
                 activeSales.forEach(sale => {
                     const archivedSale = { ...sale, archiveTime: archiveTimeStr };
                     archivedSalesLog.unshift(archivedSale);
+                    
+                    let q = Number(sale.qtySold) || 0;
+                    totalQty += q;
+                    totalMoney += q * (Number(sale.salePrice) || 0);
+                    totalProfit += q * (Number(sale.actualProfit) || 0);
                 });
                 
                 salesLog = []; 
                 syncAndRefresh(); 
                 
-                // إرسال إشعار الديسكورد بتصفير السجل اليومي
-                sendDiscordWebhook('dailyReset', `📋 **تم تصفير السجل اليومي للمبيعات**\n✅ تم ترحيل جميع المبيعات النشطة إلى الأرشيف المالي بنجاح في ${archiveTimeStr}`);
+                // إرسال إشعار الديسكورد بتصفير السجل اليومي بالتفصيل
+                sendDiscordWebhook('dailyReset', `📋 **تم تصفير السجل اليومي للمبيعات بنجاح!**\n\n📦 **عدد الساعات المباعة اليوم:** ${totalQty} قطعة\n💰 **إجمالي المبالغ:** ${totalMoney.toLocaleString('en-US')} د.ع\n📈 **صافي الربح اليومي:** ${totalProfit.toLocaleString('en-US')} د.ع\n⏰ **وقت الترحيل:** ${archiveTimeStr}`);
                 
                 switchPage('logs');
             }
@@ -864,21 +912,25 @@
             if (pass === "admin") { 
                 
                 let totalSalesMoney = 0; let totalProfitMoney = 0;
+                let soldQty = 0; let returnedQty = 0;
+
                 archivedSalesLog.forEach(log => {
                     if (log.type === 'return') {
                         let qty = Number(log.qtyReturned) || 0; let price = Number(log.salePrice) || 0; let profit = Number(log.actualProfit) || 0;
                         totalSalesMoney -= (qty * price); totalProfitMoney -= (qty * profit);
+                        returnedQty += qty;
                     } else {
                         let qty = Number(log.qtySold) || 0; let price = Number(log.salePrice) || 0; let profit = Number(log.actualProfit) || 0;
                         totalSalesMoney += (qty * price); totalProfitMoney += (qty * profit);
+                        soldQty += qty;
                     }
                 });
 
                 archivedSalesLog = []; 
                 syncAndRefresh(); 
                 
-                // إرسال إشعار سحب الأموال 
-                sendDiscordWebhook('financialReset', `💰 **تم سحب الأموال وتصفير الأرشيف المالي بالكامل**\n💵 إجمالي المبالغ المسحوبة: **${totalSalesMoney.toLocaleString('en-US')} د.ع**\n📈 صافي الأرباح: **${totalProfitMoney.toLocaleString('en-US')} د.ع**`);
+                // إرسال إشعار سحب الأموال مفصل 
+                sendDiscordWebhook('financialReset', `💎 **تم سحب الأموال وتصفير الأرشيف المالي بالكامل!**\n\n📊 **ملخص الأرشيف المسحوب:**\n✅ **إجمالي الساعات المباعة:** ${soldQty} قطعة\n🔄 **إجمالي الساعات المرتجعة:** ${returnedQty} قطعة\n\n💵 **إجمالي المبالغ المسحوبة (الصندوق):** ${totalSalesMoney.toLocaleString('en-US')} د.ع\n📈 **صافي الأرباح المسحوبة:** ${totalProfitMoney.toLocaleString('en-US')} د.ع`);
                 
                 alert("✅ تم سحب الأموال وتصفير الأرشيف بنجاح!"); 
             } 
@@ -1060,7 +1112,7 @@
             }
         }
 
-        // بناء الرواجع المطور والذكي بتصميم فخم ومستقل للخصومات
+        // بناء الرواجع المطور والذكي
         function renderReturnsPage() {
             const container = document.getElementById('returns-container');
             const searchQuery = document.getElementById('returns-search-input').value.toLowerCase().trim();
