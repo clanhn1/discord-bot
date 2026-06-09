@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خزانة الساعات الذكية | نظام إدارة المخزن والمبيعات المطور</title>
+    <title>خزانة الساعات الذكية | النظام الإداري والمحاسبي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -27,17 +27,16 @@
         /* لوحة الإحصائيات العلوية */
         .dashboard-top {
             display: flex; justify-content: space-between; align-items: center; gap: 2rem;
-            margin-bottom: 2.5rem; background: rgba(15, 15, 20, 0.5);
-            border: 1px solid rgba(191, 149, 63, 0.2); border-radius: 20px;
-            padding: 1.5rem; backdrop-filter: blur(10px); flex-wrap: wrap;
+            margin-bottom: 2.5rem; background: rgba(15, 15, 20, 0.5); border: 1px solid rgba(191, 149, 63, 0.2);
+            border-radius: 20px; padding: 1.5rem; backdrop-filter: blur(10px); flex-wrap: wrap;
         }
 
         /* القسم المالي */
         .financial-side { display: flex; gap: 1.5rem; flex-wrap: wrap; }
         .financial-badge {
-            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(56, 239, 125, 0.3);
-            border-radius: 15px; padding: 15px 25px; display: flex; align-items: center;
-            gap: 15px; cursor: pointer; transition: all 0.4s ease; box-shadow: 0 0 15px rgba(56, 239, 125, 0.05);
+            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(56, 239, 125, 0.3); border-radius: 15px;
+            padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer;
+            transition: all 0.4s ease; box-shadow: 0 0 15px rgba(56, 239, 125, 0.05);
         }
         .financial-badge:hover {
             background: rgba(56, 239, 125, 0.1); transform: translateY(-5px) scale(1.02);
@@ -65,9 +64,8 @@
         .page-navigation { display: flex; justify-content: center; gap: 15px; margin-bottom: 2rem; flex-wrap: wrap; }
         .nav-tab-btn {
             background: #0f0f14; border: 1px solid rgba(191, 149, 63, 0.4); color: #bf953f;
-            padding: 14px 28px; border-radius: 12px; font-weight: 900; font-size: 1.1rem;
-            cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            padding: 14px 28px; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         .nav-tab-btn:hover { background: rgba(191, 149, 63, 0.1); transform: translateY(-2px); }
         .nav-tab-btn.active-tab {
@@ -77,7 +75,8 @@
 
         /* الصفحات */
         .page-content { display: none; opacity: 0; transform: translateY(15px); transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-        .page-content.active-view { opacity: 1; transform: translateY(0); }
+        .page-content.active-view { opacity: 1; transform: translateY(0); display: block; }
+        
         .layout-grid { display: grid; grid-template-columns: 400px 1fr; gap: 2rem; }
         @media (max-width: 1024px) { .layout-grid { grid-template-columns: 1fr; } }
 
@@ -285,16 +284,16 @@
                         <label>لون الساعة:</label>
                         <input list="color-options" id="prod-color" class="admin-input" placeholder="اختر لوناً أو اكتب لون جديد...">
                         <datalist id="color-options">
-                            <option value="أسود">
-                            <option value="فضي">
-                            <option value="ذهبي">
-                            <option value="روز جولد">
-                            <option value="أزرق">
-                            <option value="أخضر">
-                            <option value="أحمر">
-                            <option value="بني">
-                            <option value="رصاصي">
-                            <option value="أبيض">
+                            <option value="أسود"></option>
+                            <option value="فضي"></option>
+                            <option value="ذهبي"></option>
+                            <option value="روز جولد"></option>
+                            <option value="أزرق"></option>
+                            <option value="أخضر"></option>
+                            <option value="أحمر"></option>
+                            <option value="بني"></option>
+                            <option value="رصاصي"></option>
+                            <option value="أبيض"></option>
                         </datalist>
                     </div>
                     
@@ -394,7 +393,7 @@
         <div id="page-returns-view" class="page-content" style="display: none;">
             <div class="returns-page-container">
                 <div class="section-title" style="color: #bf953f; display: flex; justify-content: space-between;">
-                    <span><i class="fa-solid fa-right-left"></i> قسم إرجاع الطلبات الذكي</span>
+                    <span><i class="fa-solid fa-right-left"></i> قسم إرجاع الطلبات (حساب ذكي للخصومات)</span>
                 </div>
 
                 <div class="filter-wrapper">
@@ -443,7 +442,7 @@
     </div>
 
     <script>
-        // Data Base
+        // Data Base - المعالجة التلقائية للبيانات القديمة
         let inventory = JSON.parse(localStorage.getItem('hassan_vault_main')) || [];
         let salesLog = JSON.parse(localStorage.getItem('hassan_vault_sales')) || [];
         let archivedSalesLog = JSON.parse(localStorage.getItem('hassan_vault_archived_log')) || [];
@@ -482,7 +481,7 @@
             }, 50);
         }
 
-        // ================= إدارة أنواع الساعات الذكية =================
+        // ================= إدارة أنواع الساعات الذكية (الاسبانة) =================
         function openTypeModal() {
             document.getElementById('type-manager-modal').style.display = 'flex';
             renderTypesInModal();
@@ -532,7 +531,6 @@
             const filterTypeSel = document.getElementById('filter-type');
             const prodTypeSel = document.getElementById('prod-type');
             
-            // تعبئة فلتر البحث
             if (filterTypeSel) {
                 const currentFilterVal = filterTypeSel.value;
                 let filterHtml = `<option value="الجميع">كل الخامات والأنواع 🏷️</option>`;
@@ -541,7 +539,6 @@
                 filterTypeSel.value = watchTypes.includes(currentFilterVal) ? currentFilterVal : 'الجميع';
             }
 
-            // تعبئة حقل الإضافة
             if (prodTypeSel) {
                 const currentProdVal = prodTypeSel.value;
                 let prodHtml = '';
@@ -554,7 +551,7 @@
         }
         // ===============================================================
 
-        // 💰 إضافة منتج 
+        // 💰 إضافة منتج جديد
         function addNewProduct() {
             const title = document.getElementById('prod-title').value.trim();
             const type = document.getElementById('prod-type').value.trim();
@@ -566,7 +563,7 @@
             const imgInput = document.getElementById('prod-img-file');
 
             if(!title) { alert("⚠️ أكتب اسم موديل الساعة أولاً!"); return; }
-            if(!type) { alert("⚠️ يرجى تحديد نوع الساعة!"); return; }
+            if(!type) { alert("⚠️ يرجى تحديد أو كتابة نوع الساعة!"); return; }
 
             let defaultImg = "https://cdn-icons-png.flaticon.com/512/2888/2888636.png";
 
@@ -623,7 +620,6 @@
             returnPriceBoxes.forEach(el => el.style.display = isEditModeActive ? 'block' : 'none');
         }
 
-        // تحديثات التعديل الشامل
         function updateProductField(id, field, val) {
             const prod = inventory.find(p => p.id === id);
             if(prod) { 
@@ -644,7 +640,7 @@
             }
         }
 
-        // 💰 البيع 
+        // 💰 المبيعات
         function transferToSales(id) {
             const prod = inventory.find(p => p.id === id);
             if(!prod) return;
@@ -703,47 +699,25 @@
             }
         }
 
-        // 🔄 التحديث اللحظي لمعاينة الرواجع (الذكاء المالي)
-        function updateReturnPreview(id, basePrice, baseProfit) {
-            const qtyInput = document.getElementById(`gen-return-qty-${id}`);
-            const priceInput = document.getElementById(`gen-return-price-${id}`);
-            
-            const qty = qtyInput ? (Number(qtyInput.value) || 0) : 1;
-            const currentPrice = priceInput ? (Number(priceInput.value) || 0) : basePrice;
-
-            // حساب الربح المخصوم للقطعة الواحدة (لو السعر نزل، الربح المخصوم يقل)
-            const profitDiscount = baseProfit - (basePrice - currentPrice);
-
-            // الإجمالي للكمية المحددة
-            const totalMoneyDeducted = currentPrice * qty;
-            const totalProfitDeducted = profitDiscount * qty;
-
-            const previewDiv = document.getElementById(`return-preview-${id}`);
-            if(previewDiv) {
-                previewDiv.innerHTML = `
-                    إجمالي الخصم من الصندوق: <span style="color:#ef5350; font-weight:bold;">${totalMoneyDeducted.toLocaleString('en-US')} د.ع</span><br>
-                    الخصم من صافي الربح: <span style="color:#bf953f; font-weight:bold;">${totalProfitDeducted.toLocaleString('en-US')} د.ع</span>
-                `;
-            }
-        }
-
-        // 🚀 إرجاع عام من الأرشيف/الرواجع
+        // 🚀 إرجاع عام من الأرشيف/الرواجع (خصم مرن وحر للخانين)
         function processGeneralReturn(prodId) {
             const prod = inventory.find(p => p.id === prodId);
             if(!prod) return;
 
             const returnQtyInput = document.getElementById(`gen-return-qty-${prodId}`);
             const returnPriceInput = document.getElementById(`gen-return-price-${prodId}`);
+            const returnProfitInput = document.getElementById(`gen-return-profit-${prodId}`);
             
             const qtyToReturn = Number(returnQtyInput.value) || 0;
             
-            // إذا كان وضع التحرير مفعل والحقل موجود، يأخذ السعر منه. وإلا يأخذ السعر الافتراضي
+            // السعر المرتجع للقطعة الواحدة
             const priceReturned = (isEditModeActive && returnPriceInput) ? (Number(returnPriceInput.value) || 0) : (Number(prod.price) || 0);
             
-            // الحساب التلقائي للربح الصافي المرتجع
+            // الربح المرتجع للقطعة الواحدة
             const basePrice = Number(prod.price) || 0;
             const baseProfit = Number(prod.baseProfit) || 0;
-            const profitReturned = baseProfit - (basePrice - priceReturned);
+            const defaultProfitDeduct = baseProfit - (basePrice - priceReturned);
+            const profitReturned = (isEditModeActive && returnProfitInput) ? (Number(returnProfitInput.value) || 0) : defaultProfitDeduct;
 
             if(qtyToReturn <= 0) { alert("⚠️ يرجى إدخال كمية صحيحة أكبر من صفر!"); return; }
 
@@ -771,7 +745,7 @@
             }
         }
 
-        // إتمام المبيعات
+        // إتمام المبيعات وتصفير الأرشيف
         function archiveAllSales() {
             const activeSales = salesLog.filter(sale => (Number(sale.qtySold)||0) > 0);
             if(activeSales.length === 0) { alert("⚠️ لا توجد طلبات نشطة لإتمامها!"); return; }
@@ -853,6 +827,7 @@
                 }
             });
 
+            // السماح بظهور الأرقام السالبة للمبيعات للشفافية
             document.getElementById('stat-total-sold-count').innerText = totalSoldCount;
             document.getElementById('stat-total-sales-money').innerText = totalSalesMoney.toLocaleString('en-US') + " د.ع";
             document.getElementById('stat-total-profit').innerText = totalProfitMoney.toLocaleString('en-US') + " د.ع";
@@ -893,7 +868,6 @@
                     const defaultProfit = Number(prod.baseProfit) || 0;
                     const colorHtml = prod.color ? `<span class="color-badge"><i class="fa-solid fa-palette"></i> ${prod.color}</span>` : '';
 
-                    // هنا يتم بناء خيارات النوع بشكل دايناميكي لكارت التعديل
                     let typeOptionsHtml = '';
                     watchTypes.forEach(t => {
                         typeOptionsHtml += `<option value="${t}" ${prod.type === t ? 'selected' : ''}>${t}</option>`;
@@ -1023,19 +997,18 @@
                             
                             <div style="display:flex; flex-direction:column; gap:8px; margin-top: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px;">
                                 <div style="font-size: 0.85rem; color: #ef5350; font-weight: bold;">الكمية المسترجعة:</div>
-                                <input type="number" id="gen-return-qty-${prod.id}" class="admin-input sell-qty-input" value="1" min="1" title="كمية الإرجاع" style="border-color: #ef5350; color:#fff; width: 100%; text-align: center; margin-bottom: 8px;" oninput="updateReturnPreview(${prod.id}, ${defaultPrice}, ${defaultProfit})">
+                                <input type="number" id="gen-return-qty-${prod.id}" class="admin-input sell-qty-input" value="1" min="1" title="كمية الإرجاع" style="border-color: #ef5350; color:#fff; width: 100%; text-align: center; margin-bottom: 8px;">
                                 
                                 <div class="return-price-edit-control" style="background: rgba(239, 83, 80, 0.05); padding: 10px; border-radius: 10px; border: 1px dashed #ef5350; margin-bottom: 8px;">
-                                    <div style="font-size: 0.85rem; color: #ef5350; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-pen-to-square"></i> تعديل سعر الإرجاع (الخانة الوحيدة):</div>
-                                    <input type="number" id="gen-return-price-${prod.id}" class="admin-input" step="1000" value="${defaultPrice}" title="سعر القطعة المرتجع" style="border-color: #ef5350; color:#fff; text-align:center; padding: 6px; font-size: 0.9rem;" oninput="updateReturnPreview(${prod.id}, ${defaultPrice}, ${defaultProfit})">
+                                    <div style="font-size: 0.85rem; color: #ef5350; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-pen-to-square"></i> إعدادات الخصم الحر (للقطعة الواحدة):</div>
+                                    <label style="font-size:0.8rem; color:#a1a1aa; margin-bottom:2px;">المبلغ المخصوم من الإجمالي:</label>
+                                    <input type="number" id="gen-return-price-${prod.id}" class="admin-input" step="1000" value="${defaultPrice}" title="المبلغ المخصوم من إجمالي الصندوق" style="border-color: #ef5350; color:#fff; text-align:center; padding: 6px; font-size: 0.9rem; margin-bottom: 8px;">
+                                    
+                                    <label style="font-size:0.8rem; color:#a1a1aa; margin-bottom:2px;">الربح الصافي المخصوم:</label>
+                                    <input type="number" id="gen-return-profit-${prod.id}" class="admin-input" step="1000" value="${defaultProfit}" title="المبلغ المخصوم من صافي الربح" style="border-color: #bf953f; color:#fff; text-align:center; padding: 6px; font-size: 0.9rem;">
                                 </div>
 
-                                <div id="return-preview-${prod.id}" style="font-size: 0.85rem; color: #38ef7d; margin-top: 5px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; text-align: center;">
-                                    إجمالي الخصم من الصندوق: <span style="color:#ef5350; font-weight:bold;">${defaultPrice.toLocaleString('en-US')} د.ع</span><br>
-                                    الخصم من صافي الربح: <span style="color:#bf953f; font-weight:bold;">${defaultProfit.toLocaleString('en-US')} د.ع</span>
-                                </div>
-
-                                <button class="sell-submit-btn" style="width:100%; background:rgba(239,83,80,0.1); color:#ef5350; border-color:#ef5350; margin-top: 5px;" onclick="processGeneralReturn(${prod.id})">
+                                <button class="sell-submit-btn" style="width:100%; background:rgba(239,83,80,0.1); color:#ef5350; border-color:#ef5350;" onclick="processGeneralReturn(${prod.id})">
                                     <i class="fa-solid fa-right-left"></i> تأكيد إرجاع وتوثيق مالي
                                 </button>
                             </div>
