@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -97,9 +96,9 @@
         .action-btn { background: linear-gradient(45deg, #bf953f, #b38728); color: #050508; width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .action-btn:hover { box-shadow: 0 0 25px rgba(191, 149, 63, 0.4); transform: translateY(-2px); }
 
-        /* النوافذ المنبثقة (Modals) للأنواع والألوان */
+        /* النوافذ المنبثقة (Modals) للأنواع والألوان والإعدادات */
         .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 9999; display: none; justify-content: center; align-items: center; }
-        .custom-modal-box { background: #0f0f14; border: 1px solid #bf953f; border-radius: 15px; padding: 2rem; width: 90%; max-width: 450px; box-shadow: 0 0 30px rgba(191,149,63,0.3); }
+        .custom-modal-box { background: #0f0f14; border: 1px solid #bf953f; border-radius: 15px; padding: 2rem; width: 90%; max-width: 500px; box-shadow: 0 0 30px rgba(191,149,63,0.3); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(191,149,63,0.3); padding-bottom: 15px; margin-bottom: 15px; }
         .modal-header h3 { color: #bf953f; margin: 0; }
         .close-modal-btn { background: none; border: none; color: #ef5350; font-size: 1.5rem; cursor: pointer; }
@@ -112,7 +111,7 @@
         .search-box { flex: 2; min-width: 250px; position: relative; }
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #bf953f; }
         .search-box .admin-input { padding-left: 40px; }
-        .filter-box { flex: 1; min-width: 160px; }
+        .filter-box { flex: 1; min-width: 140px; }
         .top-ctrl-btn { background: #15151a; border: 1px solid #bf953f; color: #bf953f; padding: 12px 18px; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 0.95rem; white-space: nowrap; }
         .top-ctrl-btn:hover { background: rgba(191, 149, 63, 0.1); }
         .top-ctrl-btn.active { background: #bf953f; color: #000; box-shadow: 0 0 15px #bf953f; }
@@ -178,6 +177,10 @@
         .profit-positive { color: #bf953f; }
         .profit-negative { color: #ef5350; }
         .log-return-row { background: rgba(239, 83, 80, 0.05) !important; border-left: 4px solid #ef5350; }
+        
+        .settings-input-group { margin-bottom: 15px; }
+        .settings-input-group label { display: block; color: #a1a1aa; font-size: 0.85rem; margin-bottom: 5px; }
+        .settings-input-group input { font-family: monospace; text-align: left; direction: ltr; }
     </style>
 </head>
 <body>
@@ -207,6 +210,35 @@
                 <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addNewColorFromModal()"><i class="fa-solid fa-plus"></i> إضافة</button>
             </div>
             <div id="colors-list-container" style="max-height: 250px; overflow-y: auto; padding-right: 5px;"></div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-gear"></i> إعدادات الإشعارات (Discord)</h3>
+                <button class="close-modal-btn" onclick="closeSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p style="font-size: 0.85rem; color: #a1a1aa; margin-bottom: 15px;">أدخل روابط الـ Webhook الخاصة بك لربط النظام وتلقي الإشعارات التلقائية.</p>
+            
+            <div class="settings-input-group">
+                <label><i class="fa-solid fa-circle-xmark" style="color:#ef5350;"></i> إشعار نفاد الكمية للموديل:</label>
+                <input type="text" id="webhook-out" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+            </div>
+            <div class="settings-input-group">
+                <label><i class="fa-solid fa-check-circle" style="color:#38ef7d;"></i> إشعار رجوع توفر الساعة بالمخزن:</label>
+                <input type="text" id="webhook-in" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+            </div>
+            <div class="settings-input-group">
+                <label><i class="fa-solid fa-clipboard-list" style="color:#bf953f;"></i> إشعار تصفير السجل اليومي (الترحيل):</label>
+                <input type="text" id="webhook-daily" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+            </div>
+            <div class="settings-input-group">
+                <label><i class="fa-solid fa-money-bill-transfer" style="color:#a1a1aa;"></i> إشعار سحب الأموال والإجمالي (تصفير الأرشيف):</label>
+                <input type="text" id="webhook-finance" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+            </div>
+            
+            <button class="action-btn" style="margin-top: 20px;" onclick="saveWebhooks()"><i class="fa-solid fa-floppy-disk"></i> حفظ الإعدادات</button>
         </div>
     </div>
 
@@ -263,6 +295,9 @@
             </button>
             <button id="tab-logs" class="nav-tab-btn" style="display: none;" onclick="switchPage('logs')">
                 سجل الأرشيف
+            </button>
+            <button class="nav-tab-btn" onclick="openSettingsModal()" style="border-color: #a1a1aa; color: #a1a1aa;">
+                <i class="fa-solid fa-gear"></i> الإعدادات
             </button>
         </div>
 
@@ -329,7 +364,7 @@
 
                 <div>
                     <div class="filter-wrapper">
-                        <div style="display: flex; gap: 12px; flex: 1;">
+                        <div style="display: flex; gap: 12px; flex: 1; flex-wrap: wrap;">
                             <div class="search-box">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                                 <input type="text" id="search-input" class="admin-input" placeholder="ابحث باسم الساعة أو اللون..." oninput="renderInventory()">
@@ -339,6 +374,11 @@
                                     <option value="الكل">جميع الحالات 🔎</option>
                                     <option value="متوفر">المتوفر فقط ✅</option>
                                     <option value="غير_متوفر">النافذ 🚨</option>
+                                </select>
+                            </div>
+                            <div class="filter-box">
+                                <select id="filter-color" class="admin-input" onchange="renderInventory()">
+                                    <option value="الجميع">كل الألوان 🎨</option>
                                 </select>
                             </div>
                             <div class="filter-box">
@@ -411,7 +451,7 @@
                         <tbody id="archived-logs-container"></tbody>
                     </table>
                 </div>
-                <button class="reset-archived-btn" onclick="resetArchivedLogs()"><i class="fa-solid fa-triangle-exclamation"></i> تصفير الأرشيف المالي الكلي (يتطلب صلاحيات)</button>
+                <button class="reset-archived-btn" onclick="resetArchivedLogs()"><i class="fa-solid fa-triangle-exclamation"></i> تصفير الأرشيف المالي الكلي وسحب الأموال (يتطلب صلاحيات)</button>
             </div>
         </div>
 
@@ -423,6 +463,9 @@
         let salesLog = JSON.parse(localStorage.getItem('hassan_vault_sales')) || [];
         let archivedSalesLog = JSON.parse(localStorage.getItem('hassan_vault_archived_log')) || [];
         let isEditModeActive = false; 
+
+        // إعدادات Webhooks
+        let webhooks = JSON.parse(localStorage.getItem('hassan_vault_webhooks')) || { outOfStock: "", backInStock: "", dailyReset: "", financialReset: "" };
 
         // قائمة الأنواع والألوان
         let watchTypes = JSON.parse(localStorage.getItem('hassan_vault_types')) || ["كتان", "ربر", "حديد", "حديد ملون", "جلد", "أوتوماتيك"];
@@ -456,11 +499,47 @@
             }, 50);
         }
 
-        // ================= إدارة الأنواع (الاسبانة) =================
-        function openTypeModal() {
-            document.getElementById('type-manager-modal').style.display = 'flex';
-            renderTypesInModal();
+        // ================= إدارة الإعدادات والإشعارات =================
+        function openSettingsModal() {
+            document.getElementById('webhook-out').value = webhooks.outOfStock || "";
+            document.getElementById('webhook-in').value = webhooks.backInStock || "";
+            document.getElementById('webhook-daily').value = webhooks.dailyReset || "";
+            document.getElementById('webhook-finance').value = webhooks.financialReset || "";
+            document.getElementById('settings-modal').style.display = 'flex';
         }
+        function closeSettingsModal() { document.getElementById('settings-modal').style.display = 'none'; }
+        
+        function saveWebhooks() {
+            webhooks.outOfStock = document.getElementById('webhook-out').value.trim();
+            webhooks.backInStock = document.getElementById('webhook-in').value.trim();
+            webhooks.dailyReset = document.getElementById('webhook-daily').value.trim();
+            webhooks.financialReset = document.getElementById('webhook-finance').value.trim();
+            localStorage.setItem('hassan_vault_webhooks', JSON.stringify(webhooks));
+            alert("✅ تم حفظ إعدادات الـ Webhooks بنجاح!");
+            closeSettingsModal();
+        }
+
+        function sendDiscordWebhook(type, message) {
+            const url = webhooks[type];
+            if (!url) return;
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: message })
+            }).catch(e => console.error("Webhook Error:", e));
+        }
+
+        // دالة فحص تغير الكمية لإرسال الإشعارات
+        function checkStockWebhooks(prod, oldQty, newQty) {
+            if (oldQty > 0 && newQty === 0) {
+                sendDiscordWebhook('outOfStock', `🚨 **نفدت الكمية تماماً بالمخزن!**\n⌚ الموديل: **${prod.title}**\n🎨 اللون: ${prod.color || 'غير محدد'}\n🏷️ النوع: ${prod.type}`);
+            } else if (oldQty === 0 && newQty > 0) {
+                sendDiscordWebhook('backInStock', `✅ **توفرت الساعة من جديد!**\n⌚ الموديل: **${prod.title}**\n🎨 اللون: ${prod.color || 'غير محدد'}\n📦 الكمية المتاحة الآن: **${newQty} قطعة**`);
+            }
+        }
+
+        // ================= إدارة الأنواع (الاسبانة) =================
+        function openTypeModal() { document.getElementById('type-manager-modal').style.display = 'flex'; renderTypesInModal(); }
         function closeTypeModal() { document.getElementById('type-manager-modal').style.display = 'none'; }
         function renderTypesInModal() {
             const container = document.getElementById('types-list-container');
@@ -485,10 +564,7 @@
         }
 
         // ================= إدارة الألوان (الاسبانة) =================
-        function openColorModal() {
-            document.getElementById('color-manager-modal').style.display = 'flex';
-            renderColorsInModal();
-        }
+        function openColorModal() { document.getElementById('color-manager-modal').style.display = 'flex'; renderColorsInModal(); }
         function closeColorModal() { document.getElementById('color-manager-modal').style.display = 'none'; }
         function renderColorsInModal() {
             const container = document.getElementById('colors-list-container');
@@ -515,13 +591,22 @@
         // ================= تحديث القوائم =================
         function updateDynamicFilters() {
             const filterTypeSel = document.getElementById('filter-type');
+            const filterColorSel = document.getElementById('filter-color');
             const prodTypeSel = document.getElementById('prod-type');
+            
             if (filterTypeSel) {
                 const currentFilterVal = filterTypeSel.value;
                 let filterHtml = `<option value="الجميع">كل الخامات والأنواع 🏷️</option>`;
                 watchTypes.forEach(t => filterHtml += `<option value="${t}">${t}</option>`);
                 filterTypeSel.innerHTML = filterHtml;
                 filterTypeSel.value = watchTypes.includes(currentFilterVal) ? currentFilterVal : 'الجميع';
+            }
+            if (filterColorSel) {
+                const currentColorVal = filterColorSel.value;
+                let colorFilterHtml = `<option value="الجميع">كل الألوان 🎨</option>`;
+                watchColors.forEach(c => colorFilterHtml += `<option value="${c}">${c}</option>`);
+                filterColorSel.innerHTML = colorFilterHtml;
+                filterColorSel.value = watchColors.includes(currentColorVal) ? currentColorVal : 'الجميع';
             }
             if (prodTypeSel) {
                 const currentProdVal = prodTypeSel.value;
@@ -609,7 +694,13 @@
         
         function changeQty(id, amount) {
             const prod = inventory.find(p => p.id === id);
-            if(prod) { prod.qty = Math.max(0, (Number(prod.qty)||0) + amount); syncAndRefresh(); }
+            if(prod) { 
+                const oldQty = Number(prod.qty) || 0;
+                const newQty = Math.max(0, oldQty + amount);
+                prod.qty = newQty; 
+                checkStockWebhooks(prod, oldQty, newQty);
+                syncAndRefresh(); 
+            }
         }
 
         function deleteProduct(id) {
@@ -618,7 +709,6 @@
             }
         }
 
-        // 🔄 الحساب التلقائي للربح أثناء البيع المباشر من المخزن
         function autoCalculateSaleProfit(prodId, basePrice, baseProfit) {
             const priceInput = document.getElementById(`sell-price-${prodId}`);
             const profitInput = document.getElementById(`sell-profit-${prodId}`);
@@ -642,17 +732,20 @@
             const sellQty = Number(sellQtyInput.value) || 0;
             const salePrice = Number(sellPriceInput.value) || 0;
             const sellNote = sellNoteInput.value.trim();
+            const oldQty = Number(prod.qty) || 0;
 
             if(sellQty <= 0) { alert("⚠️ يرجى تحديد كمية صحيحة لبيعها!"); return; }
-            if(sellQty > (Number(prod.qty)||0)) { alert(`⚠️ لا تملك هذه الكمية بالمخزن!`); return; }
+            if(sellQty > oldQty) { alert(`⚠️ لا تملك هذه الكمية بالمخزن!`); return; }
 
             const basePrice = Number(prod.price) || 0;
             const baseProfit = Number(prod.baseProfit) || 0;
-            
-            // الاعتماد على الربح المكتوب في الخانة أو حسابه تلقائياً
             const actualProfit = sellProfitInput ? (Number(sellProfitInput.value) || 0) : (baseProfit - (basePrice - salePrice));
 
-            prod.qty = (Number(prod.qty)||0) - sellQty;
+            const newQty = oldQty - sellQty;
+            prod.qty = newQty;
+            
+            // فحص إرسال الإشعار بنفاد الكمية
+            checkStockWebhooks(prod, oldQty, newQty);
 
             const now = new Date();
             const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + " - " + now.toLocaleDateString('ar-EG');
@@ -680,26 +773,29 @@
                 if(confirm(`⚠️ هل أنت متأكد من استرجاع (${returnAmount}) وإعادتها للمخزن؟`)) {
                     sale.qtySold = (Number(sale.qtySold)||0) - returnAmount;
                     const prod = inventory.find(p => p.id === sale.productId);
-                    if(prod) prod.qty = (Number(prod.qty)||0) + returnAmount;
+                    if(prod) {
+                        const oldQty = Number(prod.qty) || 0;
+                        const newQty = oldQty + returnAmount;
+                        prod.qty = newQty;
+                        checkStockWebhooks(prod, oldQty, newQty);
+                    }
                     if((Number(sale.qtySold)||0) === 0) salesLog.splice(saleIndex, 1);
                     syncAndRefresh();
                 }
             }
         }
 
-        // 🔄 الحساب التلقائي للربح في قسم الرواجع (بناءً على السعر المخصوم المدخل يدوياً)
         function autoCalculateReturnProfit(prodId, basePrice, baseProfit) {
             const priceInput = document.getElementById(`gen-return-price-${prodId}`);
             const profitInput = document.getElementById(`gen-return-profit-${prodId}`);
             if(priceInput && profitInput) {
                 const currentPrice = Number(priceInput.value) || 0;
-                // الربح ينقص بنفس مقدار النقص في السعر
                 const newProfit = baseProfit - (basePrice - currentPrice);
                 profitInput.value = newProfit;
             }
         }
 
-        // 🚀 إرجاع عام من الأرشيف/الرواجع (ذكي، مرتب، وحر التعديل)
+        // 🚀 إرجاع عام من الأرشيف/الرواجع
         function processGeneralReturn(prodId) {
             const prod = inventory.find(p => p.id === prodId);
             if(!prod) return;
@@ -718,7 +814,11 @@
             const totalProfit = profitReturned * qtyToReturn;
 
             if(confirm(`⚠️ تأكيد الإرجاع:\nالكمية: (${qtyToReturn}) قطعة.\nسيتم خصم [${totalMoney.toLocaleString('en-US')} د.ع] من إجمالي الصندوق.\nوسيتم خصم [${totalProfit.toLocaleString('en-US')} د.ع] من الأرباح.`)) {
-                prod.qty = (Number(prod.qty)||0) + qtyToReturn;
+                
+                const oldQty = Number(prod.qty) || 0;
+                const newQty = oldQty + qtyToReturn;
+                prod.qty = newQty;
+                checkStockWebhooks(prod, oldQty, newQty);
                 
                 const now = new Date();
                 const archiveTimeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) + " - " + now.toLocaleDateString('ar-EG');
@@ -734,7 +834,7 @@
             }
         }
 
-        // إتمام المبيعات وتصفير الأرشيف
+        // إتمام المبيعات وتصفير الأرشيف اليومي
         function archiveAllSales() {
             const activeSales = salesLog.filter(sale => (Number(sale.qtySold)||0) > 0);
             if(activeSales.length === 0) { alert("⚠️ لا توجد طلبات نشطة لإتمامها!"); return; }
@@ -748,13 +848,40 @@
                     archivedSalesLog.unshift(archivedSale);
                 });
                 
-                salesLog = []; syncAndRefresh(); switchPage('logs');
+                salesLog = []; 
+                syncAndRefresh(); 
+                
+                // إرسال إشعار الديسكورد بتصفير السجل اليومي
+                sendDiscordWebhook('dailyReset', `📋 **تم تصفير السجل اليومي للمبيعات**\n✅ تم ترحيل جميع المبيعات النشطة إلى الأرشيف المالي بنجاح في ${archiveTimeStr}`);
+                
+                switchPage('logs');
             }
         }
 
+        // سحب الأموال والتصفير الكلي
         function resetArchivedLogs() {
-            const pass = prompt("⚠️ سيتم تصفير الأرشيف المالي بالكامل.\nالرجاء إدخال كلمة المرور:");
-            if (pass === "admin") { archivedSalesLog = []; syncAndRefresh(); alert("✅ تم تصفير الأرشيف بنجاح!"); } 
+            const pass = prompt("⚠️ سيتم سحب الأموال وتصفير الأرشيف المالي بالكامل.\nالرجاء إدخال كلمة المرور:");
+            if (pass === "admin") { 
+                
+                let totalSalesMoney = 0; let totalProfitMoney = 0;
+                archivedSalesLog.forEach(log => {
+                    if (log.type === 'return') {
+                        let qty = Number(log.qtyReturned) || 0; let price = Number(log.salePrice) || 0; let profit = Number(log.actualProfit) || 0;
+                        totalSalesMoney -= (qty * price); totalProfitMoney -= (qty * profit);
+                    } else {
+                        let qty = Number(log.qtySold) || 0; let price = Number(log.salePrice) || 0; let profit = Number(log.actualProfit) || 0;
+                        totalSalesMoney += (qty * price); totalProfitMoney += (qty * profit);
+                    }
+                });
+
+                archivedSalesLog = []; 
+                syncAndRefresh(); 
+                
+                // إرسال إشعار سحب الأموال 
+                sendDiscordWebhook('financialReset', `💰 **تم سحب الأموال وتصفير الأرشيف المالي بالكامل**\n💵 إجمالي المبالغ المسحوبة: **${totalSalesMoney.toLocaleString('en-US')} د.ع**\n📈 صافي الأرباح: **${totalProfitMoney.toLocaleString('en-US')} د.ع**`);
+                
+                alert("✅ تم سحب الأموال وتصفير الأرشيف بنجاح!"); 
+            } 
             else if (pass !== null) { alert("❌ كلمة المرور خاطئة!"); }
         }
 
@@ -806,17 +933,21 @@
             const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
             const filterStockStatus = document.getElementById('filter-stock-status').value;
             const filterType = document.getElementById('filter-type').value;
+            const filterColor = document.getElementById('filter-color').value;
 
             container.innerHTML = '';
             const filteredData = inventory.filter(prod => {
                 const matchesType = (filterType === 'الجميع' || prod.type === filterType);
+                const matchesColor = (filterColor === 'الجميع' || prod.color === filterColor);
                 let matchesStock = false;
                 let qty = Number(prod.qty) || 0;
                 if(filterStockStatus === 'الكل') matchesStock = true;
                 else if(filterStockStatus === 'متوفر') matchesStock = (qty > 0);
                 else if(filterStockStatus === 'غير_متوفر') matchesStock = (qty === 0);
+                
                 const matchesSearch = prod.title.toLowerCase().includes(searchQuery) || (prod.desc && prod.desc.toLowerCase().includes(searchQuery)) || (prod.color && prod.color.toLowerCase().includes(searchQuery));
-                return matchesType && matchesStock && matchesSearch;
+                
+                return matchesType && matchesColor && matchesStock && matchesSearch;
             });
 
             if(filteredData.length === 0) {
@@ -1044,5 +1175,3 @@
     </script>
 </body>
 </html>
-
-```
