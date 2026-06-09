@@ -97,7 +97,7 @@
         .action-btn { background: linear-gradient(45deg, #bf953f, #b38728); color: #050508; width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .action-btn:hover { box-shadow: 0 0 25px rgba(191, 149, 63, 0.4); transform: translateY(-2px); }
 
-        /* نافذة إدارة الأنواع المنبثقة (Modal) */
+        /* النوافذ المنبثقة (Modals) للأنواع والألوان */
         .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 9999; display: none; justify-content: center; align-items: center; }
         .custom-modal-box { background: #0f0f14; border: 1px solid #bf953f; border-radius: 15px; padding: 2rem; width: 90%; max-width: 450px; box-shadow: 0 0 30px rgba(191,149,63,0.3); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(191,149,63,0.3); padding-bottom: 15px; margin-bottom: 15px; }
@@ -152,9 +152,10 @@
         .sell-submit-btn:hover { background: #bf953f; color: #050508; box-shadow: 0 4px 12px rgba(191,149,63,0.2); }
 
         /* صفحة المبيعات والجداول */
-        .sales-page-container { width: 100%; background: rgba(15, 15, 20, 0.7); border: 1px solid #38ef7d; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; }
-        .returns-page-container { width: 100%; background: rgba(15, 15, 20, 0.7); border: 1px solid #bf953f; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; }
-        .logs-page-container { width: 100%; background: rgba(15, 15, 20, 0.7); border: 1px solid #a1a1aa; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; }
+        .sales-page-container, .returns-page-container, .logs-page-container { width: 100%; background: rgba(15, 15, 20, 0.7); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; }
+        .sales-page-container { border: 1px solid #38ef7d; }
+        .returns-page-container { border: 1px solid #bf953f; }
+        .logs-page-container { border: 1px solid #a1a1aa; }
         
         .table-responsive { overflow-x: auto; margin-top: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
         .orders-table { width: 100%; border-collapse: collapse; font-size: 1rem; min-width: 900px; text-align: right; }
@@ -188,15 +189,28 @@
     <div id="type-manager-modal" class="custom-modal-overlay">
         <div class="custom-modal-box">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-list"></i> إضافة أو حذف الأنواع</h3>
+                <h3><i class="fa-solid fa-list"></i> إدارة الأنواع</h3>
                 <button class="close-modal-btn" onclick="closeTypeModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                <input type="text" id="new-type-input" class="admin-input" placeholder="اكتب نوع جديد هنا..." style="flex: 1;">
-                <button class="action-btn" style="width: auto; padding: 10px 20px; font-size: 1rem;" onclick="addNewTypeFromModal()"><i class="fa-solid fa-plus"></i> إضافة</button>
+                <input type="text" id="new-type-input" class="admin-input" placeholder="اكتب نوع جديد..." style="flex: 1;">
+                <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addNewTypeFromModal()"><i class="fa-solid fa-plus"></i> إضافة</button>
             </div>
-            <div id="types-list-container" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
-                </div>
+            <div id="types-list-container" style="max-height: 250px; overflow-y: auto; padding-right: 5px;"></div>
+        </div>
+    </div>
+
+    <div id="color-manager-modal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-palette"></i> إدارة الألوان</h3>
+                <button class="close-modal-btn" onclick="closeColorModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                <input type="text" id="new-color-input" class="admin-input" placeholder="اكتب لون جديد..." style="flex: 1;">
+                <button class="action-btn" style="width: auto; padding: 10px 20px;" onclick="addNewColorFromModal()"><i class="fa-solid fa-plus"></i> إضافة</button>
+            </div>
+            <div id="colors-list-container" style="max-height: 250px; overflow-y: auto; padding-right: 5px;"></div>
         </div>
     </div>
 
@@ -256,7 +270,7 @@
             </button>
         </div>
 
-        <div id="page-inventory-view" class="page-content active-view" style="display: block;">
+        <div id="page-inventory-view" class="page-content active-view">
             <div class="layout-grid">
                 <div class="glass-box">
                     <div class="section-title"><i class="fa-solid fa-square-plus"></i> إضافة ساعة جديدة</div>
@@ -269,9 +283,8 @@
                     <div class="form-group">
                         <label>نوع وهيكل الساعة:</label>
                         <div style="display: flex; gap: 10px;">
-                            <select id="prod-type" class="admin-input">
-                                </select>
-                            <button class="top-ctrl-btn" style="padding: 0 15px;" onclick="openTypeModal()" title="إضافة أو حذف الأنواع"><i class="fa-solid fa-wrench"></i></button>
+                            <select id="prod-type" class="admin-input"></select>
+                            <button class="top-ctrl-btn" style="padding: 0 15px;" onclick="openTypeModal()" title="إدارة الأنواع (إضافة/حذف)"><i class="fa-solid fa-wrench"></i></button>
                         </div>
                     </div>
 
@@ -282,19 +295,11 @@
 
                     <div class="form-group">
                         <label>لون الساعة:</label>
-                        <input list="color-options" id="prod-color" class="admin-input" placeholder="اختر لوناً أو اكتب لون جديد...">
-                        <datalist id="color-options">
-                            <option value="أسود"></option>
-                            <option value="فضي"></option>
-                            <option value="ذهبي"></option>
-                            <option value="روز جولد"></option>
-                            <option value="أزرق"></option>
-                            <option value="أخضر"></option>
-                            <option value="أحمر"></option>
-                            <option value="بني"></option>
-                            <option value="رصاصي"></option>
-                            <option value="أبيض"></option>
-                        </datalist>
+                        <div style="display: flex; gap: 10px;">
+                            <input list="color-options" id="prod-color" class="admin-input" placeholder="اختر أو اكتب لوناً...">
+                            <datalist id="color-options"></datalist>
+                            <button class="top-ctrl-btn" style="padding: 0 15px;" onclick="openColorModal()" title="إدارة الألوان (إضافة/حذف)"><i class="fa-solid fa-wrench"></i></button>
+                        </div>
                     </div>
                     
                     <div style="display: flex; gap: 15px;">
@@ -317,17 +322,13 @@
                             <label>صورة الساعة:</label>
                             <div class="file-upload-wrapper">
                                 <input type="file" id="prod-img-file" class="file-upload-input" accept="image/*" onchange="handleFileLabel()">
-                                <div class="file-upload-btn">
-                                    <i class="fa-solid fa-camera"></i> رفع صورة
-                                </div>
+                                <div class="file-upload-btn"><i class="fa-solid fa-camera"></i> رفع صورة</div>
                             </div>
                             <span id="file-name" class="file-name-display">لم يتم رفع صورة</span>
                         </div>
                     </div>
 
-                    <button class="action-btn" onclick="addNewProduct()">
-                        <i class="fa-solid fa-download"></i> حفظ في المخزن
-                    </button>
+                    <button class="action-btn" onclick="addNewProduct()"><i class="fa-solid fa-download"></i> حفظ في المخزن</button>
                 </div>
 
                 <div>
@@ -350,9 +351,7 @@
                                 </select>
                             </div>
                         </div>
-                        <button id="edit-mode-toggle" class="top-ctrl-btn" onclick="toggleEditMode()">
-                            <i class="fa-solid fa-sliders"></i> وضع التحرير
-                        </button>
+                        <button id="edit-mode-toggle" class="top-ctrl-btn" onclick="toggleEditMode()"><i class="fa-solid fa-sliders"></i> وضع التحرير</button>
                     </div>
 
                     <div class="inventory-grid" id="inventory-container"></div>
@@ -360,12 +359,9 @@
             </div>
         </div>
 
-        <div id="page-sales-view" class="page-content" style="display: none;">
+        <div id="page-sales-view" class="page-content">
             <div class="sales-page-container">
-                <div class="section-title" style="color: #38ef7d; border-color: rgba(56, 239, 125, 0.3);">
-                    <i class="fa-solid fa-file-invoice-dollar"></i> المبيعات النشطة (قيد التحضير)
-                </div>
-                
+                <div class="section-title" style="color: #38ef7d; border-color: rgba(56, 239, 125, 0.3);"><i class="fa-solid fa-file-invoice-dollar"></i> المبيعات النشطة (قيد التحضير)</div>
                 <div class="table-responsive">
                     <table class="orders-table">
                         <thead>
@@ -379,43 +375,31 @@
                                 <th>إجراء</th>
                             </tr>
                         </thead>
-                        <tbody id="sales-container">
-                        </tbody>
+                        <tbody id="sales-container"></tbody>
                     </table>
                 </div>
-
-                <button class="btn-archive-all" onclick="archiveAllSales()">
-                    <i class="fa-solid fa-check-double"></i> إتمام وتصفير السجل للترحيل
-                </button>
+                <button class="btn-archive-all" onclick="archiveAllSales()"><i class="fa-solid fa-check-double"></i> إتمام وتصفير السجل للترحيل</button>
             </div>
         </div>
 
-        <div id="page-returns-view" class="page-content" style="display: none;">
+        <div id="page-returns-view" class="page-content">
             <div class="returns-page-container">
                 <div class="section-title" style="color: #bf953f; display: flex; justify-content: space-between;">
-                    <span><i class="fa-solid fa-right-left"></i> قسم إرجاع الطلبات (حساب ذكي للخصومات)</span>
+                    <span><i class="fa-solid fa-right-left"></i> قسم إرجاع الطلبات (حساب مالي ذكي للخصومات)</span>
                 </div>
-
                 <div class="filter-wrapper">
                     <div class="search-box">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="text" id="returns-search-input" class="admin-input" placeholder="ابحث باسم الساعة لإرجاعها..." oninput="renderReturnsPage()">
                     </div>
-                    <button id="returns-edit-mode-toggle" class="top-ctrl-btn" onclick="toggleEditMode()">
-                        <i class="fa-solid fa-sliders"></i> وضع التحرير
-                    </button>
                 </div>
-
                 <div class="inventory-grid" id="returns-container"></div>
             </div>
         </div>
 
-        <div id="page-logs-view" class="page-content" style="display: none;">
+        <div id="page-logs-view" class="page-content">
             <div class="logs-page-container">
-                <div class="section-title" style="color: #e4e4e7; border-color: rgba(255,255,255,0.2);">
-                    <i class="fa-solid fa-clipboard-list"></i> السجل الشامل للطلبات (الأرشيف المالي)
-                </div>
-                
+                <div class="section-title" style="color: #e4e4e7; border-color: rgba(255,255,255,0.2);"><i class="fa-solid fa-clipboard-list"></i> السجل الشامل للطلبات (الأرشيف المالي)</div>
                 <div class="table-responsive" style="margin-top: 0;">
                     <table class="orders-table logs-table">
                         <thead>
@@ -428,14 +412,10 @@
                                 <th>التوقيت</th>
                             </tr>
                         </thead>
-                        <tbody id="archived-logs-container">
-                        </tbody>
+                        <tbody id="archived-logs-container"></tbody>
                     </table>
                 </div>
-
-                <button class="reset-archived-btn" onclick="resetArchivedLogs()">
-                    <i class="fa-solid fa-triangle-exclamation"></i> تصفير الأرشيف المالي الكلي (يتطلب صلاحيات)
-                </button>
+                <button class="reset-archived-btn" onclick="resetArchivedLogs()"><i class="fa-solid fa-triangle-exclamation"></i> تصفير الأرشيف المالي الكلي (يتطلب صلاحيات)</button>
             </div>
         </div>
 
@@ -448,10 +428,10 @@
         let archivedSalesLog = JSON.parse(localStorage.getItem('hassan_vault_archived_log')) || [];
         let isEditModeActive = false; 
 
-        // قائمة الأنواع القابلة للتعديل والحذف
+        // قائمة الأنواع والألوان
         let watchTypes = JSON.parse(localStorage.getItem('hassan_vault_types')) || ["كتان", "ربر", "حديد", "حديد ملون", "جلد", "أوتوماتيك"];
+        let watchColors = JSON.parse(localStorage.getItem('hassan_vault_colors')) || ["أسود", "فضي", "ذهبي", "روز جولد", "أزرق", "أخضر", "أحمر", "بني", "رصاصي", "أبيض"];
 
-        // File Handler
         function handleFileLabel() {
             const input = document.getElementById('prod-img-file');
             const display = document.getElementById('file-name');
@@ -459,7 +439,6 @@
             else display.innerText = "لم يتم رفع صورة";
         }
 
-        // Navigation
         function switchPage(pageName) {
             const pages = ['inventory', 'sales', 'returns', 'logs'];
             pages.forEach(p => {
@@ -481,56 +460,67 @@
             }, 50);
         }
 
-        // ================= إدارة أنواع الساعات الذكية (الاسبانة) =================
+        // ================= إدارة الأنواع (الاسبانة) =================
         function openTypeModal() {
             document.getElementById('type-manager-modal').style.display = 'flex';
             renderTypesInModal();
         }
-
-        function closeTypeModal() {
-            document.getElementById('type-manager-modal').style.display = 'none';
-        }
-
+        function closeTypeModal() { document.getElementById('type-manager-modal').style.display = 'none'; }
         function renderTypesInModal() {
             const container = document.getElementById('types-list-container');
             container.innerHTML = '';
             watchTypes.forEach(t => {
-                container.innerHTML += `
-                    <div class="type-item">
-                        <span style="font-weight: bold; color: #fff;">${t}</span>
-                        <button onclick="deleteTypeFromModal('${t}')" title="حذف النوع"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
+                container.innerHTML += `<div class="type-item"><span style="font-weight: bold; color: #fff;">${t}</span><button onclick="deleteTypeFromModal('${t}')" title="حذف النوع"><i class="fa-solid fa-trash"></i></button></div>`;
             });
         }
-
         function addNewTypeFromModal() {
             const input = document.getElementById('new-type-input');
             const val = input.value.trim();
             if(val && !watchTypes.includes(val)) {
-                watchTypes.push(val);
-                localStorage.setItem('hassan_vault_types', JSON.stringify(watchTypes));
-                input.value = '';
-                renderTypesInModal();
-                updateDynamicFilters();
-            } else if (watchTypes.includes(val)) {
-                alert("هذا النوع موجود مسبقاً!");
-            }
+                watchTypes.push(val); localStorage.setItem('hassan_vault_types', JSON.stringify(watchTypes));
+                input.value = ''; renderTypesInModal(); updateDynamicFilters();
+            } else if (watchTypes.includes(val)) { alert("هذا النوع موجود مسبقاً!"); }
         }
-
         function deleteTypeFromModal(type) {
-            if(confirm(`هل أنت متأكد من حذف نوع "${type}" من القائمة؟`)) {
-                watchTypes = watchTypes.filter(t => t !== type);
-                localStorage.setItem('hassan_vault_types', JSON.stringify(watchTypes));
-                renderTypesInModal();
-                updateDynamicFilters();
+            if(confirm(`هل أنت متأكد من حذف نوع "${type}"؟`)) {
+                watchTypes = watchTypes.filter(t => t !== type); localStorage.setItem('hassan_vault_types', JSON.stringify(watchTypes));
+                renderTypesInModal(); updateDynamicFilters();
             }
         }
 
+        // ================= إدارة الألوان (الاسبانة) =================
+        function openColorModal() {
+            document.getElementById('color-manager-modal').style.display = 'flex';
+            renderColorsInModal();
+        }
+        function closeColorModal() { document.getElementById('color-manager-modal').style.display = 'none'; }
+        function renderColorsInModal() {
+            const container = document.getElementById('colors-list-container');
+            container.innerHTML = '';
+            watchColors.forEach(c => {
+                container.innerHTML += `<div class="type-item"><span style="font-weight: bold; color: #fff;">${c}</span><button onclick="deleteColorFromModal('${c}')" title="حذف اللون"><i class="fa-solid fa-trash"></i></button></div>`;
+            });
+        }
+        function addNewColorFromModal() {
+            const input = document.getElementById('new-color-input');
+            const val = input.value.trim();
+            if(val && !watchColors.includes(val)) {
+                watchColors.push(val); localStorage.setItem('hassan_vault_colors', JSON.stringify(watchColors));
+                input.value = ''; renderColorsInModal(); updateDynamicFilters();
+            } else if (watchColors.includes(val)) { alert("هذا اللون موجود مسبقاً!"); }
+        }
+        function deleteColorFromModal(color) {
+            if(confirm(`هل أنت متأكد من حذف لون "${color}"؟`)) {
+                watchColors = watchColors.filter(c => c !== color); localStorage.setItem('hassan_vault_colors', JSON.stringify(watchColors));
+                renderColorsInModal(); updateDynamicFilters();
+            }
+        }
+
+        // ================= تحديث القوائم =================
         function updateDynamicFilters() {
+            // تحديث الأنواع
             const filterTypeSel = document.getElementById('filter-type');
             const prodTypeSel = document.getElementById('prod-type');
-            
             if (filterTypeSel) {
                 const currentFilterVal = filterTypeSel.value;
                 let filterHtml = `<option value="الجميع">كل الخامات والأنواع 🏷️</option>`;
@@ -538,20 +528,24 @@
                 filterTypeSel.innerHTML = filterHtml;
                 filterTypeSel.value = watchTypes.includes(currentFilterVal) ? currentFilterVal : 'الجميع';
             }
-
             if (prodTypeSel) {
                 const currentProdVal = prodTypeSel.value;
                 let prodHtml = '';
                 watchTypes.forEach(t => prodHtml += `<option value="${t}">${t}</option>`);
                 prodTypeSel.innerHTML = prodHtml;
-                if(watchTypes.includes(currentProdVal)) {
-                    prodTypeSel.value = currentProdVal;
-                }
+                if(watchTypes.includes(currentProdVal)) prodTypeSel.value = currentProdVal;
+            }
+            
+            // تحديث الألوان
+            const colorOptions = document.getElementById('color-options');
+            if(colorOptions) {
+                let colorHtml = '';
+                watchColors.forEach(c => colorHtml += `<option value="${c}"></option>`);
+                colorOptions.innerHTML = colorHtml;
             }
         }
-        // ===============================================================
 
-        // 💰 إضافة منتج جديد
+        // 💰 إضافة منتج 
         function addNewProduct() {
             const title = document.getElementById('prod-title').value.trim();
             const type = document.getElementById('prod-type').value.trim();
@@ -563,10 +557,9 @@
             const imgInput = document.getElementById('prod-img-file');
 
             if(!title) { alert("⚠️ أكتب اسم موديل الساعة أولاً!"); return; }
-            if(!type) { alert("⚠️ يرجى تحديد أو كتابة نوع الساعة!"); return; }
+            if(!type) { alert("⚠️ يرجى تحديد نوع الساعة!"); return; }
 
             let defaultImg = "https://cdn-icons-png.flaticon.com/512/2888/2888636.png";
-
             if(imgInput.files && imgInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) { executeAdd(title, type, color, desc, qty, price, profit, e.target.result); };
@@ -581,27 +574,20 @@
             inventory.push(newWatch);
             syncAndRefresh();
 
-            document.getElementById('prod-title').value = ''; 
-            document.getElementById('prod-color').value = '';
-            document.getElementById('prod-desc').value = '';
-            document.getElementById('prod-qty').value = '5'; 
-            document.getElementById('prod-price').value = ''; 
-            document.getElementById('prod-profit').value = ''; 
-            document.getElementById('prod-img-file').value = '';
-            document.getElementById('file-name').innerText = "لم يتم رفع صورة";
+            document.getElementById('prod-title').value = ''; document.getElementById('prod-color').value = '';
+            document.getElementById('prod-desc').value = ''; document.getElementById('prod-qty').value = '5'; 
+            document.getElementById('prod-price').value = ''; document.getElementById('prod-profit').value = ''; 
+            document.getElementById('prod-img-file').value = ''; document.getElementById('file-name').innerText = "لم يتم رفع صورة";
         }
 
-        // وضع التحرير الشامل 
+        // وضع التحرير الشامل
         function toggleEditMode() {
             isEditModeActive = !isEditModeActive;
             const btnMain = document.getElementById('edit-mode-toggle');
-            const btnReturns = document.getElementById('returns-edit-mode-toggle');
             if(isEditModeActive) {
                 if(btnMain) btnMain.classList.add('active');
-                if(btnReturns) btnReturns.classList.add('active');
             } else {
                 if(btnMain) btnMain.classList.remove('active');
-                if(btnReturns) btnReturns.classList.remove('active');
             }
             applyEditModeVisibility();
         }
@@ -611,13 +597,11 @@
             const deleteBtns = document.querySelectorAll('.delete-card-btn');
             const sellBoxes = document.querySelectorAll('.sell-action-box');
             const fullEditBoxes = document.querySelectorAll('.full-edit-control');
-            const returnPriceBoxes = document.querySelectorAll('.return-price-edit-control');
             
             qtyControls.forEach(el => el.style.display = isEditModeActive ? 'flex' : 'none');
             deleteBtns.forEach(el => el.style.display = isEditModeActive ? 'block' : 'none');
             sellBoxes.forEach(el => el.style.display = isEditModeActive ? 'none' : 'flex');
             fullEditBoxes.forEach(el => el.style.display = isEditModeActive ? 'flex' : 'none');
-            returnPriceBoxes.forEach(el => el.style.display = isEditModeActive ? 'block' : 'none');
         }
 
         function updateProductField(id, field, val) {
@@ -667,14 +651,11 @@
 
             const saleItem = { 
                 id: Date.now(), productId: prod.id, title: prod.title, image: prod.image, 
-                qtySold: sellQty, salePrice: salePrice, actualProfit: actualProfit, 
-                note: sellNote, time: timeStr, type: 'sale'
+                qtySold: sellQty, salePrice: salePrice, actualProfit: actualProfit, note: sellNote, time: timeStr, type: 'sale'
             };
             
             salesLog.unshift(saleItem);
-            
-            sellQtyInput.value = '1'; sellNoteInput.value = '';
-            syncAndRefresh();
+            sellQtyInput.value = '1'; sellNoteInput.value = ''; syncAndRefresh();
         }
 
         function returnCustomQty(saleId) {
@@ -692,14 +673,25 @@
                     sale.qtySold = (Number(sale.qtySold)||0) - returnAmount;
                     const prod = inventory.find(p => p.id === sale.productId);
                     if(prod) prod.qty = (Number(prod.qty)||0) + returnAmount;
-
                     if((Number(sale.qtySold)||0) === 0) salesLog.splice(saleIndex, 1);
                     syncAndRefresh();
                 }
             }
         }
 
-        // 🚀 إرجاع عام من الأرشيف/الرواجع (خصم مرن وحر للخانين)
+        // 🔄 الحساب التلقائي للربح في قسم الرواجع (بناءً على السعر المخصوم المدخل يدوياً)
+        function autoCalculateReturnProfit(prodId, basePrice, baseProfit) {
+            const priceInput = document.getElementById(`gen-return-price-${prodId}`);
+            const profitInput = document.getElementById(`gen-return-profit-${prodId}`);
+            if(priceInput && profitInput) {
+                const currentPrice = Number(priceInput.value) || 0;
+                // الربح ينقص بنفس مقدار النقص في السعر
+                const newProfit = baseProfit - (basePrice - currentPrice);
+                profitInput.value = newProfit;
+            }
+        }
+
+        // 🚀 إرجاع عام من الأرشيف/الرواجع (ذكي، مرتب، وحر التعديل)
         function processGeneralReturn(prodId) {
             const prod = inventory.find(p => p.id === prodId);
             if(!prod) return;
@@ -709,22 +701,15 @@
             const returnProfitInput = document.getElementById(`gen-return-profit-${prodId}`);
             
             const qtyToReturn = Number(returnQtyInput.value) || 0;
-            
-            // السعر المرتجع للقطعة الواحدة
-            const priceReturned = (isEditModeActive && returnPriceInput) ? (Number(returnPriceInput.value) || 0) : (Number(prod.price) || 0);
-            
-            // الربح المرتجع للقطعة الواحدة
-            const basePrice = Number(prod.price) || 0;
-            const baseProfit = Number(prod.baseProfit) || 0;
-            const defaultProfitDeduct = baseProfit - (basePrice - priceReturned);
-            const profitReturned = (isEditModeActive && returnProfitInput) ? (Number(returnProfitInput.value) || 0) : defaultProfitDeduct;
+            const priceReturned = Number(returnPriceInput.value) || 0;
+            const profitReturned = Number(returnProfitInput.value) || 0;
 
             if(qtyToReturn <= 0) { alert("⚠️ يرجى إدخال كمية صحيحة أكبر من صفر!"); return; }
 
             const totalMoney = priceReturned * qtyToReturn;
             const totalProfit = profitReturned * qtyToReturn;
 
-            if(confirm(`⚠️ تأكيد الإرجاع:\nالكمية: (${qtyToReturn}) قطعة.\nسيتم خصم إجمالي [${totalMoney.toLocaleString('en-US')} د.ع] من الصندوق.\nوسيتم خصم [${totalProfit.toLocaleString('en-US')} د.ع] من الأرباح.`)) {
+            if(confirm(`⚠️ تأكيد الإرجاع:\nالكمية: (${qtyToReturn}) قطعة.\nسيتم خصم [${totalMoney.toLocaleString('en-US')} د.ع] من إجمالي الصندوق.\nوسيتم خصم [${totalProfit.toLocaleString('en-US')} د.ع] من الأرباح.`)) {
                 prod.qty = (Number(prod.qty)||0) + qtyToReturn;
                 
                 const now = new Date();
@@ -732,16 +717,12 @@
                 
                 const returnLogEntry = {
                     id: Date.now(), title: prod.title, image: prod.image,
-                    qtyReturned: qtyToReturn, note: 'إرجاع من قسم الرواجع', 
-                    time: archiveTimeStr, type: 'return',
-                    salePrice: priceReturned,
-                    actualProfit: profitReturned
+                    qtyReturned: qtyToReturn, note: 'إرجاع وتسوية مالية', 
+                    time: archiveTimeStr, type: 'return', salePrice: priceReturned, actualProfit: profitReturned
                 };
                 archivedSalesLog.unshift(returnLogEntry);
                 
-                returnQtyInput.value = '1';
-                syncAndRefresh();
-                alert("تم الإرجاع بنجاح وتوثيقه مالياً! ✅");
+                returnQtyInput.value = '1'; syncAndRefresh(); alert("تم الإرجاع بنجاح وتوثيقه مالياً! ✅");
             }
         }
 
@@ -759,21 +740,14 @@
                     archivedSalesLog.unshift(archivedSale);
                 });
                 
-                salesLog = [];
-                syncAndRefresh();
-                switchPage('logs');
+                salesLog = []; syncAndRefresh(); switchPage('logs');
             }
         }
 
         function resetArchivedLogs() {
             const pass = prompt("⚠️ سيتم تصفير الأرشيف المالي بالكامل.\nالرجاء إدخال كلمة المرور:");
-            if (pass === "admin") {
-                archivedSalesLog = []; 
-                syncAndRefresh();
-                alert("✅ تم تصفير الأرشيف بنجاح!");
-            } else if (pass !== null) {
-                alert("❌ كلمة المرور خاطئة!");
-            }
+            if (pass === "admin") { archivedSalesLog = []; syncAndRefresh(); alert("✅ تم تصفير الأرشيف بنجاح!"); } 
+            else if (pass !== null) { alert("❌ كلمة المرور خاطئة!"); }
         }
 
         function syncAndRefresh() {
@@ -788,46 +762,27 @@
         // النظام المحاسبي المتكامل
         function calculateStats() {
             let totalQty = 0; let outStockCount = 0;
-            inventory.forEach(p => { 
-                let qty = Number(p.qty) || 0;
-                totalQty += qty; 
-                if(qty === 0) outStockCount++; 
-            });
+            inventory.forEach(p => { let qty = Number(p.qty) || 0; totalQty += qty; if(qty === 0) outStockCount++; });
             document.getElementById('stat-total-qty').innerText = totalQty;
             document.getElementById('stat-outstock').innerText = outStockCount;
 
-            let totalSalesMoney = 0;
-            let totalProfitMoney = 0;
-            let totalSoldCount = 0;
+            let totalSalesMoney = 0; let totalProfitMoney = 0; let totalSoldCount = 0;
 
             salesLog.forEach(s => {
-                let qty = Number(s.qtySold) || 0;
-                let price = Number(s.salePrice) || 0;
-                let profit = Number(s.actualProfit) || 0;
-                totalSalesMoney += (qty * price);
-                totalProfitMoney += (qty * profit);
-                totalSoldCount += qty;
+                let qty = Number(s.qtySold) || 0; let price = Number(s.salePrice) || 0; let profit = Number(s.actualProfit) || 0;
+                totalSalesMoney += (qty * price); totalProfitMoney += (qty * profit); totalSoldCount += qty;
             });
 
             archivedSalesLog.forEach(log => {
                 if (log.type === 'return') {
-                    let qty = Number(log.qtyReturned) || 0;
-                    let price = Number(log.salePrice) || 0;
-                    let profit = Number(log.actualProfit) || 0;
-                    totalSalesMoney -= (qty * price);
-                    totalProfitMoney -= (qty * profit);
-                    totalSoldCount -= Math.abs(qty); 
+                    let qty = Number(log.qtyReturned) || 0; let price = Number(log.salePrice) || 0; let profit = Number(log.actualProfit) || 0;
+                    totalSalesMoney -= (qty * price); totalProfitMoney -= (qty * profit); totalSoldCount -= Math.abs(qty); 
                 } else {
-                    let qty = Number(log.qtySold) || 0;
-                    let price = Number(log.salePrice) || 0;
-                    let profit = Number(log.actualProfit) || 0;
-                    totalSalesMoney += (qty * price);
-                    totalProfitMoney += (qty * profit);
-                    totalSoldCount += qty;
+                    let qty = Number(log.qtySold) || 0; let price = Number(log.salePrice) || 0; let profit = Number(log.actualProfit) || 0;
+                    totalSalesMoney += (qty * price); totalProfitMoney += (qty * profit); totalSoldCount += qty;
                 }
             });
 
-            // السماح بظهور الأرقام السالبة للمبيعات للشفافية
             document.getElementById('stat-total-sold-count').innerText = totalSoldCount;
             document.getElementById('stat-total-sales-money').innerText = totalSalesMoney.toLocaleString('en-US') + " د.ع";
             document.getElementById('stat-total-profit').innerText = totalProfitMoney.toLocaleString('en-US') + " د.ع";
@@ -869,9 +824,7 @@
                     const colorHtml = prod.color ? `<span class="color-badge"><i class="fa-solid fa-palette"></i> ${prod.color}</span>` : '';
 
                     let typeOptionsHtml = '';
-                    watchTypes.forEach(t => {
-                        typeOptionsHtml += `<option value="${t}" ${prod.type === t ? 'selected' : ''}>${t}</option>`;
-                    });
+                    watchTypes.forEach(t => { typeOptionsHtml += `<option value="${t}" ${prod.type === t ? 'selected' : ''}>${t}</option>`; });
 
                     container.innerHTML += `
                         <div class="product-card">
@@ -898,15 +851,9 @@
                             <div class="full-edit-control">
                                 <div style="font-size: 0.85rem; color: #bf953f; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-pen-to-square"></i> تعديل تفاصيل الساعة:</div>
                                 <input type="text" class="admin-input" value="${prod.title}" onchange="updateProductField(${prod.id}, 'title', this.value)" title="تعديل الاسم" placeholder="اسم الموديل" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
-                                
-                                <select class="admin-input" onchange="updateProductField(${prod.id}, 'type', this.value)" title="تعديل النوع" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
-                                    ${typeOptionsHtml}
-                                </select>
-                                
+                                <select class="admin-input" onchange="updateProductField(${prod.id}, 'type', this.value)" title="تعديل النوع" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">${typeOptionsHtml}</select>
                                 <input list="color-options" class="admin-input" value="${prod.color || ''}" onchange="updateProductField(${prod.id}, 'color', this.value)" title="تعديل اللون" placeholder="تعديل اللون" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
-                                
-                                <input type="text" class="admin-input" value="${prod.desc || ''}" onchange="updateProductField(${prod.id}, 'desc', this.value)" title="تعديل الوصف والمواصفات" placeholder="الوصف والمواصفات" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
-                                
+                                <input type="text" class="admin-input" value="${prod.desc || ''}" onchange="updateProductField(${prod.id}, 'desc', this.value)" title="تعديل المواصفات" placeholder="المواصفات" style="margin-bottom: 5px; padding: 6px; font-size: 0.9rem;">
                                 <div style="display:flex; gap: 8px;">
                                     <input type="number" class="admin-input" step="1000" style="padding: 6px; font-size: 0.9rem;" value="${defaultPrice}" onchange="updateProductField(${prod.id}, 'price', this.value)" title="تعديل السعر الأساسي">
                                     <input type="number" class="admin-input" step="1000" style="padding: 6px; font-size: 0.9rem; border-color: #bf953f;" value="${defaultProfit}" onchange="updateProductField(${prod.id}, 'baseProfit', this.value)" title="تعديل الربح المتوقع">
@@ -919,9 +866,7 @@
                                     <input type="number" id="sell-price-${prod.id}" class="admin-input sell-price-input locked-price" step="1000" value="${defaultPrice}" readonly title="السعر (مقفول)">
                                 </div>
                                 <input type="text" id="sell-note-${prod.id}" class="admin-input sell-note-input" placeholder="اسم المشتري/الملاحظة..." style="margin-top: 5px;">
-                                <button class="sell-submit-btn" style="margin-top: 5px;" onclick="transferToSales(${prod.id})">
-                                    <i class="fa-solid fa-cart-arrow-down"></i> بيع وتحويل
-                                </button>
+                                <button class="sell-submit-btn" style="margin-top: 5px;" onclick="transferToSales(${prod.id})"><i class="fa-solid fa-cart-arrow-down"></i> بيع وتحويل</button>
                             </div>
                         </div>
                     `;
@@ -966,7 +911,7 @@
             }
         }
 
-        // بناء الرواجع المطور والذكي
+        // بناء الرواجع المطور والذكي بتصميم فخم ومستقل للخصومات
         function renderReturnsPage() {
             const container = document.getElementById('returns-container');
             const searchQuery = document.getElementById('returns-search-input').value.toLowerCase().trim();
@@ -995,20 +940,28 @@
                                 </div>
                             </div>
                             
-                            <div style="display:flex; flex-direction:column; gap:8px; margin-top: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px;">
-                                <div style="font-size: 0.85rem; color: #ef5350; font-weight: bold;">الكمية المسترجعة:</div>
-                                <input type="number" id="gen-return-qty-${prod.id}" class="admin-input sell-qty-input" value="1" min="1" title="كمية الإرجاع" style="border-color: #ef5350; color:#fff; width: 100%; text-align: center; margin-bottom: 8px;">
-                                
-                                <div class="return-price-edit-control" style="background: rgba(239, 83, 80, 0.05); padding: 10px; border-radius: 10px; border: 1px dashed #ef5350; margin-bottom: 8px;">
-                                    <div style="font-size: 0.85rem; color: #ef5350; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-pen-to-square"></i> إعدادات الخصم الحر (للقطعة الواحدة):</div>
-                                    <label style="font-size:0.8rem; color:#a1a1aa; margin-bottom:2px;">المبلغ المخصوم من الإجمالي:</label>
-                                    <input type="number" id="gen-return-price-${prod.id}" class="admin-input" step="1000" value="${defaultPrice}" title="المبلغ المخصوم من إجمالي الصندوق" style="border-color: #ef5350; color:#fff; text-align:center; padding: 6px; font-size: 0.9rem; margin-bottom: 8px;">
-                                    
-                                    <label style="font-size:0.8rem; color:#a1a1aa; margin-bottom:2px;">الربح الصافي المخصوم:</label>
-                                    <input type="number" id="gen-return-profit-${prod.id}" class="admin-input" step="1000" value="${defaultProfit}" title="المبلغ المخصوم من صافي الربح" style="border-color: #bf953f; color:#fff; text-align:center; padding: 6px; font-size: 0.9rem;">
+                            <div style="display:flex; flex-direction:column; gap:10px; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 15px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label style="font-size: 0.9rem; color: #ef5350; font-weight: bold;">الكمية المسترجعة:</label>
+                                    <input type="number" id="gen-return-qty-${prod.id}" class="admin-input" value="1" min="1" style="width: 80px; border-color: #ef5350; color:#fff; text-align: center; font-size: 1.1rem; padding: 6px;">
                                 </div>
 
-                                <button class="sell-submit-btn" style="width:100%; background:rgba(239,83,80,0.1); color:#ef5350; border-color:#ef5350;" onclick="processGeneralReturn(${prod.id})">
+                                <div style="background: rgba(239, 83, 80, 0.05); padding: 15px; border-radius: 12px; border: 1px dashed #ef5350;">
+                                    <div style="font-size: 0.95rem; color: #ef5350; margin-bottom: 12px; font-weight: bold; text-align: center;"><i class="fa-solid fa-calculator"></i> التسوية المالية (للقطعة الواحدة)</div>
+                                    
+                                    <div style="display:flex; flex-direction:column; gap: 10px;">
+                                        <div>
+                                            <label style="font-size:0.8rem; color:#a1a1aa; margin-bottom:4px; display:block;">المبلغ المسترد للزبون (سُيخصم من الصندوق):</label>
+                                            <input type="number" id="gen-return-price-${prod.id}" class="admin-input" step="1000" value="${defaultPrice}" style="border-color: #ef5350; color:#fff; text-align:center; font-size: 1.1rem; font-weight: bold; padding: 8px;" oninput="autoCalculateReturnProfit(${prod.id}, ${defaultPrice}, ${defaultProfit})">
+                                        </div>
+                                        <div>
+                                            <label style="font-size:0.8rem; color:#a1a1aa; margin-bottom:4px; display:block;">الربح الصافي المخصوم (يُحسب تلقائياً وقابل للتعديل):</label>
+                                            <input type="number" id="gen-return-profit-${prod.id}" class="admin-input" step="1000" value="${defaultProfit}" style="border-color: #bf953f; color:#fff; text-align:center; font-size: 1.1rem; font-weight: bold; padding: 8px;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="sell-submit-btn" style="width:100%; background:rgba(239,83,80,0.15); color:#ef5350; border-color:#ef5350; padding: 12px; font-size: 1.05rem;" onclick="processGeneralReturn(${prod.id})">
                                     <i class="fa-solid fa-right-left"></i> تأكيد إرجاع وتوثيق مالي
                                 </button>
                             </div>
@@ -1016,7 +969,6 @@
                     `;
                 });
             }
-            applyEditModeVisibility();
         }
 
         // بناء الأرشيف (Logs)
