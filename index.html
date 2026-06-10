@@ -120,45 +120,43 @@
         .action-btn { background: linear-gradient(45deg, #bf953f, #b38728); color: #050508; width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .action-btn:hover { box-shadow: 0 0 25px rgba(191, 149, 63, 0.4); transform: translateY(-2px); }
 
-        /* النوافذ المنبثقة (Modals) للأنواع والألوان والإعدادات المحدثة بالـ Scrollbar */
+        /* ------------------------------------------------------------- */
+        /* النوافذ المنبثقة (الجديدة كلياً مع حل مشكلة التمرير والعرض)   */
+        /* ------------------------------------------------------------- */
         .custom-modal-overlay { 
             position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
+            top: 0; left: 0; right: 0; bottom: 0; /* تغطية الشاشة بالكامل */
             background: rgba(0,0,0,0.85); 
             backdrop-filter: blur(5px); 
             z-index: 9999; 
             display: none; 
+            align-items: flex-start; /* حل مشكلة القص من الأعلى */
             justify-content: center; 
-            align-items: center; 
-            padding: 15px; 
+            overflow-y: auto; /* السكرول للشاشة بالكامل وليس المربع فقط */
+            padding: 5vh 15px; /* مسافة من الأعلى والأسفل */
         }
         
+        .custom-modal-overlay::-webkit-scrollbar { width: 8px; }
+        .custom-modal-overlay::-webkit-scrollbar-track { background: rgba(15, 15, 20, 0.9); }
+        .custom-modal-overlay::-webkit-scrollbar-thumb { background: #bf953f; border-radius: 10px; }
+
         .custom-modal-box { 
             background: #0f0f14; 
             border: 1px solid #bf953f; 
             border-radius: 15px; 
             padding: 2rem; 
-            width: 90%; 
-            max-width: 500px; 
+            width: 100%; 
+            max-width: 500px; /* الحجم الافتراضي */
             box-shadow: 0 0 30px rgba(191,149,63,0.3); 
-            max-height: 90vh; 
-            overflow-y: auto; 
+            margin: auto; /* للتوسيط التلقائي */
         }
 
-        /* تنسيق شريط التمرير */
-        .custom-modal-box::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-modal-box::-webkit-scrollbar-track {
-            background: rgba(20, 20, 25, 0.5);
-            border-radius: 10px;
-        }
-        .custom-modal-box::-webkit-scrollbar-thumb {
-            background: #bf953f;
-            border-radius: 10px;
+        /* شبكة الإعدادات بالعرض (Grid Layout) */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(191,149,63,0.3); padding-bottom: 15px; margin-bottom: 15px; }
@@ -244,7 +242,7 @@
         .profit-negative { color: #ef5350; }
         .log-return-row { background: rgba(239, 83, 80, 0.05) !important; border-left: 4px solid #ef5350; }
 
-        .settings-input-group { margin-bottom: 15px; }
+        .settings-input-group { margin-bottom: 0; }
         .settings-input-group label { display: block; color: #a1a1aa; font-size: 0.85rem; margin-bottom: 5px; }
         .settings-input-group input { font-family: monospace; text-align: left; direction: ltr; }
     </style>
@@ -257,7 +255,7 @@
         </button>
 
         <div id="settings-modal" class="custom-modal-overlay">
-            <div class="custom-modal-box">
+            <div class="custom-modal-box" style="max-width: 800px;">
                 <div class="modal-header">
                     <h3><i class="fa-solid fa-sliders"></i> لوحة التحكم والإعدادات</h3>
                     <button class="close-modal-btn" onclick="closeSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -265,36 +263,39 @@
                 
                 <p style="font-size: 0.85rem; color: #a1a1aa; margin-bottom: 15px;"><i class="fa-brands fa-discord"></i> أدخل روابط الـ Webhook لتلقي إشعارات تفصيلية (مع منشن للجميع).</p>
                 
-                <div class="settings-input-group">
-                    <label><i class="fa-solid fa-circle-xmark" style="color:#ef5350;"></i> إشعار نفاد الكمية:</label>
-                    <input type="text" id="webhook-out" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
-                </div>
-                <div class="settings-input-group">
-                    <label><i class="fa-solid fa-check-circle" style="color:#38ef7d;"></i> إشعار توفر الساعة بالمخزن:</label>
-                    <input type="text" id="webhook-in" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
-                </div>
-                <div class="settings-input-group">
-                    <label><i class="fa-solid fa-clipboard-list" style="color:#bf953f;"></i> إشعار تصفير السجل اليومي (الترحيل):</label>
-                    <input type="text" id="webhook-daily" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
-                </div>
-                <div class="settings-input-group">
-                    <label><i class="fa-solid fa-money-bill-transfer" style="color:#a1a1aa;"></i> إشعار سحب الأموال والإجمالي:</label>
-                    <input type="text" id="webhook-finance" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+                <div class="settings-grid">
+                    <div class="settings-input-group">
+                        <label><i class="fa-solid fa-circle-xmark" style="color:#ef5350;"></i> إشعار نفاد الكمية:</label>
+                        <input type="text" id="webhook-out" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+                    </div>
+                    <div class="settings-input-group">
+                        <label><i class="fa-solid fa-check-circle" style="color:#38ef7d;"></i> إشعار توفر الساعة بالمخزن:</label>
+                        <input type="text" id="webhook-in" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+                    </div>
+                    <div class="settings-input-group">
+                        <label><i class="fa-solid fa-clipboard-list" style="color:#bf953f;"></i> إشعار تصفير السجل اليومي (الترحيل):</label>
+                        <input type="text" id="webhook-daily" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+                    </div>
+                    <div class="settings-input-group">
+                        <label><i class="fa-solid fa-money-bill-transfer" style="color:#a1a1aa;"></i> إشعار سحب الأموال والإجمالي:</label>
+                        <input type="text" id="webhook-finance" class="admin-input" placeholder="https://discord.com/api/webhooks/...">
+                    </div>
                 </div>
                 
-                <div class="settings-input-group" style="margin-top: 15px; border-top: 1px dashed rgba(191,149,63,0.3); padding-top: 15px;">
+                <div class="settings-input-group" style="border-top: 1px dashed rgba(191,149,63,0.3); padding-top: 15px;">
                     <label><i class="fa-brands fa-discord" style="color:#5865F2;"></i> رابط ديسكورد لتصدير قاعدة البيانات (نسخة احتياطية):</label>
                     <input type="text" id="webhook-export" class="admin-input" placeholder="https://discord.com/api/webhooks/..." style="border-color: rgba(88, 101, 242, 0.5);">
                 </div>
                 
-                <button class="action-btn" style="margin-top: 10px;" onclick="saveWebhooks()"><i class="fa-solid fa-floppy-disk"></i> حفظ الإعدادات</button>
+                <button class="action-btn" style="margin-top: 15px;" onclick="saveWebhooks()"><i class="fa-solid fa-floppy-disk"></i> حفظ الإعدادات</button>
 
                 <hr style="border-color: rgba(191,149,63,0.2); margin: 25px 0 15px 0;">
+                
                 <h4 style="color: #bf953f; margin-bottom: 15px; font-size: 1rem;"><i class="fa-solid fa-hard-drive"></i> قاعدة البيانات (للنقل على الفلاش/الهارد)</h4>
                 
-                <div style="display: flex; gap: 10px;">
-                    <button class="action-btn" style="background: rgba(56, 239, 125, 0.1); border: 1px solid #38ef7d; color: #38ef7d; font-size: 0.95rem; padding: 10px;" onclick="exportData()">
-                        <i class="fa-solid fa-download"></i> تصدير البيانات
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="action-btn" style="flex: 1; background: rgba(56, 239, 125, 0.1); border: 1px solid #38ef7d; color: #38ef7d; font-size: 0.95rem; padding: 10px;" onclick="exportData()">
+                        <i class="fa-solid fa-download"></i> تصدير للكمبيوتر
                     </button>
                     <div style="position: relative; flex: 1;">
                         <input type="file" id="import-file" accept=".json" style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;" onchange="importData(event)">
@@ -302,13 +303,12 @@
                             <i class="fa-solid fa-upload"></i> استرجاع البيانات
                         </button>
                     </div>
+                    <button class="action-btn" style="flex: 1; min-width: 250px; background: rgba(88, 101, 242, 0.1); border: 1px solid #5865F2; color: #5865F2; font-size: 0.95rem; padding: 10px;" onclick="exportDataToDiscord()">
+                        <i class="fa-brands fa-discord"></i> تصدير للديسكورد
+                    </button>
                 </div>
                 
-                <button class="action-btn" style="background: rgba(88, 101, 242, 0.1); border: 1px solid #5865F2; color: #5865F2; font-size: 0.95rem; padding: 10px; width: 100%; margin-top: 10px;" onclick="exportDataToDiscord()">
-                    <i class="fa-brands fa-discord"></i> تصدير البيانات إلى الديسكورد
-                </button>
-                
-                <p style="font-size: 0.75rem; color: #a1a1aa; margin-top: 8px; text-align: center;">قم بتصدير البيانات كملف أو أرسلها للديسكورد لتحديثها دائماً.</p>
+                <p style="font-size: 0.75rem; color: #a1a1aa; margin-top: 12px; text-align: center;">قم بتصدير البيانات كملف أو أرسلها للديسكورد لتحديثها دائماً.</p>
 
             </div>
         </div>
@@ -634,7 +634,6 @@
             downloadAnchorNode.remove();
         }
 
-        // الدالة الجديدة الخاصة بتصدير البيانات كملف إلى سيرفر ديسكورد مباشرة
         function exportDataToDiscord() {
             const url = webhooks.exportData;
             if (!url) {
@@ -651,20 +650,17 @@
                 webhooks: webhooks
             };
             
-            // تحويل البيانات لملف
             const dataStr = JSON.stringify(allData, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const dateStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
             const fileName = "Vault_Database_" + dateStr + ".json";
 
-            // تجهيز البيانات للإرسال بصيغة ملف
             const formData = new FormData();
             formData.append('file', blob, fileName);
             formData.append('payload_json', JSON.stringify({
                 content: "@everyone\n📥 **نسخة احتياطية سحابية جديدة!**\nتم تصدير قاعدة البيانات بنجاح من نظام المخزن ويمكنكم تحميل الملف المُرفق واسترجاعه في أي وقت."
             }));
 
-            // إرسال الملف إلى ويب هوك ديسكورد
             fetch(url, {
                 method: 'POST',
                 body: formData
@@ -708,7 +704,6 @@
             reader.readAsText(file);
         }
 
-        // إرسال الإشعارات مع منشن للجميع وإمكانية عرض الصور إن كانت روابط خارجية
         function sendDiscordWebhook(type, message, imageUrl = null) {
             const url = webhooks[type];
             if (!url) return;
@@ -717,11 +712,10 @@
                 content: "@everyone\n\n" + message
             };
 
-            // تضمين الصورة فقط إذا كانت رابط انترنت صالح (ديسكورد لا يقبل الصور المرفوعة محلياً كنص Base64)
             if (imageUrl && imageUrl.startsWith('http')) {
                 payload.embeds = [{
                     image: { url: imageUrl },
-                    color: 12555567 // لون ذهبي
+                    color: 12555567 
                 }];
             }
 
@@ -732,7 +726,6 @@
             }).catch(e => console.error("Webhook Error:", e));
         }
 
-        // دالة فحص تغير الكمية لإرسال الإشعارات الخاصة بالموديلات
         function checkStockWebhooks(prod, oldQty, newQty) {
             if (oldQty > 0 && newQty === 0) {
                 sendDiscordWebhook('outOfStock', `🚨 **نفدت الكمية تماماً بالمخزن!**\n⌚ الموديل: **${prod.title}**\n🎨 اللون: ${prod.color || 'غير محدد'}\n🏷️ النوع: ${prod.type}`, prod.image);
@@ -861,7 +854,6 @@
             document.getElementById('prod-img-file').value = ''; document.getElementById('file-name').innerText = "لم يتم رفع صورة";
         }
 
-        // وضع التحرير الشامل
         function toggleEditMode() {
             isEditModeActive = !isEditModeActive;
             const btnMain = document.getElementById('edit-mode-toggle');
@@ -996,7 +988,6 @@
             }
         }
 
-        // 🚀 إرجاع عام من الأرشيف/الرواجع
         function processGeneralReturn(prodId) {
             const prod = inventory.find(p => p.id === prodId);
             if(!prod) return;
@@ -1035,7 +1026,6 @@
             }
         }
 
-        // إتمام المبيعات وتصفير الأرشيف اليومي
         function archiveAllSales() {
             const activeSales = salesLog.filter(sale => (Number(sale.qtySold)||0) > 0);
             if(activeSales.length === 0) { alert("⚠️ لا توجد طلبات نشطة لإتمامها!"); return; }
@@ -1059,14 +1049,12 @@
                 salesLog = []; 
                 syncAndRefresh(); 
                 
-                // إرسال إشعار الديسكورد بتصفير السجل اليومي بالتفصيل
                 sendDiscordWebhook('dailyReset', `📋 **تم تصفير السجل اليومي للمبيعات بنجاح!**\n\n📦 **عدد الساعات المباعة اليوم:** ${totalQty} قطعة\n💰 **إجمالي المبالغ:** ${totalMoney.toLocaleString('en-US')} د.ع\n📈 **صافي الربح اليومي:** ${totalProfit.toLocaleString('en-US')} د.ع\n⏰ **وقت الترحيل:** ${archiveTimeStr}`);
                 
                 switchPage('logs');
             }
         }
 
-        // سحب الأموال والتصفير الكلي
         function resetArchivedLogs() {
             const pass = prompt("⚠️ سيتم سحب الأموال وتصفير الأرشيف المالي بالكامل.\nالرجاء إدخال كلمة المرور:");
             if (pass === "admin") { 
@@ -1089,7 +1077,6 @@
                 archivedSalesLog = []; 
                 syncAndRefresh(); 
                 
-                // إرسال إشعار سحب الأموال مفصل 
                 sendDiscordWebhook('financialReset', `💎 **تم سحب الأموال وتصفير الأرشيف المالي بالكامل!**\n\n📊 **ملخص الأرشيف المسحوب:**\n✅ **إجمالي الساعات المباعة:** ${soldQty} قطعة\n🔄 **إجمالي الساعات المرتجعة:** ${returnedQty} قطعة\n\n💵 **إجمالي المبالغ المسحوبة (الصندوق):** ${totalSalesMoney.toLocaleString('en-US')} د.ع\n📈 **صافي الأرباح المسحوبة:** ${totalProfitMoney.toLocaleString('en-US')} د.ع`);
                 
                 alert("✅ تم سحب الأموال وتصفير الأرشيف بنجاح!"); 
@@ -1106,7 +1093,6 @@
             if (document.getElementById('page-logs-view').classList.contains('active-view')) renderLogsPage();
         }
 
-        // النظام المحاسبي المتكامل
         function calculateStats() {
             let totalQty = 0; let outStockCount = 0;
             inventory.forEach(p => { let qty = Number(p.qty) || 0; totalQty += qty; if(qty === 0) outStockCount++; });
@@ -1135,7 +1121,6 @@
             document.getElementById('stat-total-profit').innerText = totalProfitMoney.toLocaleString('en-US') + " د.ع";
         }
 
-        // بناء المخزن
         function renderInventory() {
             updateDynamicFilters();
             calculateStats();
@@ -1272,7 +1257,6 @@
             }
         }
 
-        // بناء الرواجع المطور والذكي
         function renderReturnsPage() {
             const container = document.getElementById('returns-container');
             const searchQuery = document.getElementById('returns-search-input').value.toLowerCase().trim();
@@ -1332,7 +1316,6 @@
             }
         }
 
-        // بناء الأرشيف (Logs)
         function renderLogsPage() {
             const container = document.getElementById('archived-logs-container');
             container.innerHTML = '';
